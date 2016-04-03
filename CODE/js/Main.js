@@ -1,3 +1,58 @@
+var experiences = [1, 2, 3, 4, 5, 6]
+////////////////////////////////////////////////////////////////////////////////
+// 88      dP"Yb     db    8888b.      Yb    dP 88 8888b.  888888  dP"Yb  .dP"Y8 
+// 88     dP   Yb   dPYb    8I  Yb      Yb  dP  88  8I  Yb 88__   dP   Yb `Ybo." 
+// 88  .o Yb   dP  dP__Yb   8I  dY       YbdP   88  8I  dY 88""   Yb   dP o.`Y8b 
+// 88ood8  YbodP  dP""""Yb 8888Y"         YP    88 8888Y"  888888  YbodP  8bodP' 
+// ////////////////////////////////////////////////////////////////////////////////
+var video, videoImage, videoImageContext, videoTexture;
+var videoIsLoaded = false;
+for (var i = 0; i < experiences.length; i++) {
+    video = document.createElement('video');
+    video.setAttribute("webkit-playsinline", "");
+    video.autoplay = true;
+    video.loop = true;
+    video.preload = "auto";
+    video.src = "http://evejweinberg.github.io/videos/" + i + ".mov";
+
+
+}
+
+
+videoImage = document.createElement('canvas');
+videoImage.width = 480;
+videoImage.height = 480;
+videoImageContext = videoImage.getContext('2d');
+videoImageContext.fillStyle = '#ffffff';
+videoImageContext.fillRect(0, 0, videoImage.width, videoImage.height);
+
+// videoTexture = new THREE.Texture( videoo );
+videoTexture = new THREE.Texture(videoImage);
+videoTexture.minFilter = THREE.LinearFilter;
+videoTexture.magFilter = THREE.LinearFilter;
+videoTexture.format = THREE.RGBFormat;
+videoTexture.generateMipmaps = false;
+
+videoTexture.wrapS = videoTexture.wrapT = THREE.ClampToEdgeWrapping;
+videoTexture.needsUpdate = true;
+
+geo = new THREE.PlaneGeometry(16, 9);
+mat = new THREE.MeshBasicMaterial({ map: videoTexture, side: THREE.DoubleSide });
+
+for (var i = 0; i < 100; i += 20) {
+    for (var j = 0; j < 100; j += 20) {
+        var mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(i, j, j)
+        scene.add(mesh);
+    }
+}
+
+
+/////////////////////////////////////////////////////                                                       
+///////|) () |\| [-   |_ () /\ |) | |\| (_,   \/ | |) [- () _\~ 
+/////////////////////////////////////////////////////                                                       
+
+
 if (!Detector.webgl) Detector.addGetWebGLMessage();
 var container, raycaster, stats;
 var camera, scene, renderer, composer, controls, velocity;
