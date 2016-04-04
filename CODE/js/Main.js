@@ -13,7 +13,7 @@ for (var i = 0; i < experiences.length; i++) {
     video.autoplay = true;
     video.loop = true;
     video.preload = "auto";
-    video.src = "http://evejweinberg.github.io/videos/" + i + ".mov";
+    video.src = "http://evejweinberg.github.io/videos/" + [i+1] + ".mov";
 
 
 }
@@ -43,7 +43,7 @@ for (var i = 0; i < 100; i += 20) {
     for (var j = 0; j < 100; j += 20) {
         var mesh = new THREE.Mesh(geo, mat);
         mesh.position.set(i, j, j)
-        scene.add(mesh);
+        // scene.add(mesh);
     }
 }
 
@@ -83,7 +83,7 @@ loader.onComplete = function(e) {
     collisionArea = loader.getMesh("Torus003");
     animate();
 };
-loader.load('./models/sea3d/sound.tjs.sea');
+loader.load('.././models/sea3d/sound.tjs.sea');
 //
 function initPointerLock() {
     blocker = document.getElementById('blocker');

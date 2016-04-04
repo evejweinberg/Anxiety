@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test</title>
+</head>
+
+<body>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <script type="text/javascript">
+    var whichMobile = "";
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        console.log("I'm iOS!");
+        whichMobile = "iOS_mobile";
+    }
+    </script>
+    <script src="../libs/three.min.js"></script>
+    <script src="../libs/stats.min.js"></script>
+    <script src="../libs/jquery-1.12.0.min.js"></script>
+    <!--  Allows us to turn a regular Three.js display into one that is split into two, giving the illusion of depth (an “off-axis stereoscopic effect”) for our VR experience. -->
+    <script src="../js/Detector.js"></script>
+    <!-- <script src="../js/StereoEffect.js"></script> -->
+    <!--     Provides Three.js with the ability to tell where our device is facing and where it moves to. It follows the -->
+    <!-- <script src="../js/controls/DeviceOrientationControls.js"></script> -->
+    <script src="../js/controls/OrbitControls.js"></script>
+    <!-- <script src="../js/helvetiker_regular.typeface.js"></script> -->
+    <!-- <script src="../js/postprocessing/ShaderPass.js"></script> -->
+    <!-- <script src="../js/postprocessing/MaskPass.js"></script> -->
+    <!-- <script src="../js/shaders/CopyShader.js"></script>
+    <script src="../js/shaders/ColorCorrectionShader.js"></script>
+    <script src="../js/shaders/VignetteShader.js"></script>
+    <script src="../js/MorphAnimMesh.js"></script>
+    <script src="../js/loaders/collada/Animation.js"></script>
+    <script src="../js/loaders/sea3d/SEA3D.js"></script>
+    <script src="../js/loaders/sea3d/SEA3DLZMA.js"></script> -->
+    <!-- <script src="../js/Detector.js"></script> -->
+    <script src="../libs/Tone.min.js"></script>
+    <!-- <script src="../js/ManipulateSounds.js"></script> -->
+    <script src="../js/MainV3.js"></script>
+</body>
+
+</html>
