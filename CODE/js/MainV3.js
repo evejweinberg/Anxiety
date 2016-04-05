@@ -9,13 +9,14 @@ var scene, cameraThree, renderer;
 var light;
 var readyAllVideos = false
 var worldRadius = 420;
-var videoRadius = worldRadius*.8;
+var videoRadius = worldRadius * .8;
 var spacing = 360 / experiences.length;
 var container;
-var controls;
+var controls, guicontrols;
 var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
- var centerRadius = 10
+var centerRadius = 10
+var worldSphere
 
 // custom global variables
 var imgScreen, screens;
@@ -73,9 +74,18 @@ function init() {
     container.appendChild(renderer.domElement);
     renderer.setClearColor(0x000000, 1); //set background color and alpha
 
+
+
+
+
+
+
+
     buildGeo();
     DrawCenterArea();
     Floor()
+    OuterSphere()
+    AddGui()
 
 
 
@@ -95,7 +105,7 @@ function init() {
 
     animate();
 
-}
+} //INIT ENDS
 
 function animate() {
     requestAnimationFrame(animate); //http://creativejs.com/resources/requestanimationframe/
@@ -109,10 +119,30 @@ function update() {
 
 
 }
-
-
+//////////////////////////////////////////////////////////////////
+//    ____    U _____ u _   _    ____  U _____ u   ____     
+// U |  _"\ u \| ___"|/| \ |"|  |  _"\ \| ___"|/U |  _"\ u  
+//  \| |_) |/  |  _|" <|  \| |>/| | | | |  _|"   \| |_) |/  
+//   |  _ <    | |___ U| |\  |uU| |_| |\| |___    |  _ <    
+//   |_| \_\   |_____| |_| \_|  |____/ u|_____|   |_| \_\   
+//   //   \\_  <<   >> ||   \\,-.|||_   <<   >>   //   \\_  
+//  (__)  (__)(__) (__)(_")  (_/(__)_) (__) (__) (__)  (__) 
+//////////////////////////////////////////////////////////////////
 
 function render() {
+
+    //update GUI
+    // cube.rotation.x += controls.rotationSpeed;
+    // cube.rotation.y += controls.rotationSpeed;
+    // cube.rotation.z += controls.rotationSpeed;
+    // step += controls.bouncingSpeed;
+    // sphere.position.x = 20 + (10 * (Math.cos(step)));
+    // sphere.position.y = 2 + (10 * Math.abs(Math.sin(step)));
+    // worldSphere.radius = guicontrols.worldradius
+    worldSphere = createMesh(new THREE.SphereGeometry(worldRadius, 10, 10));
+
+    worldRadius = guicontrols.worldradius
+    //gui ends
     if (videoo.readyState === videoo.HAVE_ENOUGH_DATA) {
         if (readyAllVideos == true) {
             for (var k = 0; k < experiences.length; k++) {
@@ -238,9 +268,9 @@ function buildGeo() {
 
 
     for (var k = 0; k < experiences.length; k++) {
-        var xCenter = Math.cos(toRadians(k * spacing)) 
+        var xCenter = Math.cos(toRadians(k * spacing))
 
-        var zCenter = Math.sin(toRadians(k * spacing)) 
+        var zCenter = Math.sin(toRadians(k * spacing))
 
         for (var j = 0; j < 10; j++) {
 
@@ -250,9 +280,9 @@ function buildGeo() {
 
             geo = new THREE.BoxGeometry(size, size, size);
             var mesh = new THREE.Mesh(geo, mat);
-            mesh.position.set(videoRadius * xCenter+randOffset, 0+randOffset ,randOffset+ videoRadius * zCenter)
-            // mesh.rotateZ(Math.random())
-            // mesh.rotateX(Math.random(-1))
+            mesh.position.set(videoRadius * xCenter + randOffset, 0 + randOffset, randOffset + videoRadius * zCenter)
+                // mesh.rotateZ(Math.random())
+                // mesh.rotateX(Math.random(-1))
             scene.add(mesh);
 
         }
@@ -275,56 +305,88 @@ function toRadians(angle) {
 
 
 function DrawCenterArea() {
-    var map = new THREE.TextureLoader().load('../textures/UV_Grid_Sm.jpg');
+    var map = new THREE.TextureLoader().load('../textures/fbtxt.png');
     map.wrapS = map.wrapT = THREE.RepeatWrapping;
     map.anisotropy = 10;
     var material = new THREE.MeshLambertMaterial({ map: map, side: THREE.DoubleSide });
-    object = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius,centerRadius, 10, experiences.length, 1), material);
+    object = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius, centerRadius, 10, experiences.length, 1), material);
     object.position.set(0, 0, 0);
     scene.add(object);
 
 }
 
 
-function Floor(){
-    floorMat = new THREE.MeshStandardMaterial( {
-                    roughness: 0.8,
-                    color: 0xffffff,
-                    metalness: 0.2,
-                    bumpScale: 0.0005,
-                });
-                var textureLoader = new THREE.TextureLoader();
-                textureLoader.load( "../examples/textures/hardwood2_diffuse.jpg", function( map ) {
-                    map.wrapS = THREE.RepeatWrapping;
-                    map.wrapT = THREE.RepeatWrapping;
-                    map.anisotropy = 4;
-                    map.repeat.set( 10, 24 );
-                    floorMat.map = map;
-                    floorMat.needsUpdate = true;
-                } );
-                textureLoader.load( "../examples/textures/hardwood2_bump.jpg", function( map ) {
-                    map.wrapS = THREE.RepeatWrapping;
-                    map.wrapT = THREE.RepeatWrapping;
-                    map.anisotropy = 4;
-                    map.repeat.set( 10, 24 );
-                    floorMat.bumpMap = map;
-                    floorMat.needsUpdate = true;
-                } );
-                textureLoader.load( "../examples/textures/hardwood2_roughness.jpg", function( map ) {
-                    map.wrapS = THREE.RepeatWrapping;
-                    map.wrapT = THREE.RepeatWrapping;
-                    map.anisotropy = 4;
-                    map.repeat.set( 10, 24 );
-                    floorMat.roughnessMap = map;
-                    floorMat.needsUpdate = true;
-                } );
+function Floor() {
+    floorMat = new THREE.MeshStandardMaterial({
+        roughness: 0.8,
+        color: 0xffffff,
+        metalness: 0.2,
+        bumpScale: 0.0005,
+    });
+    var textureLoader = new THREE.TextureLoader();
+    textureLoader.load("../textures/hardwood2_diffuse.jpg", function(map) {
+        map.wrapS = THREE.RepeatWrapping;
+        map.wrapT = THREE.RepeatWrapping;
+        map.anisotropy = 4;
+        map.repeat.set(10, 24);
+        floorMat.map = map;
+        floorMat.needsUpdate = true;
+    });
+    textureLoader.load("../textures/hardwood2_bump.jpg", function(map) {
+        map.wrapS = THREE.RepeatWrapping;
+        map.wrapT = THREE.RepeatWrapping;
+        map.anisotropy = 4;
+        map.repeat.set(10, 24);
+        floorMat.bumpMap = map;
+        floorMat.needsUpdate = true;
+    });
+    textureLoader.load("../textures/hardwood2_roughness.jpg", function(map) {
+        map.wrapS = THREE.RepeatWrapping;
+        map.wrapT = THREE.RepeatWrapping;
+        map.anisotropy = 4;
+        map.repeat.set(10, 24);
+        floorMat.roughnessMap = map;
+        floorMat.needsUpdate = true;
+    });
 
-                var floorGeometry = new THREE.PlaneBufferGeometry( worldRadius*2,worldRadius*2 );
-                var floorMesh = new THREE.Mesh( floorGeometry, floorMat );
-                floorMesh.receiveShadow = true;
-                floorMesh.rotation.x = -Math.PI / 2.0;
-                scene.add( floorMesh );
+    var floorGeometry = new THREE.PlaneBufferGeometry(worldRadius * 2, worldRadius * 2);
+    var floorMesh = new THREE.Mesh(floorGeometry, floorMat);
+    floorMesh.receiveShadow = true;
+    floorMesh.rotation.x = -Math.PI / 2.0;
+    scene.add(floorMesh);
 }
+
+
+
+
+function OuterSphere() {
+    var map = new THREE.TextureLoader().load('../textures/fbtxt.png');
+    map.wrapS = map.wrapT = THREE.RepeatWrapping;
+    map.anisotropy = 10;
+    var material = new THREE.MeshLambertMaterial({ map: map, side: THREE.DoubleSide });
+    // object = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius, centerRadius, 10, experiences.length, 1), material);
+
+    //radius, width segments, height segments
+    worldSphere = createMesh(new THREE.SphereGeometry(worldRadius, 10, 10));
+    // add the sphere to the scene
+    scene.add(worldSphere);
+
+}
+
+
+    function createMesh(geom) {
+
+        // assign two materials
+        var meshMaterial = new THREE.MeshNormalMaterial();
+        meshMaterial.side = THREE.DoubleSide;
+        var wireFrameMat = new THREE.MeshBasicMaterial();
+        wireFrameMat.wireframe = true;
+
+        // create a multimaterial
+        var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial, wireFrameMat]);
+
+        return mesh;
+    }
 
 function onWindowResize() {
     cameraThree.aspect = window.innerWidth / window.innerHeight;
@@ -335,3 +397,29 @@ function onWindowResize() {
 function isTouchDevice() {
     return 'ontouchstart' in window || !!(navigator.msMaxTouchPoints);
 }
+
+/////////////////////////////////////////////////////////////
+//    ____     _   _             
+// U /"___|uU |"|u| |   ___      
+// \| |  _ / \| |\| |  |_"_|     
+//  | |_| |   | |_| |   | |      
+//   \____|  <<\___/  U/| |\u    
+//   _)(|_  (__) )(.-,_|___|_,-. 
+//  (__)__)     (__)\_)-' '-(_/  
+/////////////////////////////////////////////////////////////
+///
+
+function AddGui() {
+
+    guicontrols = new function() {
+        //default values
+        this.rotationSpeed = 0.02;
+        this.bouncingSpeed = 0.03;
+        this.worldradius = 400;
+    }
+
+    var gui = new dat.GUI();
+    gui.add(guicontrols, 'rotationSpeed', 0, 0.5);
+    gui.add(guicontrols, 'bouncingSpeed', 0, 0.5);
+    gui.add(guicontrols, 'worldradius', 50, 1000)
+} //GUI ENDS

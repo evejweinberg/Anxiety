@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)http://alteredqualia.com/three/examples/webgl_city.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>three.js webgl - city</title>
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style type="text/css">
+			body {
+				background:#000;
+				color: #fff;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family: georgia;
+				font-size:1em;
+				text-align: center;
+			}
+
+			#info {
+				position: absolute;
+				top: 10px; width: 100%;
+				padding: 5px;
+				text-align: center;
+				z-index:100;
+			}
+
+			a {
+				color: orange;
+				text-decoration: none;
+			}
+
+			a:hover {
+				color: #0080ff;
+			}
+
+			#footer { width: 100%;  text-align: center; position: absolute; bottom: 0; z-index: 100 }
+			#fin { background: rgba( 0, 0, 0, 0.5 ); width: 57em; padding: 0.5em; margin: 0em auto; }
+			.h { color: #fb0 }
+			.c { display: inline; margin-left: 1em }
+			.cc { font-size: 0.8em; color: #999 }
+
+		</style>
+	<style type="text/css"></style></head>
+
+	<body data-pinterest-extension-installed="cr1.39.1">
+
+		<div id="container"><canvas width="1248" height="884" style="width: 1248px; height: 884px; position: absolute; top: 0px; left: 0px;"></canvas><div id="stats" style="width: 80px; opacity: 0.9; cursor: pointer; position: absolute; top: 0px; z-index: 100;"><div id="fps" style="padding: 0px 0px 3px 3px; text-align: left; background: transparent;"><div id="fpsText" style="color: rgb(170, 170, 170); font-family: Helvetica, Arial, sans-serif; font-size: 9px; font-weight: bold; line-height: 15px;">38 FPS (7-60)</div><div id="fpsGraph" style="position: relative; width: 74px; height: 30px; display: none; background-color: rgb(0, 255, 255);"><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 18.3px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 14.1px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 27.9px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12.3px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12.3px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12.3px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 18px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(17, 17, 51);"></span><span style="width: 1px; height: 18.6px; float: left; background-color: rgb(17, 17, 51);"></span></div></div><div id="ms" style="padding: 0px 0px 3px 3px; text-align: left; display: none; background-color: rgb(0, 34, 0);"><div id="msText" style="color: rgb(0, 255, 0); font-family: Helvetica, Arial, sans-serif; font-size: 9px; font-weight: bold; line-height: 15px;">16 MS (2-5049)</div><div id="msGraph" style="position: relative; width: 74px; height: 30px; background-color: rgb(0, 255, 0);"><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.15px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.9px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.15px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.9px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.15px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.75px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.15px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.75px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.15px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.75px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.3px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.3px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.75px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.3px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.75px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.3px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.3px; float: left; background-color: rgb(17, 51, 17);"></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(17, 51, 17);"></span></div></div></div></div>
+
+		<div id="info">
+			<a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - procedural city -
+			helicopter by <a href="http://www.blendswap.com/3D-models/vehicles/sci-fi-marine-helicopter/">nick royer</a> -
+			sound fx by <a href="http://www.freesound.org/people/nofeedbak/sounds/41171/">nofeedbak</a> -
+			music by <a href="http://www.newgrounds.com/audio/listen/401086">erik mcclure</a> -
+			textures from <a href="http://ro.me/">ro.me</a> and <a href="http://opengameart.org/content/lens-flares-and-particles">hc</a>
+		</div>
+
+		<div id="footer">
+			<div id="fin">
+				move around with WASD / RF + mouse
+
+				<div class="c">
+				toggle camera attachment: <span class="h">b</span>
+				</div>
+
+				<div class="c">
+				toggle music: <span class="h">m</span>
+				</div>
+
+				<div class="c">
+				toggle helicopter sound: <span class="h">n</span>
+				</div>
+
+			</div>
+		</div>
+
+		<audio id="soundtrack" autoplay="" loop="" style="display:none">
+			<source src="sounds/Aurora_Theory_08_Birefring_mix.mp3" type="audio/mp3">
+			<source src="sounds/Aurora_Theory_08_Birefring_mix.ogg" type="audio/ogg">
+		</audio>
+
+		<script src="ThreeCity.js"></script>
+
+		<script src="ShaderExtrasCity.js"></script>
+		<script src="PostprocessingCity.js"></script>
+
+		<!--
+		<script src="../build/three.max.js"></script>
+
+		<script src="js/shaders/BleachBypassShader.js"></script>
+		<script src="js/shaders/CopyShader.js"></script>
+		<script src="js/shaders/ConvolutionShader.js"></script>
+		<script src="js/shaders/FilmShader.js"></script>
+
+		<script src="js/postprocessing/EffectComposer.js"></script>
+		<script src="js/postprocessing/RenderPass.js"></script>
+		<script src="js/postprocessing/BloomPass.js"></script>
+		<script src="js/postprocessing/ShaderPass.js"></script>
+		<script src="js/postprocessing/MaskPass.js"></script>
+		<script src="js/postprocessing/SavePass.js"></script>
+		<script src="js/postprocessing/FilmPass.js"></script>
+		-->
+
+		<script src="AudioObject.js"></script>
+
+		<script src="Detector.js"></script>
+		<script src="stats.min.js"></script>
+
+		<script>
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var MARGIN = 0;
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight - 2 * MARGIN;
+
+			var container, soundtrack, stats;
+
+			var camera, scene, renderer;
+
+			var clock = new THREE.Clock();
+
+			var loader;
+
+			var flareA, flareB;
+
+			var helicopter, rotor1, rotor2,
+			nextPoint = new THREE.Vector3();
+
+			var soundVal = 0, oldSoundVal = 0, soundDir = -1;
+			var musicVal = 0, oldMusicVal = 0, musicDir = 1;
+
+			var renderTarget, renderTargetParameters;
+
+			var maxv = 0, maxf = 0, maxc = 0, maxp = 0;
+
+			init();
+			animate();
+
+			function init() {
+
+				container = document.getElementById( 'container' );
+				soundtrack = document.getElementById( "soundtrack" );
+
+				// camera
+
+				var FAR = 17000000;
+
+				camera = new THREE.PerspectiveCamera( 35, SCREEN_WIDTH / SCREEN_HEIGHT, 10, FAR );
+				camera.position.set( -750, 250, -500 );
+
+				controls = new THREE.FirstPersonControls( camera );
+				controls.movementSpeed = 3000;
+				controls.lookSpeed = 0.05;
+				controls.lon = 45;
+				controls.lat = -25;
+
+				// scene
+
+				scene = new THREE.Scene();
+				scene.add( camera );
+
+				//scene.fog = new THREE.Fog( 0x000000, 13500, 25000 );
+
+				// world
+
+				//var materialSides = new THREE.MeshPhongMaterial( { ambient: 0x333333, color: 0xffffff, specular: 0xffffff, shininess: 100, perPixel: true, metal: true } );
+				var materialTop = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+
+				var faceMaterial = new THREE.MeshFaceMaterial();
+
+				var dy = 2000;
+				var s = 250;
+				var t1 = 25;
+				var t2 = 5;
+
+				var cubeTop    = new THREE.CubeGeometry( s, s, s, 1, 1, 1, materialTop, { ny: false, py: true, nx: false, px: false, nz: false, pz: false } );
+				THREE.GeometryUtils.removeMaterials( cubeTop, [ 0, 1, 3, 4, 5 ] );
+
+				var cubeSides  = new THREE.CubeGeometry( s, s, s, 1, 1, 1, materialTop, { ny: false, py: false } );
+				THREE.GeometryUtils.removeMaterials( cubeSides, [ 2, 3 ] );
+
+				var cubeSidesCenter 	 = new THREE.CubeGeometry( s, s, s, 10, 40, 10, materialTop, { ny: false, py: false } );
+				var cubeSidesCenterInner = new THREE.CubeGeometry( s, s/2, s, 10, 60, 10, materialTop, { ny: false, py: false } );
+				THREE.GeometryUtils.removeMaterials( cubeSidesCenter, [ 2, 3 ] );
+				THREE.GeometryUtils.removeMaterials( cubeSidesCenterInner, [ 2, 3 ] );
+
+				var cubeSidesSmall      = new THREE.CubeGeometry( s, s, s, 5, 20, 5, materialTop, { ny: false, py: false } );
+				var cubeSidesSmallInner = new THREE.CubeGeometry( s, s/2, s, 5, 2, 5, materialTop, { ny: false, py: false } );
+				THREE.GeometryUtils.removeMaterials( cubeSidesSmall, [ 2, 3 ] );
+				THREE.GeometryUtils.removeMaterials( cubeSidesSmallInner, [ 2, 3 ] );
+
+				var cubeSidesSmallDense      = new THREE.CubeGeometry( s, s, s, 3, 5, 3, materialTop, { ny: false, py: false } );
+				var cubeSidesSmallDenseInner = new THREE.CubeGeometry( s, s/2, s, 2, 1, 2, materialTop, { ny: false, py: false } );
+				THREE.GeometryUtils.removeMaterials( cubeSidesSmallDense, [ 2, 3 ] );
+				THREE.GeometryUtils.removeMaterials( cubeSidesSmallDenseInner, [ 2, 3 ] );
+
+				var cube1 = new THREE.CubeGeometry( s - t1, t1, s - t1, 2, 1, 2, materialTop, { ny: false } );
+				var cube2 = new THREE.CubeGeometry( s - 2 * t1, t1, s - 2 * t1, 2, 1, 2, materialTop, { ny: false } );
+				var cube3 = new THREE.CubeGeometry( s - 3 * t1, t1, s - 3 * t1, 2, 1, 2, materialTop, { ny: false } );
+				THREE.GeometryUtils.removeMaterials( cube1, [ 3 ] );
+				THREE.GeometryUtils.removeMaterials( cube2, [ 3 ] );
+				THREE.GeometryUtils.removeMaterials( cube3, [ 3 ] );
+
+				var cubeAntenna = new THREE.CubeGeometry( t2, t2 * 100, t2, 1, 10, 1, materialTop, { ny: false } );
+				THREE.GeometryUtils.removeMaterials( cubeAntenna, [ 3 ] );
+
+				var translateMatrix = new THREE.Matrix4();
+				translateMatrix.makeTranslation( new THREE.Vector3( 0, s/4, 0 ) );
+				cubeSidesCenterInner.applyMatrix( translateMatrix );
+				cubeSidesSmallInner.applyMatrix( translateMatrix );
+				cubeSidesSmallDenseInner.applyMatrix( translateMatrix );
+
+				// central block
+
+				var rx = rz = 1950;
+
+				var centralGeo = new THREE.Geometry();
+				var centralGeoSides = new THREE.Geometry();
+				var centralGeoTop = new THREE.Geometry();
+
+				for ( var i = 0; i < 49; i ++ ) {
+
+					var row = Math.floor( i / 7 ) - 3;
+					var col = ( i % 7 ) - 3;
+
+					var px = 500 * row;
+					var pz = 500 * col;
+
+					px += THREE.Math.randFloatSpread( 50 );
+					pz += THREE.Math.randFloatSpread( 50 );
+
+					var sx = 1 + Math.random();
+
+					var sy = 2 + Math.random();
+					if ( Math.random() > 0.9 ) sy += 2 * Math.random();
+
+					var xx = 0.5 * px;
+					var zz = 0.5 * pz;
+					var ll = Math.sqrt( xx * xx + zz * zz );
+					sy = THREE.Math.clamp( sy + 4000 / ll, 1, 25 );
+
+					var py = 0.5 * s * sy;
+
+					// top face
+
+					addPart( centralGeo, cubeTop, faceMaterial, px, py, pz, sx, sy );
+
+					// side faces
+
+					addPart( centralGeo, 	  cubeSides,  	   faceMaterial, px, py, pz, sx, sy );
+
+					if ( Math.abs( row ) < 3 && Math.abs( col ) < 3 )
+						addPart( centralGeoSides, cubeSidesCenterInner, faceMaterial, px, py, pz, sx * 1.05, sy * 0.99 );
+					else
+						addPart( centralGeoSides, cubeSidesCenter, faceMaterial, px, py, pz, sx * 1.05, sy * 0.975 );
+
+					// extra geometry at the top
+
+					if ( Math.random() > 0.5 ) {
+
+						addPartTop( centralGeo,    cube1, faceMaterial, px, 2 * py + t1 * 0.5, pz, sx, 1 );
+						addPartTop( centralGeoTop, cube1, faceMaterial, px, 2 * py + t1 * 0.5, pz, sx * 1.05, 1 );
+
+						if ( Math.random() > 0.5 ) {
+
+							addPartTop( centralGeo,    cube2, faceMaterial, px, 2 * py + t1 * 1.5, pz, sx, 1 );
+							addPartTop( centralGeoTop, cube2, faceMaterial, px, 2 * py + t1 * 1.5, pz, sx * 1.05, 1 );
+
+							if ( Math.random() > 0.5 ) {
+
+								addPartTop( centralGeo,    cube3, faceMaterial, px, 2 * py + t1 * 2.5, pz, sx, 1 );
+								addPartTop( centralGeoTop, cube3, faceMaterial, px, 2 * py + t1 * 2.5, pz, sx * 1.05, 1 );
+
+							}
+
+						}
+
+					}
+
+					if ( Math.random() > 0.8 ) {
+
+						var rdx = THREE.Math.randFloatSpread( s - 1 * t1 );
+						var rdz = THREE.Math.randFloatSpread( s - 1 * t1 );
+
+						addPartTop( centralGeo,    cubeAntenna, faceMaterial, px + rdx, 2 * py + t2 * 100 * 0.5, pz + rdz, 1, 1 );
+						addPartTop( centralGeoTop, cubeAntenna, faceMaterial, px + rdx, 2 * py + t2 * 100 * 0.5, pz + rdz, 1.1, 1 );
+
+					}
+
+				}
+
+				// tall buildings block
+
+				var tallGeo = new THREE.Geometry();
+				var tallGeoSides = new THREE.Geometry();
+				var tallGeoTop = new THREE.Geometry();
+
+				for ( var i = 0; i < 49; i ++ ) {
+
+					var px = 500 * ( Math.floor( i / 7 ) - 3 );
+					var pz = 500 * ( ( i % 7 ) - 3 );
+
+					px += THREE.Math.randFloatSpread( 50 );
+					pz += THREE.Math.randFloatSpread( 50 );
+
+					var sx = 1.25 + 0.75 * Math.random();
+					var sy = 2.5 + 3 * Math.random();
+					if ( Math.random() > 0.9 ) sy += 4 * Math.random();
+
+					var py = 0.5 * s * sy;
+
+					// top face
+
+					addPart( tallGeo, cubeTop, faceMaterial, px, py, pz, sx, sy );
+
+					// side faces
+
+					addPart( tallGeo,      cubeSides,  faceMaterial, px, py, pz, sx, sy );
+					addPart( tallGeoSides, cubeSidesCenter, faceMaterial, px, py, pz, sx * 1.05, sy * 0.95 );
+
+					// extra geometry at the top
+
+					if ( Math.random() > 0.5 ) {
+
+						addPartTop( tallGeo,    cube1, faceMaterial, px, 2 * py + t1 * 0.5, pz, sx, 1 );
+						addPartTop( tallGeoTop, cube1, faceMaterial, px, 2 * py + t1 * 0.5, pz, sx * 1.05, 1 );
+
+						if ( Math.random() > 0.5 ) {
+
+							addPartTop( tallGeo,    cube2, faceMaterial, px, 2 * py + t1 * 1.5, pz, sx, 1 );
+							addPartTop( tallGeoTop, cube2, faceMaterial, px, 2 * py + t1 * 1.5, pz, sx * 1.05, 1 );
+
+							if ( Math.random() > 0.5 ) {
+
+								addPartTop( tallGeo,    cube3, faceMaterial, px, 2 * py + t1 * 2.5, pz, sx, 1 );
+								addPartTop( tallGeoTop, cube3, faceMaterial, px, 2 * py + t1 * 2.5, pz, sx * 1.05, 1 );
+
+							}
+
+						}
+
+					}
+
+					if ( Math.random() > 0.8 ) {
+
+						var rdx = THREE.Math.randFloatSpread( s - 1 * t1 );
+						var rdz = THREE.Math.randFloatSpread( s - 1 * t1 );
+
+						addPartTop( tallGeo,    cubeAntenna, faceMaterial, px + rdx, 2 * py + t2 * 100 * 0.5, pz + rdz, 1, 1 );
+						addPartTop( tallGeoTop, cubeAntenna, faceMaterial, px + rdx, 2 * py + t2 * 100 * 0.5, pz + rdz, 1.1, 1 );
+
+					}
+
+
+				}
+
+				// small buildings block (dense)
+
+				var shortGeo = new THREE.Geometry();
+				var shortGeoSides = new THREE.Geometry();
+
+				for ( var i = 0; i < 529; i ++ ) {
+
+					if ( ( i % 23 ) == 11 ) continue;
+
+					var row = Math.floor( i / 23 ) - 11;
+					var col = ( i % 23 ) - 11;
+
+					var px = 170 * row;
+					var pz = 170 * col;
+
+					px += THREE.Math.randFloatSpread( 75 );
+					pz += THREE.Math.randFloatSpread( 75 );
+
+					var sx = 0.5;
+					var sy = 0.5 + 0.5 * Math.random();
+
+					var py = 0.5 * s * sy;
+
+					addPart( shortGeo, cubeSides, faceMaterial, px, py, pz, sx, sy );
+					addPart( shortGeo, cubeTop,   faceMaterial, px, py, pz, sx, sy );
+
+					if ( Math.abs( row ) > 10 || Math.abs( col ) > 10  || Math.abs( col ) < 2 )
+						addPart( shortGeoSides, cubeSidesSmallDense, faceMaterial, px, py, pz, sx * 1.05, sy * 0.9 );
+					else
+						addPart( shortGeoSides, cubeSidesSmallDenseInner, faceMaterial, px, py, pz, sx * 1.15, sy * 0.99 );
+
+				}
+
+				var block1 = createSparseBlock( true );
+				shortGeoSparse1 = block1.geoFull;
+				shortGeoSparse1Sides = block1.geoSides;
+
+				var block2 = createSparseBlock( false );
+				shortGeoSparse2 = block2.geoFull;
+				shortGeoSparse2Sides = block2.geoSides;
+
+				function createSparseBlock( centralStreet ) {
+
+					var geoFull = new THREE.Geometry();
+					var geoSides = new THREE.Geometry();
+
+					for ( var i = 0; i < 256; i ++ ) {
+
+						if ( centralStreet && ( i % 16 ) == 7 ) continue;
+
+						var row = Math.floor( i / 16 ) - 7.5;
+						var col = ( i % 16 ) - 7.5;
+
+						var px = 230 * row;
+						var pz = 230 * col;
+
+						px += THREE.Math.randFloatSpread( 75 );
+						pz += THREE.Math.randFloatSpread( 75 );
+
+						var sx = 0.75;
+						var sy = 1 + 0.75 * Math.random();
+
+						var py = 0.5 * s * sy;
+
+						addPart( geoFull, cubeSides, faceMaterial, px, py, pz, sx, sy );
+						addPart( geoFull, cubeTop,   faceMaterial, px, py, pz, sx, sy );
+
+						if ( Math.abs( row ) > 7 || Math.abs( col ) > 7  || ( Math.abs( col + 0.5 ) < 2 && centralStreet ) )
+							addPart( geoSides, cubeSidesSmall, faceMaterial, px, py, pz, sx * 1.15, sy * 0.99 );
+						else
+							addPart( geoSides, cubeSidesSmallInner, faceMaterial, px, py, pz, sx * 1.15, sy * 0.99 );
+
+					}
+
+					return { "geoFull": geoFull, "geoSides": geoSides };
+
+				}
+
+				// create random windows pattern
+
+				var start = Date.now();
+
+				removeRandomVertices( centralGeoSides, 0.5 );
+				removeRandomVertices( tallGeoSides, 0.5 );
+				removeRandomVertices( shortGeoSides, 0.5 );
+				removeRandomVertices( shortGeoSparse1Sides, 0.5 );
+				removeRandomVertices( shortGeoSparse2Sides, 0.5 );
+
+				console.log( Date.now() - start );
+
+				/*
+				console.log( "centralGeo faces", centralGeo.faces.length );
+				console.log( "tallGeo faces", tallGeo.faces.length );
+				console.log( "shortGeo faces", shortGeo.faces.length );
+				console.log( "shortGeoSparse1 faces", shortGeoSparse1.faces.length );
+				console.log( "shortGeoSparse2 faces", shortGeoSparse2.faces.length );
+
+				console.log( "centralGeoSides vertices", centralGeoSides.vertices.length );
+				console.log( "tallGeoSides vertices", tallGeoSides.vertices.length );
+				console.log( "shortGeoSides faces", shortGeoSides.vertices.length );
+				console.log( "shortGeoSparse1Sides faces", shortGeoSparse1Sides.vertices.length );
+				console.log( "shortGeoSparse2Sides faces", shortGeoSparse2Sides.vertices.length );
+				*/
+
+				// grid of blocks
+
+				var dd = 2 * rx + 250;
+
+				var nx = 6, ny = 6;
+
+				var geo, sy, ry, targetList,
+					blocksTall = [], blocksShort = [], blocksShortSparse1 = [], blocksShortSparse2 = [];
+
+				for ( var i = -nx; i < nx; i ++ ) {
+
+					for ( var j = -ny; j < ny; j ++ ) {
+
+						// small blocks
+
+						sy = 1 + 0.15 * Math.random();
+						ry = 0.5 * Math.PI * THREE.Math.randInt( 0, 3 );
+
+						if ( Math.abs( i ) < 4 && Math.abs( j ) < 4 ) {
+
+							if ( Math.random() > 0.5 ) {
+
+								geo = shortGeoSparse1;
+								targetList = blocksShortSparse1;
+
+							} else {
+
+								geo = shortGeoSparse2;
+								targetList = blocksShortSparse2;
+
+							}
+
+						} else {
+
+							geo = shortGeo;
+							targetList = blocksShort;
+
+						}
+
+						if ( !( Math.abs( i ) < 2 && Math.abs( j ) < 2 ) ) {
+
+							var mesh = new THREE.Mesh( geo, materialTop );
+
+							mesh.position.set( i * dd, -dy, j * dd );
+							mesh.scale.y = sy;
+							mesh.rotation.y = ry;
+
+							mesh.matrixAutoUpdate = false;
+							mesh.updateMatrix();
+
+							scene.add( mesh );
+
+							targetList.push( { sy: sy, ry: ry, x: i * dd, y: -dy, z: j * dd } );
+
+						}
+
+						// large blocks
+
+						if ( i == 0 && j == 0 )  {
+
+							geo = centralGeo;
+							sy = 1;
+							ry = 0;
+
+						} else if ( Math.abs( i ) < 2 && Math.abs( j ) < 2 ) {
+
+							geo = tallGeo;
+
+							ry = 0.5 * Math.PI * THREE.Math.randInt( 0, 3 );
+
+							sy = 1;
+
+							blocksTall.push( { sy: sy, ry: ry, x: i * dd, y: -dy, z: j * dd } );
+
+						} else {
+
+							continue;
+
+						}
+
+						var mesh = new THREE.Mesh( geo, materialTop );
+
+						mesh.position.set( i * dd, -dy, j * dd );
+						mesh.scale.y = sy;
+						mesh.rotation.y = ry;
+
+						mesh.matrixAutoUpdate = false;
+						mesh.updateMatrix();
+
+						scene.add( mesh );
+
+					}
+
+				}
+
+
+				// ground
+
+				var plane = new THREE.Mesh( new THREE.PlaneGeometry( 200000, 200000 ), materialTop );
+				plane.position.y = -dy;
+				plane.rotation.x = - Math.PI/2;
+				scene.add( plane );
+
+				// lens flares
+
+				var textureLight 	= THREE.ImageUtils.loadTexture( "../textures/lensflare/lensflare0.png" );
+				var textureHexangle = THREE.ImageUtils.loadTexture( "../textures/lensflare/hexangle.png" );
+
+				flareA = THREE.ImageUtils.loadTexture( "../textures/lensflare2.jpg" );
+				flareB = THREE.ImageUtils.loadTexture( "../textures/lensflare0.png" );
+
+				addFlare( scene, false, 400, 0.05,  0.0825, 0.95,   5000, 0, 5000, 0xff2200, 0xffaa00 );
+				addFlare( scene, false, 500, 0.08,  0.025,  0.95,     0,  4500, 0, 0xff2200, 0xffaa00 );
+				addFlare( scene, false, 400, 0.995, 0.025,  0.95, -5000,     0, 0, 0xff2200, 0xffaa00 );
+
+				addFlare( scene, true, 400, 0.7, 0.5, 0.95, -10000, -1000, 10000, 0xff2288, 0xff00ff );
+				addFlare( scene, true, 400, 0.8, 0.5, 0.95,  10000, -1000, 10000, 0xff2288, 0xff00ff );
+
+
+				function addFlare( parent, radialFlares, r, h, s, v, x, y, z, c1, c2 ) {
+
+					var flareColor = new THREE.Color( 0xffffff );
+					flareColor.setHSV( h, s, v );
+
+					var fc1 = new THREE.Color( c1 );
+					var fc2 = new THREE.Color( c2 );
+
+					THREE.ColorUtils.adjustHSV( fc1, 0, -0.25, -0.015 );
+					THREE.ColorUtils.adjustHSV( fc2, 0, -0.25, -0.015 );
+
+					var lensFlare = new THREE.LensFlare( textureLight, r, 0.0, THREE.AdditiveBlending, flareColor );
+
+					lensFlare.add( textureHexangle,  60, 0.2, THREE.AdditiveBlending, fc1 );
+					lensFlare.add( textureHexangle, 170, 0.3, THREE.AdditiveBlending, fc2 );
+					lensFlare.add( textureHexangle, 220, 0.4, THREE.AdditiveBlending, fc1 );
+					lensFlare.add( textureHexangle,  80, 0.5, THREE.AdditiveBlending, fc2 );
+					lensFlare.add( textureHexangle,  70, 0.6, THREE.AdditiveBlending, fc1 );
+
+					lensFlare.add( textureHexangle,  70, 0.1, THREE.AdditiveBlending, fc2 );
+					lensFlare.add( textureHexangle, 220, 0.2, THREE.AdditiveBlending, fc1 );
+					lensFlare.add( textureHexangle, 100, 0.3, THREE.AdditiveBlending, fc2 );
+					lensFlare.add( textureHexangle,  90, 0.4, THREE.AdditiveBlending, fc1 );
+					lensFlare.add( textureHexangle,  80, 0.5, THREE.AdditiveBlending, fc2 );
+
+					lensFlare.customUpdateCallback = lensFlareUpdateCallback;
+					lensFlare.position.set( x, y, z );
+
+					parent.add( lensFlare );
+
+				}
+
+				// particles
+
+				var starsMaterial1 = new THREE.ParticleBasicMaterial( { color: 0xaaaaaa, map: flareB, size: 25, sizeAttenuation: false, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false } );
+				var starsMaterial2 = new THREE.ParticleBasicMaterial( { color: 0xaa9988, map: flareB, size: 35, sizeAttenuation: false, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false } );
+				var starsMaterial3 = new THREE.ParticleBasicMaterial( { color: 0xaaaaaa, map: flareB, size: 45, sizeAttenuation: false, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false } );
+
+				var particleMaterialB = new THREE.ParticleBasicMaterial( { color: 0xffffff, map: flareA, size: 100, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false } );
+				var particleMaterialC = new THREE.ParticleBasicMaterial( { color: 0xff0000, map: flareB, size: 250, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true } );
+
+				//
+
+				carsFrontMaterial = createAnimatedParticleMaterial( 0xffffff, flareA, 500, true );
+				carsBackMaterial  = createAnimatedParticleMaterial( 0xff0000, flareA, 250, true );
+
+				carsFrontMaterial2 = createAnimatedParticleMaterial( 0xffffff, flareA, 500, false );
+				carsBackMaterial2  = createAnimatedParticleMaterial( 0xff0000, flareA, 250, false );
+
+				// car lights
+
+				var carsFrontGeo = new THREE.Geometry();
+				var carsBackGeo  = new THREE.Geometry();
+
+				var carsFrontGeo2 = new THREE.Geometry();
+				var carsBackGeo2  = new THREE.Geometry();
+
+				var dd = 4150, xx = 400, xxs = xx/2 - 50;
+
+				for ( var j = -7; j < 6; j ++ )
+				for ( var i = -55; i < 55; i ++ ) {
+
+					// front lights
+
+					var vertex = new THREE.Vector3();
+					vertex.x = i * xx + THREE.Math.randFloatSpread( xxs );
+					vertex.y = -1900;
+					vertex.z = 2150 + j * dd + THREE.Math.randFloatSpread( 50 );
+					carsFrontGeo.vertices.push( vertex );
+
+					var vertexCopy = vertex.clone();
+					vertexCopy.z += 50;
+					carsFrontGeo.vertices.push( vertexCopy );
+
+					var vertex = new THREE.Vector3();
+					vertex.z = i * xx + THREE.Math.randFloatSpread( xxs );
+					vertex.y = -1900;
+					vertex.x = 2150 + j * dd + THREE.Math.randFloatSpread( 50 );
+					carsFrontGeo2.vertices.push( vertex );
+
+					var vertexCopy = vertex.clone();
+					vertexCopy.x += 50;
+					carsFrontGeo2.vertices.push( vertexCopy );
+
+					// back lights
+
+					var vertex = new THREE.Vector3();
+					vertex.x = i * xx + THREE.Math.randFloatSpread( xxs );
+					vertex.y = -1900;
+					vertex.z = 2000 + j * dd + THREE.Math.randFloatSpread( 50 );
+					carsBackGeo.vertices.push( vertex );
+
+					var vertexCopy = vertex.clone();
+					vertexCopy.z += 50;
+					carsBackGeo.vertices.push( vertexCopy );
+
+					var vertex = new THREE.Vector3();
+					vertex.z = i * xx + THREE.Math.randFloatSpread( xxs );
+					vertex.y = -1900;
+					vertex.x = 2000 + j * dd + THREE.Math.randFloatSpread( 50 );
+					carsBackGeo2.vertices.push( vertex );
+
+					var vertexCopy = vertex.clone();
+					vertexCopy.x += 50;
+					carsBackGeo2.vertices.push( vertexCopy );
+
+				}
+
+				// stars
+
+				var starsGeoSparse = getParticlesFromGeometry( new THREE.SphereGeometry( 15000000, 32, 16 ), 3000 );
+				var starsGeoDense  = getParticlesFromGeometry( new THREE.SphereGeometry( 15000000, 32, 16 ), 5000 );
+
+				// blocks lights
+
+				var centralGeoRandom = getParticlesFromGeometry( centralGeo, 15000 );
+				var tallGeoRandom = getParticlesFromGeometry( tallGeo, 25000 );
+				var shortGeoRandom = getParticlesFromGeometry( shortGeo, 5000 );
+				var shortGeoSparse1Random = getParticlesFromGeometry( shortGeoSparse1, 10000 );
+				var shortGeoSparse2Random = getParticlesFromGeometry( shortGeoSparse2, 10000 );
+
+				// add particles to scene
+
+				var particles = new THREE.ParticleSystem( carsFrontGeo, carsFrontMaterial );
+				particles.frustumCulled = true;
+				scene.add( particles );
+
+				var particles = new THREE.ParticleSystem( carsBackGeo, carsBackMaterial );
+				particles.frustumCulled = true;
+				scene.add( particles );
+
+				//
+
+				var particles = new THREE.ParticleSystem( carsFrontGeo2, carsFrontMaterial2 );
+				particles.frustumCulled = true;
+				scene.add( particles );
+
+				var particles = new THREE.ParticleSystem( carsBackGeo2, carsBackMaterial2 );
+				particles.frustumCulled = true;
+				scene.add( particles );
+
+				// particle stars
+
+				var particles = new THREE.ParticleSystem( starsGeoDense, starsMaterial1 );
+				particles.frustumCulled = true;
+				scene.add( particles );
+
+				var particles = new THREE.ParticleSystem( starsGeoDense, starsMaterial2 );
+				particles.rotation.x = Math.PI;
+				particles.frustumCulled = true;
+				scene.add( particles );
+
+				var particles = new THREE.ParticleSystem( starsGeoSparse, starsMaterial3 );
+				particles.rotation.z = Math.PI;
+				particles.frustumCulled = true;
+				scene.add( particles );
+
+				// particle central block
+
+				centerMaterial = particleMaterialB;
+
+				var particles = new THREE.ParticleSystem( centralGeoSides, centerMaterial );
+				particles.frustumCulled = true;
+				particles.position.y = -dy;
+				scene.add( particles );
+
+				var particles = new THREE.ParticleSystem( centralGeoTop, particleMaterialC );
+				particles.frustumCulled = true;
+				particles.position.y = -dy;
+				scene.add( particles );
+
+				// particle blocks
+
+				addBlockParticles( blocksTall, tallGeoSides, [ particleMaterialB ], 1 );
+				addBlockParticles( blocksTall, tallGeoTop, [ particleMaterialC ], 1 );
+
+				addBlockParticles( blocksShortSparse1, shortGeoSparse1Sides, [ particleMaterialB ], 1 );
+				addBlockParticles( blocksShortSparse2, shortGeoSparse2Sides, [ particleMaterialB ], 1 );
+				addBlockParticles( blocksShort, shortGeoSides, [ particleMaterialB ], 1 );
+
+				/*
+				console.log( "carsFrontGeo", carsFrontGeo.vertices.length );
+				console.log( "carsBackGeo", carsBackGeo.vertices.length );
+				console.log( "starsGeo", starsGeo.vertices.length );
+				console.log( "shortGeoSparse1", shortGeoSparse1Random.vertices.length );
+				console.log( "shortGeoSparse2", shortGeoSparse2Random.vertices.length );
+				*/
+
+				//
+
+				loader = new THREE.JSONLoader();
+				loader.load( "obj/helicopter/helicopter-body.js", createHelicopter );
+
+				// renderer
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+				//renderer.setClearColor( scene.fog.color, 1 );
+
+				container.appendChild( renderer.domElement );
+
+				renderer.domElement.style.position = "absolute";
+				renderer.domElement.style.top = MARGIN + "px";
+				renderer.domElement.style.left = "0px";
+
+				renderer.sortObjects = false;
+
+				// stats
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );
+
+				stats.domElement.children[ 0 ].children[ 0 ].style.color = "#aaa";
+				stats.domElement.children[ 0 ].style.background = "transparent";
+				stats.domElement.children[ 0 ].children[ 1 ].style.display = "none";
+
+				// events
+
+				window.addEventListener( 'resize', onWindowResize, false );
+				document.addEventListener( 'keydown', onKeyDown, false );
+
+				// composer
+
+				renderer.autoClear = false;
+
+				renderTargetParameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat, stencilBufer: false };
+				renderTarget = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, renderTargetParameters );
+
+				var renderModel = new THREE.RenderPass( scene, camera );
+				var effectBloom = new THREE.BloomPass( 1.2 );
+				var effectBleach = new THREE.ShaderPass( THREE.BleachBypassShader );
+				var effectFilm = new THREE.FilmPass( 0.25, 0.25, 2048, false );
+
+				effectBleach.uniforms[ 'opacity' ].value = 0.95;
+				effectFilm.renderToScreen = true;
+
+				composer = new THREE.EffectComposer( renderer, renderTarget );
+
+				composer.addPass( renderModel );
+
+				composer.addPass( effectBloom );
+				composer.addPass( effectBleach );
+
+				composer.addPass( effectFilm );
+
+			}
+
+			//
+
+			function lensFlareUpdateCallback( object ) {
+
+				var flare,
+				f, fl = object.lensFlares.length,
+
+				vecX = -object.positionScreen.x * 2;
+				vecY = -object.positionScreen.y * 2;
+
+				for( f = 0; f < fl; f ++ ) {
+
+					flare = object.lensFlares[ f ];
+
+					if ( f < 6 ) {
+
+						flare.x = object.positionScreen.x + vecX * flare.distance;
+						flare.y = object.positionScreen.y + vecY * flare.distance;
+
+					} else {
+
+						flare.x = object.positionScreen.x - vecX * flare.distance;
+						flare.y = object.positionScreen.y - vecY * flare.distance;
+
+					}
+
+					flare.rotation = 0;
+
+					if ( f > 0 ) {
+
+						flare.wantedRotation = flare.x * Math.PI * 0.25;
+						flare.rotation += ( flare.wantedRotation - flare.rotation ) * 0.25;
+
+					}
+
+				}
+
+				if ( fl > 1 ) {
+
+					object.lensFlares[ 2 ].y += 0.025;
+					object.lensFlares[ 3 ].rotation = object.positionScreen.x * 0.5 + 45 * Math.PI / 180;
+
+				}
+
+			}
+
+			//
+
+			function addPartTop( mergedGeo, geo, material, px, py, pz, sx, sy ) {
+
+				var part = new THREE.Mesh( geo, material );
+
+				part.position.set( px, py, pz );
+				part.scale.set( sx, sy, sx );
+
+				THREE.GeometryUtils.merge( mergedGeo, part );
+
+			}
+
+			function addPart( mergedGeo, geo, material, px, py, pz, sx, sy ) {
+
+				var part = new THREE.Mesh( geo, material );
+
+				part.position.set( px, py, pz );
+				part.scale.set( sx, sy, sx );
+
+				THREE.GeometryUtils.merge( mergedGeo, part );
+
+			}
+
+			//
+
+			function removeRandomVertices( geometry, threshold ) {
+
+				var newVertices = [];
+
+				for ( var i = 0, il = geometry.vertices.length; i < il ; i ++ ) {
+
+					if ( Math.random() > threshold ) {
+
+						newVertices.push( geometry.vertices[ i ] );
+
+					}
+
+				}
+
+				geometry.vertices = newVertices;
+
+			}
+
+			function getParticlesFromGeometry( geo, count ) {
+
+				var particleGeo = new THREE.Geometry();
+
+				var points = THREE.GeometryUtils.randomPointsInGeometry( geo, count );
+				particleGeo.vertices = points;
+
+				return particleGeo;
+
+			}
+
+			function addBlockParticles( blocks, particleGeo, materials, s ) {
+
+				for ( var i = 0; i < blocks.length; i ++ ) {
+
+					var b = blocks[ i ];
+					var material = materials[ i % materials.length ];
+
+					var particles = new THREE.ParticleSystem( particleGeo, material );
+
+					particles.position.set( b.x, b.y, b.z );
+					particles.rotation.set( 0, b.ry, 0 );
+					particles.scale.set( s, s, s );
+
+					particles.matrixAutoUpdate = false;
+					particles.updateMatrix();
+
+					particles.frustumCulled = true;
+
+					scene.add( particles );
+
+				}
+
+			}
+
+			//
+
+			function createAnimatedParticleMaterial( color, map, size, xMove ) {
+
+				var delta = new THREE.Vector3(),
+					offset = new THREE.Vector3(),
+					modulo = new THREE.Vector3();
+
+				if ( xMove ) {
+
+					delta.set( 200, 0, 0 );
+					offset.set( 27000, 5000, 27000 );
+					modulo.set( 50000, 5000, 50000 );
+
+				} else {
+
+					delta.set( 0, 0, 200 );
+					offset.set( 27000, 5000, 27000 );
+					modulo.set( 50000, 5000, 50000 );
+
+				}
+
+				var ShaderParticles = {
+
+				'particles': {
+
+					uniforms:  THREE.UniformsUtils.merge( [
+
+						THREE.UniformsLib[ "particle" ],
+						THREE.UniformsLib[ "shadowmap" ],
+
+						{
+
+						"delta" : { type: "v3", value: delta },
+						"modulo" : { type: "v3", value: modulo },
+						"offset" : { type: "v3", value: offset },
+						"time" : { type: "f", value: 0 }
+
+						}
+
+					] ),
+
+					vertexShader: [
+
+						"uniform float size;",
+						"uniform float scale;",
+
+						"uniform float time;",
+
+						"uniform vec3 delta;",
+						"uniform vec3 modulo;",
+						"uniform vec3 offset;",
+
+						THREE.ShaderChunk[ "color_pars_vertex" ],
+						THREE.ShaderChunk[ "shadowmap_pars_vertex" ],
+
+						"void main() {",
+
+							THREE.ShaderChunk[ "color_vertex" ],
+
+							"vec3 newPosition = mod( position + offset + delta * time, modulo ) - offset;",
+
+							"vec4 mvPosition = modelViewMatrix * vec4( newPosition, 1.0 );",
+
+							"#ifdef USE_SIZEATTENUATION",
+								"gl_PointSize = size * ( scale / length( mvPosition.xyz ) );",
+							"#else",
+								"gl_PointSize = size;",
+							"#endif",
+
+							"gl_Position = projectionMatrix * mvPosition;",
+
+							THREE.ShaderChunk[ "shadowmap_vertex" ],
+
+						"}"
+
+					].join("\n"),
+
+					fragmentShader: [
+
+						"uniform vec3 psColor;",
+						"uniform float opacity;",
+
+						THREE.ShaderChunk[ "color_pars_fragment" ],
+						THREE.ShaderChunk[ "map_particle_pars_fragment" ],
+						THREE.ShaderChunk[ "fog_pars_fragment" ],
+						THREE.ShaderChunk[ "shadowmap_pars_fragment" ],
+
+						"void main() {",
+
+							"gl_FragColor = vec4( psColor, opacity );",
+
+							THREE.ShaderChunk[ "map_particle_fragment" ],
+							THREE.ShaderChunk[ "alphatest_fragment" ],
+							THREE.ShaderChunk[ "color_fragment" ],
+							THREE.ShaderChunk[ "shadowmap_fragment" ],
+							THREE.ShaderChunk[ "fog_fragment" ],
+
+						"}"
+
+					].join("\n")
+
+				}
+
+				};
+
+				var shader = ShaderParticles[ "particles" ];
+
+				uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+
+				uniforms.psColor.value.setHex( color );
+				uniforms.map.value = map;
+				uniforms.size.value = size;
+				uniforms.scale.value = SCREEN_HEIGHT / 2.0
+
+				var material = new THREE.ShaderMaterial( { vertexShader: shader.vertexShader, fragmentShader: shader.fragmentShader, uniforms: uniforms,
+															fog: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false } );
+
+				material.size = size;
+				material.sizeAttenuation = true;
+				material.map = map;
+
+				return material;
+
+			}
+
+			//
+
+			function createHelicopter( bodyGeometry ) {
+
+				var helicopterRig = new THREE.Object3D();
+				helicopterRig.position.x = 3000;
+
+				// materials
+
+				var bodyMaterial = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+				var rotorMaterial = bodyMaterial;
+
+				var bodyParticleMaterial  = new THREE.ParticleBasicMaterial( { color: 0xff2200, map: flareB, size: 50, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false } );
+				var rotorParticleMaterial = new THREE.ParticleBasicMaterial( { color: 0xff0000, map: flareB, size: 50, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false } );
+
+				// body (mesh)
+
+				var bodyMesh = new THREE.Mesh( bodyGeometry, bodyMaterial );
+				bodyMesh.scale.set( 50, 50, 50 );
+				bodyMesh.rotation.y = Math.PI * 0.5;
+				helicopterRig.add( bodyMesh );
+
+				// body (particles)
+
+				var bodyRandomGeometry = new THREE.Geometry();
+				bodyRandomGeometry.vertices = bodyGeometry.vertices.slice();
+
+				bodyGeometry.computeCentroids();
+				for ( var i = 0; i < bodyGeometry.faces.length; i ++ ) {
+
+					var vertex = bodyGeometry.faces[ i ].centroid.clone();
+					bodyRandomGeometry.vertices.push( vertex );
+
+				}
+
+				//console.log( "bodyRandomGeometry vertices", bodyRandomGeometry.vertices.length );
+
+				var bodyParticles = new THREE.ParticleSystem( bodyRandomGeometry, bodyParticleMaterial );
+				bodyParticles.scale.set( 51, 51, 51 );
+				bodyParticles.rotation = bodyMesh.rotation;
+				helicopterRig.add( bodyParticles );
+
+				// attach sound
+
+				var sound = new THREE.AudioObject( 'sounds/helicopter.wav', 0, 1, true );
+
+				if ( sound.context ) {
+
+					sound.listener.dopplerFactor = 1;
+					sound.panner.refDistance = 5000;
+					sound.panner.maxDistance = 50000;
+					sound.panner.rolloffFactor = 5;
+
+					helicopterRig.add( sound );
+
+					helicopterRig.sound = sound;
+
+				}
+
+
+				// attach camera
+
+				helicopterRig.add( camera );
+
+				// add to scene
+
+				scene.add( helicopterRig );
+				helicopter = helicopterRig;
+
+				// rotors
+
+				loader.load( "obj/helicopter/helicopter-rotor.js", function ( geometryRotor ) {
+
+					THREE.GeometryUtils.center( geometryRotor );
+
+					var mesh = new THREE.Mesh( geometryRotor, rotorMaterial );
+					mesh.scale.set( 50, 50, 50 );
+					mesh.position.set( 50, 50, 100 );
+					helicopterRig.add( mesh );
+
+					rotor1 = mesh;
+
+					var mesh = new THREE.Mesh( geometryRotor, rotorMaterial );
+					mesh.scale.set( 50, 50, 50 );
+					mesh.position.set( 50, 50 , -100 );
+					helicopterRig.add( mesh );
+
+					rotor2 = mesh;
+
+					rotor1.rotation.x = Math.PI * 0.0625;
+					rotor2.rotation.x = -Math.PI * 0.0625;
+
+					var rotorRandomGeometry = getParticlesFromGeometry( geometryRotor, 1000 );
+
+					var particles = new THREE.ParticleSystem( rotorRandomGeometry, rotorParticleMaterial );
+					particles.scale.set( 50.5, 50.5, 50.5 );
+					particles.rotation = rotor1.rotation;
+					particles.position = rotor1.position;
+					helicopterRig.add( particles );
+
+					var particles = new THREE.ParticleSystem( rotorRandomGeometry, rotorParticleMaterial );
+					particles.scale.set( 50.5, 50.5, 50.5 );
+					particles.rotation = rotor2.rotation;
+					particles.position = rotor2.position;
+					helicopterRig.add( particles );
+
+				});
+
+			}
+
+
+			//
+
+			function onWindowResize( event ) {
+
+				SCREEN_WIDTH = window.innerWidth;
+				SCREEN_HEIGHT = window.innerHeight - 2 * MARGIN;
+
+				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+
+				camera.aspect = SCREEN_WIDTH/ SCREEN_HEIGHT;
+				camera.updateProjectionMatrix();
+
+				renderTarget = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, renderTargetParameters );
+				composer.reset( renderTarget );
+
+			}
+
+			//
+
+			function onKeyDown ( event ) {
+
+				switch( event.keyCode ) {
+
+					case 78: /*N*/  soundDir *= -1; break;
+					case 77: /*M*/  musicDir *= -1; break;
+					case 66: /*B*/  toggleCameraAttachment(); break;
+
+				}
+
+			}
+
+			//
+
+			function toggleCameraAttachment() {
+
+				var cameraWorldPosition = camera.matrixWorld.getPosition(),
+					copterWorldPosition = helicopter.matrixWorld.getPosition();
+
+				if ( camera.parent !== helicopter ) {
+
+					helicopter.add( camera );
+					camera.position.set( -750, 250, -500 );
+					controls.lookSpeed = 0.05;
+
+				} else {
+
+					scene.add( camera );
+					camera.position.copy( cameraWorldPosition );
+					controls.lookSpeed = 0.1;
+
+				}
+
+			}
+
+			//
+
+			function logStats() {
+
+				if ( renderer.info.render.vertices > maxv ) {
+
+					maxv = renderer.info.render.vertices;
+					console.log( "vertices", maxv, "faces", maxf, "points", maxp, "calls", maxc );
+
+				}
+
+				if ( renderer.info.render.faces > maxf ) {
+
+					maxf = renderer.info.render.faces;
+					console.log( "vertices", maxv, "faces", maxf, "points", maxp, "calls", maxc );
+
+				}
+
+				if ( renderer.info.render.calls > maxc ) {
+
+					maxc = renderer.info.render.calls;
+					console.log( "vertices", maxv, "faces", maxf, "points", maxp, "calls", maxc );
+
+				}
+
+				if ( renderer.info.render.points > maxp ) {
+
+					maxp = renderer.info.render.points;
+					console.log( "vertices", maxv, "faces", maxf, "points", maxp, "calls", maxc );
+
+				}
+
+			}
+
+			//
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				render();
+				stats.update();
+
+			}
+
+			function render() {
+
+				var delta = clock.getDelta();
+
+				// music transitions
+
+				musicVal = THREE.Math.clamp( musicVal + delta * musicDir, 0, 1 );
+
+				if ( musicVal !== oldMusicVal ) {
+
+					if ( soundtrack ) {
+
+						soundtrack.volume = musicVal;
+						oldMusicVal = musicVal;
+
+					}
+
+				}
+
+				// sound effect transitions
+
+				soundVal = THREE.Math.clamp( soundVal + delta * soundDir, 0, 1 );
+
+				if ( soundVal !== oldSoundVal ) {
+
+					if ( helicopter && helicopter.sound && helicopter.sound.context ) {
+
+						helicopter.sound.setVolume( soundVal );
+						oldSoundVal = soundVal;
+
+					}
+
+				}
+
+				// car lights animation
+
+				carsFrontMaterial.uniforms.time.value += delta;
+				carsBackMaterial.uniforms.time.value += -delta;
+
+				carsFrontMaterial2.uniforms.time.value += delta;
+				carsBackMaterial2.uniforms.time.value += -delta;
+
+				// helicopter animation
+
+				if ( helicopter ) {
+
+					var time = Date.now() * 0.0001;
+
+
+					helicopter.position.x = 10000 * Math.cos( time );
+					helicopter.position.z = 10000 * Math.sin( time );
+
+					nextPoint.x = 10000 * Math.cos( time + 16 );
+					nextPoint.z = 10000 * Math.sin( time + 16 );
+					nextPoint.y = helicopter.position.y - 500;
+
+					helicopter.lookAt( nextPoint );
+
+					if ( rotor1 && rotor2 ) {
+
+						rotor1.rotation.y = time * 100;
+						rotor2.rotation.y = time * 100;
+
+					}
+
+				}
+
+				controls.update( delta );
+
+				renderer.clear();
+				//renderer.render( scene, camera );
+				composer.render( 0.1 );
+
+				// spatialized sound update
+
+				if ( helicopter && helicopter.sound && helicopter.sound.context ) {
+
+					helicopter.sound.update( camera );
+
+				}
+
+				//logStats();
+
+			}
+
+		</script>
+
+	
+
+</body></html>
