@@ -3,7 +3,9 @@
 ////////////////////////////////////////////////////////////
 var experiences = [1, 2, 3, 4, 5, 6]
 var videos = []
+var voices = []
 var allvideoTextures = []
+var videoImageContexts = []
 var allMats = []
 var scene, cameraThree, renderer;
 var light;
@@ -17,11 +19,15 @@ var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
 var centerRadius = 10
 var worldSphere
+var mouseX = 0;
+var mouseY = 0;
+var windowHalfX = window.innerWidth / 2;
+var windowHalfY = window.innerHeight / 2;
 
 // custom global variables
 var imgScreen, screens;
 
-var videoo, videoImage, videoImageContext, videoTexture;
+var videoo, videoImage, videoImageContext, videoTexture, listener;
 var videoIsLoaded = false;
 
 var thisIsTouchDevice = false;
@@ -30,7 +36,7 @@ if (isTouchDevice()) thisIsTouchDevice = true;
 
 //
 var lastTime = Date.now();
-var time;
+var time, clock;
 
 
 ///////////////////////////////////////////////////////////
@@ -45,7 +51,7 @@ init();
 ///////////////////////////////////////////////////////////
 
 function init() {
-
+    clock = new THREE.Clock();
     // SCENE
     // construct environment first
     scene = new THREE.Scene();
@@ -75,6 +81,17 @@ function init() {
     renderer.setClearColor(0x000000, 1); //set background color and alpha
 
 
+    listener = new THREE.AudioListener();
+    cameraThree.add(listener);
+
+
+    // var sound1 = new THREE.PositionalAudio( listener );
+    //                 sound1.load( 'http://evejweinberg.github.io/samples/WhyKitKat.wav' );
+    //                 //fade out distance
+    //                 sound1.setRefDistance( 20 );
+    //                 sound1.autoplay = true;
+    //                 mesh1.add( sound1 );
+
 
 
 
@@ -97,10 +114,17 @@ function init() {
     // EVENTS
     // automatically resize renderer
     window.addEventListener('resize', onWindowResize, false);
+    document.addEventListener('mousemove', onDocumentMouseMove, false);
 
     // CONTROLS
     // left click to rotate, middle click/scroll to zoom, right click to pan
-    controls = new THREE.OrbitControls(cameraThree, renderer.domElement);
+    // controls = new THREE.OrbitControls(cameraThree, renderer.domElement);
+    controls = new THREE.FirstPersonControls(cameraThree, renderer.domElement);
+
+    controls.movementSpeed = 70;
+    controls.lookSpeed = 0.05;
+    controls.noFly = true;
+    controls.lookVertical = false;
 
 
     animate();
@@ -130,6 +154,11 @@ function update() {
 //////////////////////////////////////////////////////////////////
 
 function render() {
+    cameraThree.position.x += (mouseX - cameraThree.position.x) * .0005;
+    cameraThree.position.y += (-mouseY - cameraThree.position.y) * .0005;
+    var delta = clock.getDelta();
+
+    controls.update(delta);
 
     //update GUI
     // cube.rotation.x += controls.rotationSpeed;
@@ -139,60 +168,74 @@ function render() {
     // sphere.position.x = 20 + (10 * (Math.cos(step)));
     // sphere.position.y = 2 + (10 * Math.abs(Math.sin(step)));
     // worldSphere.radius = guicontrols.worldradius
-    worldSphere = createMesh(new THREE.SphereGeometry(worldRadius, 10, 10));
+    // worldSphere = createMesh(new THREE.SphereGeometry(worldRadius, 10, 10));
 
     worldRadius = guicontrols.worldradius
-    //gui ends
-    if (videoo.readyState === videoo.HAVE_ENOUGH_DATA) {
-        if (readyAllVideos == true) {
-            for (var k = 0; k < experiences.length; k++) {
-                if (whichMobile == "iOS_mobile") {
+        //gui ends
+    for (var i = 0; i < experiences.length; i++) {
+        if (videos[i].readyState === videos[i].HAVE_ENOUGH_DATA) {
+            if (readyAllVideos == true) {
 
-                    time = Date.now();
-                    var elapsed = (time - lastTime) / 1000;
+                // for (var k = 0; k < experiences.length; k++) {
 
-                    // render
-                    if (elapsed >= ((1000 / framesPerSecond) / 1000)) {
-                        videoo.currentTime = videoo.currentTime + elapsed;
-                        videoImageContext.drawImage(videoo, 0, 0, videoo.videoWidth, videoo.videoHeight);
-                        if (videoTexture)
-                            videoTexture.needsUpdate = true;
-                        lastTime = time;
-                    }
+                // if (whichMobile == "iOS_mobile") {
 
-                    // if we are at the end of the video stop
-                    var currentTime = (Math.round(parseFloat(videoo.currentTime) * 10000) / 10000);
-                    var duration = (Math.round(parseFloat(videoo.duration) * 10000) / 10000);
-                    if (currentTime >= duration) {
-                        console.log('currentTime: ' + currentTime + ' duration: ' + videoo.duration);
-                        // restart
-                        videoo.currentTime = 0;
-                        return;
-                    }
+                //     time = Date.now();
+                //     var elapsed = (time - lastTime) / 1000;
 
-                } else {
-                    if (videoo.readyState === videoo.HAVE_ENOUGH_DATA) {
-                        videoImageContext.drawImage(videoo, 0, 0);
-                        if (videoTexture)
-                            videoTexture.needsUpdate = true;
-                    }
+                //     // render
+                //     if (elapsed >= ((1000 / framesPerSecond) / 1000)) {
+                //         videos[i].currentTime = videos[i].currentTime + elapsed;
+                //         videoImageContexts[i].drawImage(videos[i], 0, 0, videos[i].videoWidth, videos[i].videoHeight);
+                //         if (allvideoTextures[i])
+                //             allvideoTextures[i].needsUpdate = true;
+                //         lastTime = time;
+                //     }
+
+                //     // if we are at the end of the video stop
+                //     var currentTime = (Math.round(parseFloat(videos[i].currentTime) * 10000) / 10000);
+                //     var duration = (Math.round(parseFloat(videos[i].duration) * 10000) / 10000);
+                //     if (currentTime >= duration) {
+                //         // console.log('currentTime: ' + currentTime + ' duration: ' + videoo.duration);
+                //         // restart
+                //         videos[i].currentTime = 0;
+                //         return;
+                //     }
+
+                // } else {
+
+                if (videos[i].readyState === videos[i].HAVE_ENOUGH_DATA) {
+                    videoImageContexts[i].drawImage(videos[i], 0, 0);
+                    if (allvideoTextures[i])
+                        allvideoTextures[i].needsUpdate = true;
                 }
+                // }
+                // }
             }
 
-            renderer.render(scene, cameraThree);
+
         }
     }
+    renderer.render(scene, cameraThree);
 }
 
 
 
 
-
-
+//--------------------------------------------------------------------------------------------------//                                                                                           
+//--------------------------------------------------------------------------------------------------//                                                                                              
+// ((_)_  _ ((_)(_)) (_)) (_))_   _(())\_)() ((_) (_)) (_)) (_))_     
+//  | _ )| | | ||_ _|| |   |   \  \ \((_)/ // _ \ | _ \| |   |   \    
+//  | _ \| |_| | | | | |__ | |) |  \ \/\/ /| (_) ||   /| |__ | |) |   
+//  |___/ \___/ |___||____||___/    \_/\_/  \___/ |_|_\|____||___/                                                                      
+//--------------------------------------------------------------------------------------------------//                                                                                           
+//--------------------------------------------------------------------------------------------------//                                                                                           
 
 
 function buildGeo() {
 
+
+    //make all video textures
     for (var i = 0; i < experiences.length; i++) {
         video = document.createElement('video');
         // video.setAttribute("webkit-playsinline", "");
@@ -211,12 +254,22 @@ function buildGeo() {
         videoImageContext = videoImage.getContext('2d');
         videoImageContext.fillStyle = '#000000';
         videoImageContext.fillRect(0, 0, videoImage.width, videoImage.height);
+        videoImageContexts.push(videoImageContext)
 
         videoTexture = new THREE.Texture(videoImage);
         allvideoTextures.push(videoTexture)
 
-        mat = new THREE.MeshBasicMaterial({ map: videoTexture, side: THREE.DoubleSide, transparent: true });
-        mat.blending = THREE["AdditiveBlending"];
+        var sound1 = new THREE.PositionalAudio(listener);
+        sound1.load("http://evejweinberg.github.io/samples/" + [i + 1] + ".wav");
+        //fade out distance
+        sound1.setRefDistance(20);
+        sound1.autoplay = true;
+        sound1.setLoop(true);
+        voices.push(sound1)
+            // mesh1.add(sound1);
+
+        mat = new THREE.MeshBasicMaterial({ color: 0x808080, map: videoTexture, side: THREE.DoubleSide, opacity: 0.8 });
+        // mat.blending = THREE["AdditiveBlending"];
 
         allMats.push(mat);
 
@@ -228,44 +281,8 @@ function buildGeo() {
 
     readyAllVideos = true
 
-    // console.log(videos)
 
-
-    //JUST LOAD ONE VIDEO ONTO ALL CUBES
-
-    videoo = document.createElement('video');
-    videoo.setAttribute("webkit-playsinline", "");
-    videoo.setAttribute('crossorigin', 'anonymous');
-    videoo.autoplay = true;
-    videoo.loop = true;
-    videoo.preload = "auto";
-    videoo.src = "https://evejweinberg.github.io/videos/1.mov";
-
-
-
-
-    videoImage = document.createElement('canvas');
-    videoImage.width = 720;
-    videoImage.height = 720;
-
-
-    //
-    videoImageContext = videoImage.getContext('2d');
-    videoImageContext.fillStyle = '#000000';
-    videoImageContext.fillRect(0, 0, videoImage.width, videoImage.height);
-
-    // videoTexture = new THREE.Texture( videoo );
-    videoTexture = new THREE.Texture(videoImage);
-    videoTexture.minFilter = THREE.LinearFilter;
-    videoTexture.magFilter = THREE.LinearFilter;
-    videoTexture.format = THREE.RGBFormat;
-    videoTexture.generateMipmaps = false;
-
-    videoTexture.wrapS = videoTexture.wrapT = THREE.ClampToEdgeWrapping;
-    videoTexture.needsUpdate = true;
-    mat = new THREE.MeshBasicMaterial({ map: videoTexture, side: THREE.DoubleSide, transparent: true });
-    mat.blending = THREE["AdditiveBlending"];
-
+    //place all cubes
 
     for (var k = 0; k < experiences.length; k++) {
         var xCenter = Math.cos(toRadians(k * spacing))
@@ -275,14 +292,20 @@ function buildGeo() {
         for (var j = 0; j < 10; j++) {
 
 
-            var randOffset = 0
+
+            var randOffset = Math.floor((Math.random() * 50) + -55);
             var size = 5 + 20 * Math.random();
 
             geo = new THREE.BoxGeometry(size, size, size);
-            var mesh = new THREE.Mesh(geo, mat);
-            mesh.position.set(videoRadius * xCenter + randOffset, 0 + randOffset, randOffset + videoRadius * zCenter)
-                // mesh.rotateZ(Math.random())
-                // mesh.rotateX(Math.random(-1))
+            var mesh = new THREE.Mesh(geo, allMats[k]);
+            mesh.position.set(videoRadius * xCenter + randOffset, 50 + randOffset, randOffset + (videoRadius * zCenter))
+            mesh.rotateZ(randOffset)
+            mesh.rotateX(randOffset)
+            if (j == 0) {
+                // console.log('added a voice')
+                mesh.add(voices[k])
+            }
+
             scene.add(mesh);
 
         }
@@ -374,24 +397,51 @@ function OuterSphere() {
 }
 
 
-    function createMesh(geom) {
+function createMesh(geom) {
 
-        // assign two materials
-        var meshMaterial = new THREE.MeshNormalMaterial();
-        meshMaterial.side = THREE.DoubleSide;
-        var wireFrameMat = new THREE.MeshBasicMaterial();
-        wireFrameMat.wireframe = true;
+    // assign two materials
+    var meshMaterial = new THREE.MeshNormalMaterial();
+    meshMaterial.side = THREE.DoubleSide;
+    var wireFrameMat = new THREE.MeshBasicMaterial();
+    wireFrameMat.wireframe = true;
 
-        // create a multimaterial
-        var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial, wireFrameMat]);
+    // create a multimaterial
+    var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial, wireFrameMat]);
 
-        return mesh;
-    }
+    return mesh;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function onWindowResize() {
+    windowHalfX = window.innerWidth / 2
+    windowHalfY = window.innerHeight / 2
     cameraThree.aspect = window.innerWidth / window.innerHeight;
     cameraThree.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    controls.handleResize();
+}
+
+function onDocumentMouseMove(event) {
+
+    mouseX = (event.clientX - windowHalfX) * 10;
+    mouseY = (event.clientY - windowHalfY) * 10;
+
 }
 
 function isTouchDevice() {

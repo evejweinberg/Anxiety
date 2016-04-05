@@ -47,22 +47,22 @@
 		var mouse = new THREE.Vector2();
 
 		var textureLoader = new THREE.TextureLoader();
-		var decalDiffuse = textureLoader.load( '../textures/decal/decal-diffuse.png' );
-		var decalNormal = textureLoader.load( '../textures/decal/decal-normal.jpg' );
+		// var decalDiffuse = textureLoader.load( '../textures/decal/decal-diffuse.png' );
+		// var decalNormal = textureLoader.load( '../textures/decal/decal-normal.jpg' );
 
-		var decalMaterial = new THREE.MeshPhongMaterial( {
-			specular: 0x444444,
-			map: decalDiffuse,
-			normalMap: decalNormal,
-			normalScale: new THREE.Vector2( 1, 1 ),
-			shininess: 30,
-			transparent: true,
-			depthTest: true,
-			depthWrite: false,
-			polygonOffset: true,
-			polygonOffsetFactor: - 4,
-			wireframe: false
-		} );
+		// var decalMaterial = new THREE.MeshPhongMaterial( {
+		// 	specular: 0x444444,
+		// 	map: decalDiffuse,
+		// 	normalMap: decalNormal,
+		// 	normalScale: new THREE.Vector2( 1, 1 ),
+		// 	shininess: 30,
+		// 	transparent: true,
+		// 	depthTest: true,
+		// 	depthWrite: false,
+		// 	polygonOffset: true,
+		// 	polygonOffsetFactor: - 4,
+		// 	wireframe: false
+		// } );
 
 		// var decals = [];
 		// var decalHelper; 
@@ -154,14 +154,16 @@
 
 			var loader = new THREE.JSONLoader();
 
-			loader.load( '../models/leeperrysmith/LeePerrySmith.js', function( geometry ) {
+			loader.load( '../models/evehead1/ESP.js', function( geometry ) {
 
 				var material = new THREE.MeshPhongMaterial( {
 					specular: 0x111111,
-					map: textureLoader.load( '../models/leeperrysmith/Map-COL.jpg' ),
-					specularMap: textureLoader.load( '../models/leeperrysmith/Map-SPEC.jpg' ),
-					normalMap: textureLoader.load( '../models/leeperrysmith/Infinite-Level_02_Tangent_SmoothUV.jpg' ),
-					normalScale: new THREE.Vector2( 0.75, 0.75 ),
+					// map: textureLoader.load( '../models/leeperrysmith/Map-COL.jpg' ),
+
+					map: textureLoader.load( '../models/evehead1/ESP.jpg' ),
+					// specularMap: textureLoader.load( '../models/evehead1/ESP.jpg' ),
+					// normalMap: textureLoader.load( '../models/evehead1/ESP.jpg'),
+					// normalScale: new THREE.Vector2( 0.75, 0.75 ),
 					shininess: 25
 				} );
 
