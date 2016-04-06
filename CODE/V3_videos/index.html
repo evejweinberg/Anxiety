@@ -7,6 +7,23 @@
 
 <body>
     <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <div id ="intro">
+    <div id="intro-inside">
+    <p>
+        Please enter my brain. Hear my inner thoughts. Help me silence them. <br>
+
+Sharing these personal, often self-attacking thoughts allows me to see that they are worth laughing at, that they are universal, and most importantly they easy to silence.
+<br>
+Help me silence my anxious brain.
+    </p>
+    </div>
+    </div>
+    <div id="blocker">
+        <div id="instructions">
+            <span style="font-size:40px">Click to play</span>
+            <br /> (W, A, S, D = Move, SPACE = Jump, MOUSE = Look around)
+        </div>
+    </div>
     <script type="text/javascript">
     var whichMobile = "";
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
@@ -14,18 +31,20 @@
         whichMobile = "iOS_mobile";
     }
     </script>
-
     <script src="../libs/three.min.js"></script>
+    <script src="../js/controls/PointerLockControls.js"></script>
     <script src="../libs/stats.min.js"></script>
     <script src="../libs/jquery-1.12.0.min.js"></script>
-    <script src="../js/controls/FirstPersonControls.js"></script>
     <script src="../libs/dat.gui.min.js"></script>
-    <!--  Allows us to turn a regular Three.js display into one that is split into two, giving the illusion of depth (an “off-axis stereoscopic effect”) for our VR experience. -->
     <script src="../js/Detector.js"></script>
+    <script src="../libs/Tone.min.js"></script>
+    <script src="../js/MainV9.js"></script>
+    <!-- <script src="../js/controls/FirstPersonControls.js"></script> -->
+    <!--  Allows us to turn a regular Three.js display into one that is split into two, giving the illusion of depth (an “off-axis stereoscopic effect”) for our VR experience. -->
     <!-- <script src="../js/StereoEffect.js"></script> -->
     <!--     Provides Three.js with the ability to tell where our device is facing and where it moves to. It follows the -->
     <!-- <script src="../js/controls/DeviceOrientationControls.js"></script> -->
-    <script src="../js/controls/OrbitControls.js"></script>
+    <!-- <script src="../js/controls/OrbitControls.js"></script> -->
     <!-- <script src="../js/helvetiker_regular.typeface.js"></script> -->
     <!-- <script src="../js/postprocessing/ShaderPass.js"></script> -->
     <!-- <script src="../js/postprocessing/MaskPass.js"></script> -->
@@ -37,9 +56,7 @@
     <script src="../js/loaders/sea3d/SEA3D.js"></script>
     <script src="../js/loaders/sea3d/SEA3DLZMA.js"></script> -->
     <!-- <script src="../js/Detector.js"></script> -->
-    <script src="../libs/Tone.min.js"></script>
     <!-- <script src="../js/ManipulateSounds.js"></script> -->
-    <script src="../js/MainV3.js"></script>
 </body>
 
 </html>
