@@ -2,31 +2,39 @@
 // SET_UP_VARIABLES
 ////////////////////////////////////////////////////////////
 var scene1 = true,
-    scene2 = false, headspin=false;
-    var scene3count = 0
+    scene2 = false,
+    headspin = false;
+var scene3count = 0
+var loadingOvervid = document.getElementById("loadingOver");
+
 
 
 if (scene1) {
     $("#blocker").hide();
+     loadingOvervid.pause();
     console.log('scene1')
     $('#next-button').click(function() {
-       
+
         scene1 = false;
-        headspin=true;
+        headspin = true;
         switchscenes(2)
         $("#intro").hide();
-         });
+    });
 }
 
-function switchscenes(newscene){
+function switchscenes(newscene) {
     //change this to a switch case with 'breaks'
-    if (newscene==2){
-        console.log('head is spinning')
+    if (newscene == 2) {
+        // console.log('head is spinning')
         Scene2()
-    } else if (newscene==3){
-        Scene3()
+         // $('#loadingvideo').show();
+    } else if (newscene == 3) {
+         $('#loadingvideo').show();
+          $('#tunnel').show();
+        // Scene3()
         console.log('scene3')
-    }else if (newscene==4){
+    } else if (newscene == 4) {
+         $('#loadingvideo').hide();
         $("#blocker").show();
         console.log('scene4')
         Scene4()
@@ -41,23 +49,36 @@ function switchscenes(newscene){
 // /_n_//___//___/   /_/ /_n_//_/`_\/___//___/\_,'/___,' /___,'/___/|__,'/_//_/|_//___,' 
 //////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
-function Scene2(){
+function Scene2() {
     console.log('scene 2 was called')
+
+
+    while (scene3count < 2521) {
+        // console.log(scene3count)
+        scene3count++
     
+    if (scene3count == 2510) {
+        console.log('load video now')
+
+        $('#loadingOver').show();
+        loadingOvervid.play();
+        $('video#loadingOver').bind('ended', function() {
+            console.log('video ended')
+            $('#loadingOver').remove();
+            switchscenes(4);
+        });
+    }
+    }
+    if (scene3count == 2520) {
+        console.log('scene 3 ended')
+        // switchscenes(4)
+    }
     
-    while (scene3count<1520){
-        console.log(scene3count)
-scene3count++
-    }
-    if (scene3count==1520){
-        switchscenes(4)
-    }
-    // Scene2()
 }
 
 function Scene4() {
 
-    console.log('scene2 was called')
+    console.log('scene4 was called')
 
     var experiences = [1, 2, 3, 4, 5, 6]
     var videos = []
@@ -601,30 +622,30 @@ function Scene4() {
             bumpScale: 0.0005,
         });
         var textureLoader = new THREE.TextureLoader();
-        textureLoader.load("../textures/hardwood2_diffuse.jpg", function(map) {
+        textureLoader.load("../textures/wallpaper1.png", function(map) {
             map.wrapS = THREE.RepeatWrapping;
             map.wrapT = THREE.RepeatWrapping;
             map.anisotropy = 4;
-            map.repeat.set(10, 24);
+            map.repeat.set(10, 10);
             floorMat.map = map;
             floorMat.needsUpdate = true;
         });
-        textureLoader.load("../textures/hardwood2_bump.jpg", function(map) {
-            map.wrapS = THREE.RepeatWrapping;
-            map.wrapT = THREE.RepeatWrapping;
-            map.anisotropy = 4;
-            map.repeat.set(10, 24);
-            floorMat.bumpMap = map;
-            floorMat.needsUpdate = true;
-        });
-        textureLoader.load("../textures/hardwood2_roughness.jpg", function(map) {
-            map.wrapS = THREE.RepeatWrapping;
-            map.wrapT = THREE.RepeatWrapping;
-            map.anisotropy = 4;
-            map.repeat.set(10, 24);
-            floorMat.roughnessMap = map;
-            floorMat.needsUpdate = true;
-        });
+        // textureLoader.load("../textures/hardwood2_bump.jpg", function(map) {
+        //     map.wrapS = THREE.RepeatWrapping;
+        //     map.wrapT = THREE.RepeatWrapping;
+        //     map.anisotropy = 4;
+        //     map.repeat.set(10, 24);
+        //     floorMat.bumpMap = map;
+        //     floorMat.needsUpdate = true;
+        // });
+        // textureLoader.load("../textures/hardwood2_roughness.jpg", function(map) {
+        //     map.wrapS = THREE.RepeatWrapping;
+        //     map.wrapT = THREE.RepeatWrapping;
+        //     map.anisotropy = 4;
+        //     map.repeat.set(10, 24);
+        //     floorMat.roughnessMap = map;
+        //     floorMat.needsUpdate = true;
+        // });
 
         var floorGeometry = new THREE.PlaneBufferGeometry(worldRadius * 2, worldRadius * 2);
         var floorMesh = new THREE.Mesh(floorGeometry, floorMat);
