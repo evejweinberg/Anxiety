@@ -4,40 +4,58 @@
 var scene1 = true,
     scene2 = false,
     headspin = false;
-var scene3count = 0
-var loadingOvervid = document.getElementById("loadingOver");
+var scene3count = 0;
+var scene4ready = false
+var headZstart = -50;
+var loadingOvervid = document.getElementById("tunnel-vid");
 
 
 
 if (scene1) {
+    Scene1();
     $("#blocker").hide();
-     loadingOvervid.pause();
+    loadingOvervid.pause();
     console.log('scene1')
     $('#next-button').click(function() {
 
-        scene1 = false;
+        scene2 = true
         headspin = true;
-        switchscenes(2)
+        // switchscenes(2)
         $("#intro").hide();
     });
 }
 
+// if (scene4ready){
+//     console.log('scene4 switch')
+//     switchscenes(4)
+//     scene4ready = false
+//     console.log('scene4 is' + scene4ready)
+// }
+
 function switchscenes(newscene) {
     //change this to a switch case with 'breaks'
     if (newscene == 2) {
+        scene1 = false;
         // console.log('head is spinning')
-        Scene2()
-         // $('#loadingvideo').show();
+        // Scene2()
+        // $('#loadingvideo').show();
     } else if (newscene == 3) {
-         $('#loadingvideo').show();
-          $('#tunnel').show();
+        scene1 = false;
+        $('#loadingvideo').show();
+        $("scene1").hide();
+        $('#tunnel').show();
         // Scene3()
         console.log('scene3')
     } else if (newscene == 4) {
-         $('#loadingvideo').hide();
-        $("#blocker").show();
-        console.log('scene4')
-        Scene4()
+        if (scene4ready) {
+            scene1 = false;
+            $('#loadingvideo').hide();
+            $("#blocker").show();
+            console.log('scene4')
+            Scene4()
+            scene4ready = false
+             console.log('scene4 is '+ scene4ready)
+        }
     }
 }
 
@@ -49,32 +67,6 @@ function switchscenes(newscene) {
 // /_n_//___//___/   /_/ /_n_//_/`_\/___//___/\_,'/___,' /___,'/___/|__,'/_//_/|_//___,' 
 //////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
-function Scene2() {
-    console.log('scene 2 was called')
-
-
-    while (scene3count < 2521) {
-        // console.log(scene3count)
-        scene3count++
-    
-    if (scene3count == 2510) {
-        console.log('load video now')
-
-        $('#loadingOver').show();
-        loadingOvervid.play();
-        $('video#loadingOver').bind('ended', function() {
-            console.log('video ended')
-            $('#loadingOver').remove();
-            switchscenes(4);
-        });
-    }
-    }
-    if (scene3count == 2520) {
-        console.log('scene 3 ended')
-        // switchscenes(4)
-    }
-    
-}
 
 function Scene4() {
 
@@ -262,7 +254,7 @@ function Scene4() {
         // cameraThree.position.set(0,150,400);             //can also do position.set(x, y, z)
         scene.add(cameraThree); //add camera into the scene
         // RENDERER
-        container = document.createElement('div');
+        var container = document.getElementById('scene4');
         document.body.appendChild(container);
         renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setPixelRatio(window.devicePixelRatio);
@@ -291,7 +283,7 @@ function Scene4() {
         DrawCenterArea();
         Floor()
         OuterSphere()
-        AddGui()
+        // AddGui()
 
 
 
@@ -460,6 +452,9 @@ function Scene4() {
 
 
 
+                                                  
+                                                  
+                                                  
     }
     //////////////////////////////////////////////////////////////////
     //    ____    U _____ u _   _    ____  U _____ u   ____     

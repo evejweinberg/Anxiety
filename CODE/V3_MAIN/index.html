@@ -7,31 +7,38 @@
 
 <body>
     <link rel="stylesheet" type="text/css" href="../css/style.css">
-
-<!--  -->
-   <!-- <div id="tunnel" class="tunnel"> -->
-    <video id="loadingOver" autostart="false" width='100%' height='100%' style="display:none">
-        <source src="../assets/rip1.mp4"/> Your browser does not support the video tag.
-    </video>
-    <!-- </div> -->
-
-    <div id="intro">
-        <div id="intro-inside">
-            <p>Please enter my brain. Hear my inner thoughts. Help me silence them.
-                <br>
-                <br> I share these personal, self-attacking thoughts because this allows me to see that they are worth laughing at, they are universal, and most importantly they can easily be silenced.
-                <br> Help me silence my anxious brain.
-            </p>
-            <<button id="next-button">next</button>
-        </div>
-    </div>
-    <div id="blocker">
+      <div id="scene4" class="allscenes">
+      <div id="blocker">
         <div id="instructions">
             <span style="font-size:40px">You are now inside my head</span>
             <br /> (W, A, S, D = Move, SPACE = Jump, MOUSE = Look around)
         </div>
     </div>
+    </div>
+    <div id='scene1' class="allscenes">
+    <video id="tunnel-vid" autostart="false" width='100%' height='100%' style="display:none">
+        <source src="../assets/rip1.mp4" /> Your browser does not support the video tag.
+    </video>
+        <!--   scene1 -->
+        <div id="intro">
+            <div id="intro-inside">
+                <p>Please enter my brain. Hear my inner thoughts. Help me silence them.
+                    <br>
+                    <br> I share these personal, self-attacking thoughts because this allows me to see that they are worth laughing at, they are universal, and most importantly they can easily be silenced.
+                    <br>
+                    <br> Help me silence my anxious brain.
+                </p>
+                <div id="next-button" class="hovering"><div>
+            </div>
+        </div>
+    </div>
+    </div>
+  
 
+
+
+  
+    
     <script type="text/javascript">
     var whichMobile = "";
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
@@ -54,29 +61,8 @@
     <script src="../libs/dat.gui.min.js"></script>
     <script src="../js/Detector.js"></script>
     <script src="../libs/Tone.min.js"></script>
+    <script src="../js/scene1and2.js"></script>
     <script src="../js/MainV9.js"></script>
-    <!-- <script src="../js/controls/FirstPersonControls.js"></script> -->
-    <!--  Allows us to turn a regular Three.js display into one that is split into two, giving the illusion of depth (an “off-axis stereoscopic effect”) for our VR experience. -->
-    <!-- <script src="../js/StereoEffect.js"></script> -->
-    <!--     Provides Three.js with the ability to tell where our device is facing and where it moves to. It follows the -->
-    <!-- <script src="../js/controls/DeviceOrientationControls.js"></script> -->
-    <!-- <script src="../js/controls/OrbitControls.js"></script> -->
-    <!-- <script src="../js/helvetiker_regular.typeface.js"></script> -->
-    <!-- <script src="../js/postprocessing/ShaderPass.js"></script> -->
-    <!-- <script src="../js/postprocessing/MaskPass.js"></script> -->
-    <!-- <script src="../js/shaders/CopyShader.js"></script>
-    <script src="../js/shaders/ColorCorrectionShader.js"></script>
-    <script src="../js/shaders/VignetteShader.js"></script>
-    <script src="../js/MorphAnimMesh.js"></script>
-    <script src="../js/loaders/collada/Animation.js"></script>
-    <script src="../js/loaders/sea3d/SEA3D.js"></script>
-    <script src="../js/loaders/sea3d/SEA3DLZMA.js"></script> -->
-    <!-- <script src="../js/Detector.js"></script> -->
-    <!-- <script src="../js/ManipulateSounds.js"></script> -->
-     
-     <!--   <video autostart="true" loop width='100%' height='100%'>
-        <source src="../assets/rip1.mov"/> Your browser does not support the video tag.
-    </video> -->
 </body>
 
 </html>

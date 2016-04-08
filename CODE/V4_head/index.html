@@ -31,22 +31,23 @@
 		var container = document.getElementById( 'container' );
 
 		var renderer, scene, camera, fov = 45;
-		var mesh, decal;
+		var mesh;
+		// var decal;
 		var raycaster;
 		var line;
 		var ReadyToMove = false;
 		var geostart = -50
 		var lightHelper
 
-		var intersection = {
-			intersects: false,
-			point: new THREE.Vector3(),
-			normal: new THREE.Vector3()
-		};
+		// var intersection = {
+		// 	intersects: false,
+		// 	point: new THREE.Vector3(),
+		// 	normal: new THREE.Vector3()
+		// };
 		var controls;
 		var mouse = new THREE.Vector2();
 
-		var textureLoader = new THREE.TextureLoader();
+		var headtextureLoader = new THREE.headtextureLoader();
 var camStartDist = 200
 		var mouseHelper;
 		var p = new THREE.Vector3( 0, 0, 0 );
@@ -105,7 +106,7 @@ var camStartDist = 200
 
 			
 
-			loadLeePerrySmith();
+			loadHeadModel();
 
 
 			window.addEventListener( 'resize', onWindowResize, false );
@@ -132,7 +133,7 @@ var camStartDist = 200
 
 		}
 
-		function loadLeePerrySmith( callback ) {
+		function loadHeadModel( callback ) {
 
 			var loader = new THREE.JSONLoader();
 
@@ -140,11 +141,11 @@ var camStartDist = 200
 
 				var material = new THREE.MeshPhongMaterial( {
 					specular: 0x111111,
-					// map: textureLoader.load( '../models/leeperrysmith/Map-COL.jpg' ),
+					// map: headtextureLoader.load( '../models/leeperrysmith/Map-COL.jpg' ),
 
-					map: textureLoader.load( '../models/evehead1/ESP.jpg' ),
-					// specularMap: textureLoader.load( '../models/evehead1/ESP.jpg' ),
-					// normalMap: textureLoader.load( '../models/evehead1/ESP.jpg'),
+					map: headtextureLoader.load( '../models/evehead1/ESP.jpg' ),
+					// specularMap: headtextureLoader.load( '../models/evehead1/ESP.jpg' ),
+					// normalMap: headtextureLoader.load( '../models/evehead1/ESP.jpg'),
 					// normalScale: new THREE.Vector2( 0.75, 0.75 ),
 					shininess: 25
 				} );
@@ -155,8 +156,7 @@ var camStartDist = 200
 				mesh.position.set(0,0,geostart)
 				mesh.rotation.z = -10
 
-				//scene.add( new THREE.FaceNormalsHelper( mesh, 1 ) );
-				//scene.add( new THREE.VertexNormalsHelper( mesh, 1 ) );
+				
 
 			} );
 
@@ -178,7 +178,7 @@ var camStartDist = 200
 		function animate() {
 
 			if (ReadyToMove==true){
-				console.log(camera.position.z)
+				// console.log(camera.position.z)
 			mesh.rotation.y = mesh.rotation.y-.018;
 			mesh.position.y = mesh.position.y-.1
 			camera.position.z --
