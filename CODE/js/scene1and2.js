@@ -14,17 +14,7 @@ if (scene1) {
                     headspin = true;
                 }
 
-                // if (scene3count == 2510) {
-                //     console.log('load tunnel video now')
-
-                //     $('#loadingOver').show();
-                //     loadingOvervid.play();
-                //     $('video#loadingOver').bind('ended', function() {
-                //         console.log('video ended')
-                //         $('#loadingOver').remove();
-                //         switchscenes(4);
-                //     });
-                // }
+               
             }
             if (scene3count == 2520) {
                 console.log('head scene ended')
