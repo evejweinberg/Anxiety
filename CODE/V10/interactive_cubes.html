@@ -21,14 +21,12 @@
     <script src="../js/renderers/CanvasRenderer.js"></script>
     <script src="../libs/stats.min.js"></script>
     <script>
-    var container, stats;
+    var container;
     var camera, scene, renderer;
-    var particleMaterial;
-
     var raycaster;
     var mouse;
     var voicestate = true;
-
+    var INTERSECTED;
     var objects = [];
 
     init();
@@ -39,70 +37,45 @@
         container = document.createElement('div');
         document.body.appendChild(container);
 
-        var info = document.createElement('div');
-        info.style.position = 'absolute';
-        info.style.top = '10px';
-        info.style.width = '100%';
-        info.style.textAlign = 'center';
-        info.innerHTML = '<a href="http://threejs.org" target="_blank">three.js</a> - clickable objects';
-        container.appendChild(info);
-
         camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
         camera.position.set(0, 300, 500);
 
         scene = new THREE.Scene();
 
         var geometry = new THREE.BoxGeometry(100, 100, 100);
-        var AudioOn = THREE.ImageUtils.loadTexture("../assets/audioIcon.png")
-         var mat = new THREE.MeshPhongMaterial(); 
-         mat.map = AudioOn;
+        // var AudioOn = THREE.ImageUtils.loadTexture("../assets/audioIcon.png")
+        // var mat = new THREE.MeshPhongMaterial();
+        // mat.map = AudioOn;
 
         for (var i = 0; i < 6; i++) {
-            // var texture = new THREE.Texture(generateTexture()); // texture background is transparent
-            // texture.needsUpdate = true; // important
-            // // uniforms
-            // var uniforms = {
-            //     color: {
-            //         type: "c",
-            //         value: new THREE.Color(0xff0000)
-            //     }, // material is "red"
-            //     texture: {
-            //         type: "t",
-            //         value: texture
-            //     },
-            // };
-            // var materialShader = new THREE.ShaderMaterial({
-            //     uniforms: uniforms,
-            //     vertexShader: document.getElementById('vertex_shader').textContent,
-            //     fragmentShader: document.getElementById('fragment_shader').textContent
-            // });
 
-var defaultMaterial = new THREE.MeshBasicMaterial({
+            //default to RED for 'on'
+            var defaultMaterial = new THREE.MeshBasicMaterial({
                 color: 0xFF0000,
                 opacity: 1
             })
-            var object = new THREE.Mesh(geometry, mat);
-            object.position.x = Math.random() * 800 - 400;
-            object.position.y = Math.random() * 800 - 400;
-            object.position.z = Math.random() * 800 - 400;
+            var object = new THREE.Mesh(geometry, defaultMaterial);
+            object.position.x = -400 + (i * 200);
+            object.position.y = 0;
+            object.position.z = -200;
 
-            object.scale.x = Math.random() * 2 + 1;
-            object.scale.y = Math.random() * 2 + 1;
-            object.scale.z = Math.random() * 2 + 1;
+            object.scale.x = 2;
+            object.scale.y = 2;
+            object.scale.z = 2;
 
             object.rotation.x = Math.random() * 2 * Math.PI;
             object.rotation.y = Math.random() * 2 * Math.PI;
             object.rotation.z = Math.random() * 2 * Math.PI;
 
             scene.add(object);
+            //default to TRUE for 'on'
             object.voicestate = true
-                // console.log(object.voicestate)
 
             objects.push(object);
 
         }
 
-        // var PI2 = Math.PI * 2;
+
 
 
         raycaster = new THREE.Raycaster();
@@ -114,16 +87,12 @@ var defaultMaterial = new THREE.MeshBasicMaterial({
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
-        stats = new Stats();
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.top = '0px';
-        container.appendChild(stats.domElement);
 
         document.addEventListener('mousedown', onDocumentMouseDown, false);
-        document.addEventListener('mouseover', onDocumentMouseOver, false);
+        // document.addEventListener('mouseenter', onDocumentMouseEnter, false);
         document.addEventListener('touchstart', onDocumentTouchStart, false);
+        document.addEventListener('mousemove', onDocumentMouseMove, false);
 
-        //
 
         window.addEventListener('resize', onWindowResize, false);
 
@@ -139,17 +108,28 @@ var defaultMaterial = new THREE.MeshBasicMaterial({
     }
 
     function onDocumentTouchStart(event) {
-
-
+        console.log("touch")
         event.preventDefault();
 
         event.clientX = event.touches[0].clientX;
         event.clientY = event.touches[0].clientY;
         onDocumentMouseDown(event);
 
+
+    }
+
+    function onDocumentMouseMove(event) {
+        event.preventDefault();
+
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        // console.log(mouse.x+','+mouse.y)
+
+
     }
 
     function onDocumentMouseDown(event) {
+        console.log('down')
 
         event.preventDefault();
 
@@ -180,49 +160,60 @@ var defaultMaterial = new THREE.MeshBasicMaterial({
 
     }
 
-    function onDocumentMouseOver(event) {
-        console.log('mouseover')
-        event.preventDefault();
-
-        mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
-        mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
-
-        raycaster.setFromCamera(mouse, camera);
-
-        var intersects = raycaster.intersectObjects(objects);
-
-        if (intersects.length > 0) {
-
-            // if (intersects[0].object.voicestate == true) {
-            intersects[0].object.material.opacity = .5
-                // } else{
-                // 	intersects[0].object.material.color.setHex(0xFF0000);
-                // 	 intersects[0].object.material.opacity = .5
-                // }
-
-
-        }
-    }
-
-    //
 
     function animate() {
 
+
+
+
+
         requestAnimationFrame(animate);
-
         render();
-        stats.update();
-
     }
 
-    var radius = 600;
-    var theta = 0;
 
     function render() {
+        raycaster.setFromCamera(mouse, camera);
+        var intersects = raycaster.intersectObjects(scene.children);
+        // returns an array of all objects
+        //if you are currently intersecting
+        if (intersects.length > 0) {
+            // console.log('currently intersected with something')
+            console.log('intersected =' + INTERSECTED)
+            if (INTERSECTED != intersects[0].object) {
+                //the first object
+                console.log('intersect object 0' + intersects[0].object)
+                var oac = intersects[0].object.material.opacity = .8
+                if (INTERSECTED) {
+                    console.log("new object")
+                        // intersects[0].object.material.opacity = 1
 
-        theta += 0.1;
+                }
 
-        camera.lookAt(scene.position);
+                INTERSECTED = intersects[0].object;
+                // INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+                // INTERSECTED.material.emissive.setHex(0xeeb000);
+
+            }
+
+        } else {
+            console.log('no intersections')
+            if (INTERSECTED) {
+                console.log(intersects[0] + "stat2")
+                oac = 1
+                    // intersects[0].object.material.opacity = 1
+                    // INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+
+                // console.log('end of intersecting')
+            }
+
+            INTERSECTED = null;
+            //set intersected to false
+
+        }
+
+
+
 
         renderer.render(scene, camera);
 

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>three.js webgl - interactive cubes</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+    body {
+        font-family: Monospace;
+        background-color: #f0f0f0;
+        margin: 0px;
+        overflow: hidden;
+    }
+    </style>
+</head>
+
+<body>
+    <script src="../libs/three.min.js"></script>
+    <script>
+    var container;
+    var camera, scene, raycaster, renderer;
+
+    var mouse = new THREE.Vector2(),
+        INTERSECTED;
+    var radius = 100;
+
+    init();
+    animate();
+
+    function init() {
+
+        container = document.createElement('div');
+        document.body.appendChild(container);
+
+
+
+        camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
+
+        scene = new THREE.Scene();
+
+        var light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(1, 1, 1).normalize();
+        scene.add(light);
+
+        var geometry = new THREE.BoxGeometry(20, 20, 20);
+
+        for (var i = 0; i < 6; i++) {
+
+            var object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
+                color: 0xffffff
+            }));
+
+            object.position.x = -40 + (i * 30);
+            object.position.y = 0;
+            object.position.z = -100;
+            scene.add(object);
+
+        }
+
+        raycaster = new THREE.Raycaster();
+
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0xf0f0f0);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.sortObjects = false;
+        container.appendChild(renderer.domElement);
+
+
+
+        document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+        //
+
+        window.addEventListener('resize', onWindowResize, false);
+
+    }
+
+    function onWindowResize() {
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+    }
+
+    function onDocumentMouseMove(event) {
+
+        event.preventDefault();
+
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    }
+
+    //
+
+    function animate() {
+
+        requestAnimationFrame(animate);
+
+        render();
+
+    }
+
+    function render() {
+
+
+
+        // find intersections
+
+        raycaster.setFromCamera(mouse, camera);
+        var intersects = raycaster.intersectObjects(scene.children);
+        // returns an array of all objects
+        //if you are currently intersecting
+        if (intersects.length > 0) {
+            console.log('currently intersected with something')
+
+            if (INTERSECTED != intersects[0].object) {
+                //the first object
+
+                if (INTERSECTED) {
+                    INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+                    // console.log('what is this')
+                }
+
+                INTERSECTED = intersects[0].object;
+                INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+                INTERSECTED.material.emissive.setHex(0xeeb000);
+
+            }
+
+        } else {
+
+            if (INTERSECTED) {
+                INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+
+                console.log('end of intersecting')
+            }
+
+            INTERSECTED = null;
+            //set intersected to false
+
+        }
+        renderer.render(scene, camera);
+
+    }
+    </script>
+</body>
+
+</html>
