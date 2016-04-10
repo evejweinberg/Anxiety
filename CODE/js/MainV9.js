@@ -1,15 +1,13 @@
-////////////////////////////////////////////////////////////    
+////////////////////////////////////////////////////////////
 // SET_UP_VARIABLES
 ////////////////////////////////////////////////////////////
 var scene1 = true,
     scene2 = false,
     headspin = false;
 var scene3count = 0;
-var scene4ready = false
+var scene4ready = false;
 var headZstart = -50;
 var loadingOvervid = document.getElementById("tunnel-vid");
-
-
 
 if (scene1) {
     Scene1();
@@ -24,7 +22,6 @@ if (scene1) {
         $("#intro").hide();
     });
 }
-
 
 function switchscenes(newscene) {
     //change this to a switch case with 'breaks'
@@ -48,7 +45,7 @@ function switchscenes(newscene) {
             console.log('scene4')
             Scene4()
             scene4ready = false
-             console.log('scene4 is '+ scene4ready)
+            console.log('scene4 is ' + scene4ready)
         }
     }
 }
@@ -57,8 +54,8 @@ function switchscenes(newscene) {
 //////////////////////////////////////////////////////////////////////////////////////////
 // //    _   __   __    _____ _ __ ___   ___  ___   __  ___   ___   ___  __   __ _  __  ___
 //   .' \ / /  / /   /_  _//// // o | / _/ / _/  / /,' _/  / o.) / _/,'_/  / // |/ /,' _/
-//  / o // /_ / /_    / / / ` //  ,' / _/ / _/n_/ /_\ `.  / o \ / _// /_n / // || /_\ `. 
-// /_n_//___//___/   /_/ /_n_//_/`_\/___//___/\_,'/___,' /___,'/___/|__,'/_//_/|_//___,' 
+//  / o // /_ / /_    / / / ` //  ,' / _/ / _/n_/ /_\ `.  / o \ / _// /_n / // || /_\ `.
+// /_n_//___//___/   /_/ /_n_//_/`_\/___//___/\_,'/___,' /___,'/___/|__,'/_//_/|_//___,'
 //////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -67,14 +64,19 @@ function Scene4() {
     console.log('scene4 was called')
 
     var experiences = [1, 2, 3, 4, 5, 6]
-    var videos = []
-    var voices = []
-    var allvideoTextures = []
-    var videoImageContexts = []
-    var allMats = []
+    var videos = [];
+    var voices = [];
+    //begin aaron
+    var filters = [];
+    var audioContext;
+    var distances = [];
+    //end aaron
+    var allvideoTextures = [];
+    var videoImageContexts = [];
+    var allMats = [];
     var scene, cameraThree, renderer;
     var light;
-    var readyAllVideos = false
+    var readyAllVideos = false;
     var worldRadius = 420;
     var videoRadius = worldRadius * .8;
     var spacing = 360 / experiences.length;
@@ -82,14 +84,12 @@ function Scene4() {
     var controls, guicontrols;
     var screenWidth = window.innerWidth;
     var screenHeight = window.innerHeight;
-    var centerRadius = 10
+    var centerRadius = 10;
     var worldSphere
     var mouseX = 0;
     var mouseY = 0;
     var windowHalfX = window.innerWidth / 2;
     var windowHalfY = window.innerHeight / 2;
-
-
 
     // custom global variables
     var imgScreen, screens;
@@ -102,7 +102,6 @@ function Scene4() {
     var lastTime = Date.now();
     var time, clock;
     var worldCenter = new THREE.Vector3(0, 0, 0);
-
 
     /////variables/////for////controllers///////////////////////////////////////////
     var controlsEnabled = false;
@@ -118,13 +117,6 @@ function Scene4() {
     var instructions = document.getElementById('instructions');
     var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
     //////////////////////////////////////////////////////////
-
-
-
-
-
-
-
 
 
     if (havePointerLock) {
@@ -223,7 +215,7 @@ function Scene4() {
 
 
     ///////////////////////////////////////////////////////////
-    // FUNCTIONS 
+    // FUNCTIONS
     ///////////////////////////////////////////////////////////
 
     function init() {
@@ -250,7 +242,10 @@ function Scene4() {
         // RENDERER
         var container = document.getElementById('scene4');
         document.body.appendChild(container);
-        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true
+        });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
@@ -269,21 +264,15 @@ function Scene4() {
         ////////////////////////////////
 
 
-
         raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
 
-
         buildGeo();
+
+
         DrawCenterArea();
         Floor()
         OuterSphere()
-        // AddGui()
-
-
-
-
-
-
+            // AddGui()
 
 
         // EVENTS
@@ -370,17 +359,17 @@ function Scene4() {
 
     } //INIT ENDS
 
+
+
     function animate() {
         requestAnimationFrame(animate); //http://creativejs.com/resources/requestanimationframe/
         ///CONTROLS
         if (controlsEnabled) {
-            console.log('controls enabled')
-            console.log(raycaster)
+            //console.log('controls enabled')
+            //console.log(raycaster)
                 //copies the value of what is inside
             raycaster.ray.origin.copy(controls.getObject().position);
             raycaster.ray.origin.y -= 10;
-
-
 
             //looking for every object
             var objects = scene.children
@@ -433,7 +422,7 @@ function Scene4() {
         }
 
 
-        ///CONTROLS ENS 
+        ///CONTROLS ENS
         ///
         ///
 
@@ -444,25 +433,20 @@ function Scene4() {
     function update() {
         // controls.update();
 
-
-
-                                                  
-                                                  
-                                                  
     }
     //////////////////////////////////////////////////////////////////
-    //    ____    U _____ u _   _    ____  U _____ u   ____     
-    // U |  _"\ u \| ___"|/| \ |"|  |  _"\ \| ___"|/U |  _"\ u  
-    //  \| |_) |/  |  _|" <|  \| |>/| | | | |  _|"   \| |_) |/  
-    //   |  _ <    | |___ U| |\  |uU| |_| |\| |___    |  _ <    
-    //   |_| \_\   |_____| |_| \_|  |____/ u|_____|   |_| \_\   
-    //   //   \\_  <<   >> ||   \\,-.|||_   <<   >>   //   \\_  
-    //  (__)  (__)(__) (__)(_")  (_/(__)_) (__) (__) (__)  (__) 
+    //    ____    U _____ u _   _    ____  U _____ u   ____
+    // U |  _"\ u \| ___"|/| \ |"|  |  _"\ \| ___"|/U |  _"\ u
+    //  \| |_) |/  |  _|" <|  \| |>/| | | | |  _|"   \| |_) |/
+    //   |  _ <    | |___ U| |\  |uU| |_| |\| |___    |  _ <
+    //   |_| \_\   |_____| |_| \_|  |____/ u|_____|   |_| \_\
+    //   //   \\_  <<   >> ||   \\,-.|||_   <<   >>   //   \\_
+    //  (__)  (__)(__) (__)(_")  (_/(__)_) (__) (__) (__)  (__)
     //////////////////////////////////////////////////////////////////
 
     function render() {
 
-        // 
+        //
         // worldRadius = guicontrols.worldradius
         //gui ends
         for (var i = 0; i < experiences.length; i++) {
@@ -485,16 +469,14 @@ function Scene4() {
     }
 
 
-
-
-    //--------------------------------------------------------------------------------------------------//                                                                                           
-    //--------------------------------------------------------------------------------------------------//                                                                                              
-    // ((_)_  _ ((_)(_)) (_)) (_))_   _(())\_)() ((_) (_)) (_)) (_))_     
-    //  | _ )| | | ||_ _|| |   |   \  \ \((_)/ // _ \ | _ \| |   |   \    
-    //  | _ \| |_| | | | | |__ | |) |  \ \/\/ /| (_) ||   /| |__ | |) |   
-    //  |___/ \___/ |___||____||___/    \_/\_/  \___/ |_|_\|____||___/                                                                      
-    //--------------------------------------------------------------------------------------------------//                                                                                           
-    //--------------------------------------------------------------------------------------------------//                                                                                           
+    //--------------------------------------------------------------------------------------------------//
+    //--------------------------------------------------------------------------------------------------//
+    // ((_)_  _ ((_)(_)) (_)) (_))_   _(())\_)() ((_) (_)) (_)) (_))_
+    //  | _ )| | | ||_ _|| |   |   \  \ \((_)/ // _ \ | _ \| |   |   \
+    //  | _ \| |_| | | | | |__ | |) |  \ \/\/ /| (_) ||   /| |__ | |) |
+    //  |___/ \___/ |___||____||___/    \_/\_/  \___/ |_|_\|____||___/
+    //--------------------------------------------------------------------------------------------------//
+    //--------------------------------------------------------------------------------------------------//
 
 
     function buildGeo() {
@@ -528,20 +510,31 @@ function Scene4() {
             sound.load("http://evejweinberg.github.io/samples/" + [i + 1] + ".wav");
             //fade out distance
             sound.setRefDistance(20);
-            sound.autoplay = true;
+            sound.autoplay = false;
             sound.setLoop(true);
             voices.push(sound)
                 // mesh1.add(sound1);
 
-            mat = new THREE.MeshBasicMaterial({ color: 0x808080, map: videoTexture, side: THREE.DoubleSide, opacity: 0.8 });
+            //begin aaron
+            var newFilter = listener.context.createBiquadFilter();
+            newFilter.type = 'lowpass';
+    				newFilter.Q.value = 10;
+    				newFilter.frequency.value = 440;
+            filters.push(newFilter);
+            //end aaron
+
+            mat = new THREE.MeshBasicMaterial({
+                color: 0x808080,
+                map: videoTexture,
+                side: THREE.DoubleSide,
+                opacity: 0.8
+            });
             // mat.blending = THREE["AdditiveBlending"];
 
             allMats.push(mat);
 
 
         } //FOR LOOP OVER
-
-
 
         readyAllVideos = true
 
@@ -554,8 +547,6 @@ function Scene4() {
             var zCenter = Math.sin(toRadians(k * spacing))
 
             for (var j = 0; j < 10; j++) {
-
-
 
                 var randOffset = Math.floor((Math.random() * 50) + -55);
                 var size = 5 + 20 * Math.random();
@@ -579,9 +570,6 @@ function Scene4() {
     }
 
 
-
-
-
     function toDegrees(angle) {
         return angle * (180 / Math.PI);
     }
@@ -595,7 +583,10 @@ function Scene4() {
         var map = new THREE.TextureLoader().load('../textures/fbtxt.png');
         map.wrapS = map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 10;
-        var material = new THREE.MeshLambertMaterial({ map: map, side: THREE.DoubleSide });
+        var material = new THREE.MeshLambertMaterial({
+            map: map,
+            side: THREE.DoubleSide
+        });
         object = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius, centerRadius, 10, experiences.length, 1), material);
         object.position.set(0, 0, 0);
         scene.add(object);
@@ -644,13 +635,14 @@ function Scene4() {
     }
 
 
-
-
     function OuterSphere() {
         var map = new THREE.TextureLoader().load('../textures/fbtxt.png');
         map.wrapS = map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 10;
-        var material = new THREE.MeshLambertMaterial({ map: map, side: THREE.DoubleSide });
+        var material = new THREE.MeshLambertMaterial({
+            map: map,
+            side: THREE.DoubleSide
+        });
         // object = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius, centerRadius, 10, experiences.length, 1), material);
 
         //radius, width segments, height segments
@@ -676,22 +668,6 @@ function Scene4() {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     function onWindowResize() {
         windowHalfX = window.innerWidth / 2
         windowHalfY = window.innerHeight / 2
@@ -711,13 +687,13 @@ function Scene4() {
     }
 
     /////////////////////////////////////////////////////////////
-    //    ____     _   _             
-    // U /"___|uU |"|u| |   ___      
-    // \| |  _ / \| |\| |  |_"_|     
-    //  | |_| |   | |_| |   | |      
-    //   \____|  <<\___/  U/| |\u    
-    //   _)(|_  (__) )(.-,_|___|_,-. 
-    //  (__)__)     (__)\_)-' '-(_/  
+    //    ____     _   _
+    // U /"___|uU |"|u| |   ___
+    // \| |  _ / \| |\| |  |_"_|
+    //  | |_| |   | |_| |   | |
+    //   \____|  <<\___/  U/| |\u
+    //   _)(|_  (__) )(.-,_|___|_,-.
+    //  (__)__)     (__)\_)-' '-(_/
     /////////////////////////////////////////////////////////////
     ///
 
