@@ -102,6 +102,7 @@ function Scene4() {
     //begin aaron
     var filters = [];
     var audioContext;
+    var ambientSounds = [];
     //var distances = [];
     //end aaron
     var allvideoTextures = [];
@@ -545,14 +546,25 @@ function Scene4() {
             videoTexture = new THREE.Texture(videoImage);
             allvideoTextures.push(videoTexture);
 
-            var sound = new THREE.PositionalAudio(listener);
-            sound.load("http://evejweinberg.github.io/samples/" + [i + 1] + ".wav");
+            var newVoice = new THREE.PositionalAudio(listener);
+            newVoice.load("http://evejweinberg.github.io/samples/" + [i + 1] + ".wav");
             //fade out distance
-            sound.setRefDistance(20);
-            sound.autoplay = true;
-            sound.setLoop(true);
-            voices.push(sound)
+            newVoice.setRefDistance(20);
+            newVoice.autoplay = true;
+            newVoice.setLoop(true);
+            newVoice.push(newVoice);
                 // mesh1.add(sound1);
+
+            var newSound = new THREE.PositionalAudio(listener);
+            ositionalAudio(listener);
+            newSound.load("http://aamontoya89.github.io/soundfx/anxiety" + [i + 1] + ".wav");
+            //fade out distance
+            newSound.setRefDistance(20);
+            newSound.autoplay = true;
+            newSound.setLoop(true);
+            newSound.push(newVoice);
+
+
 
             //begin aaron
             var newFilter = listener.context.createBiquadFilter();
