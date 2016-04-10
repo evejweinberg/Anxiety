@@ -1,29 +1,62 @@
 ////////////////////////////////////////////////////////////
 // SET_UP_VARIABLES
 ////////////////////////////////////////////////////////////
-var scene1 = true,
+var scene1, scene2;
+var headspin;
+var scene3count;
+var scene4ready;
+var headZstart;
+var loadingOvervid;
+var videoSources;
+var experiences = [];
+var distances = [];
+
+//setup global variables
+setupVariables();
+
+//preload the media
+preloadMedia();
+
+//render introduction
+renderIntro();
+
+function setupVariables() {
+    scene1 = true,
     scene2 = false,
     headspin = false;
-var scene3count = 0;
-var scene4ready = false;
-var headZstart = -50;
-var loadingOvervid = document.getElementById("tunnel-vid");
-
-if (scene1) {
-    Scene1();
-    $("#blocker").hide();
-    loadingOvervid.pause();
-    console.log('scene1')
-    $('#next-button').click(function() {
-
-        scene2 = true
-        headspin = true;
-        // switchscenes(2)
-        $("#intro").hide();
-    });
+    scene3count = 0;
+    scene4ready = false;
+    headZstart = -50;
+    loadingOvervid = document.getElementById("tunnel-vid");
+    videoSources = [];
+    experiences = [1, 2, 3, 4, 5, 6];
 }
 
-function switchscenes(newscene) {
+function renderIntro() {
+    if (scene1) {
+        Scene1();
+        $("#blocker").hide();
+        loadingOvervid.pause();
+        console.log('scene1')
+        $('#next-button').click(function() {
+            scene2 = true
+            headspin = true;
+            // switchscenes(2)
+            $("#intro").hide();
+        });
+    }
+}
+
+function preloadMedia() {
+    console.log("preload the contents");
+
+    for (var i = 0; i < experiences.length; i++) {
+        var newVideo = "https://evejweinberg.github.io/videos/" + [i + 1] + "b.mov";
+        videoSources.push(newVideo);
+    }
+}
+
+function switchScenes(newscene) {
     //change this to a switch case with 'breaks'
     if (newscene == 2) {
         scene1 = false;
@@ -43,7 +76,7 @@ function switchscenes(newscene) {
             $('#loadingvideo').hide();
             $("#blocker").show();
             console.log('scene4')
-            Scene4()
+            Scene4();
             scene4ready = false
             console.log('scene4 is ' + scene4ready)
         }
@@ -63,13 +96,13 @@ function Scene4() {
 
     console.log('scene4 was called')
 
-    var experiences = [1, 2, 3, 4, 5, 6]
+    //var experiences = [1, 2, 3, 4, 5, 6]
     var videos = [];
     var voices = [];
     //begin aaron
     var filters = [];
     var audioContext;
-    var distances = [];
+    //var distances = [];
     //end aaron
     var allvideoTextures = [];
     var videoImageContexts = [];
@@ -117,7 +150,6 @@ function Scene4() {
     var instructions = document.getElementById('instructions');
     var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
     //////////////////////////////////////////////////////////
-
 
     if (havePointerLock) {
 
@@ -200,11 +232,8 @@ function Scene4() {
         }, false);
 
     } else {
-
         instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
-
     }
-
 
     ///////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////
@@ -367,7 +396,7 @@ function Scene4() {
         if (controlsEnabled) {
             //console.log('controls enabled')
             //console.log(raycaster)
-                //copies the value of what is inside
+            //copies the value of what is inside
             raycaster.ray.origin.copy(controls.getObject().position);
             raycaster.ray.origin.y -= 10;
 
@@ -428,6 +457,12 @@ function Scene4() {
 
         update();
         render();
+
+        if (scene4ready) {
+          // calculateDistances();
+        }
+
+
     }
 
     function update() {
@@ -466,6 +501,11 @@ function Scene4() {
             }
         }
         renderer.render(scene, cameraThree);
+        //console.log(cameraThree.position);
+        var vec1 = new THREE.Vector3(100,100,100)
+        console.log(cameraThree.position)
+        var distance = vec1.distanceTo(cameraThree.position)
+        console.log(distance)
     }
 
 
@@ -481,7 +521,6 @@ function Scene4() {
 
     function buildGeo() {
 
-
         //make all video textures
         for (var i = 0; i < experiences.length; i++) {
             video = document.createElement('video');
@@ -491,9 +530,9 @@ function Scene4() {
             video.autoplay = true;
             video.loop = true;
             video.preload = "auto";
-            video.src = "https://evejweinberg.github.io/videos/" + [i + 1] + "b.mov";
-            videos.push(video)
-
+            //video.src = "https://evejweinberg.github.io/videos/" + [i + 1] + "b.mov";
+            video.src = videoSources[i];
+            videos.push(video);
 
             videoImage = document.createElement('canvas');
             videoImage.width = 512;
@@ -504,13 +543,13 @@ function Scene4() {
             videoImageContexts.push(videoImageContext)
 
             videoTexture = new THREE.Texture(videoImage);
-            allvideoTextures.push(videoTexture)
+            allvideoTextures.push(videoTexture);
 
             var sound = new THREE.PositionalAudio(listener);
             sound.load("http://evejweinberg.github.io/samples/" + [i + 1] + ".wav");
             //fade out distance
             sound.setRefDistance(20);
-            sound.autoplay = false;
+            sound.autoplay = true;
             sound.setLoop(true);
             voices.push(sound)
                 // mesh1.add(sound1);
@@ -518,8 +557,8 @@ function Scene4() {
             //begin aaron
             var newFilter = listener.context.createBiquadFilter();
             newFilter.type = 'lowpass';
-    				newFilter.Q.value = 10;
-    				newFilter.frequency.value = 440;
+            newFilter.Q.value = 10;
+            newFilter.frequency.value = 440;
             filters.push(newFilter);
             //end aaron
 
@@ -537,7 +576,6 @@ function Scene4() {
         } //FOR LOOP OVER
 
         readyAllVideos = true
-
 
         //place all cubes
 
@@ -714,3 +752,14 @@ function Scene4() {
 
 
 } ////ALL OF SCENE 2 IS OVER
+
+function calculateDistances() {
+
+  for (var i = 0; i < experiences.length ; i++) {
+    //var point1 = Scene4.cameraThree.matrixWorld.getPosition().clone();
+    //var point2 = Scene4.cameraThree.matrixWorld.getPosition().clone();
+      //distances[i] = point1.distanceTo(point2);
+      //console.log(Scene4.cameraThree.position);
+  }
+
+}

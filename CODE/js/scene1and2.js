@@ -1,28 +1,6 @@
 if (scene1) {
+
     function Scene1() {
-
-
-
-        if (scene2) {
-
-            while (scene3count < 4521) {
-                // console.log(scene3count)
-                scene3count++
-
-                if (scene3count == 200) {
-                    console.log('move head now')
-                    headspin = true;
-                }
-
-               
-            }
-            if (scene3count == 2520) {
-                console.log('head scene ended')
-                    // switchscenes(4)
-            }
-        }
-
-
 
         var container = document.getElementById('scene1');
 
@@ -49,20 +27,21 @@ if (scene1) {
 
         console.log('scene 1 was called')
 
-
         var params = {
             projection: 'normal',
             minScale: 10,
             maxScale: 20,
             rotate: true,
-         
+
         };
 
         window.addEventListener('load', init);
 
         function init() {
 
-            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(window.innerWidth, window.innerHeight);
             container.appendChild(renderer.domElement);
@@ -105,7 +84,8 @@ if (scene1) {
 
             var loader = new THREE.JSONLoader();
 
-            loader.load('../models/evehead1/ESP.js', function(geometry) {
+            //loader.load('../models/evehead1/ESP.js', function(geometry) {
+            loader.load('../models/Suzanne.js', function(geometry) {
 
                 var material = new THREE.MeshPhongMaterial({
                     specular: 0x111111,
@@ -132,8 +112,6 @@ if (scene1) {
 
 
 
-
-
         function onWindowResize() {
 
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -152,24 +130,24 @@ if (scene1) {
                 camera.position.z--
             }
 
-            if(camera.position.z==0){
-            	   console.log('load tunnel video now')
+            if (camera.position.z == 0) {
+                console.log('load tunnel video now')
 
-                    $('#tunnel-vid').show();
-                    loadingOvervid.play();
-                    $('video#tunnel-vid').bind('ended', function() {
-                        console.log('video ended')
-                        $('#tunnel-vid').remove();
-                        switchscenes(4);
-                    });
+                $('#tunnel-vid').show();
+                loadingOvervid.play();
+                $('video#tunnel-vid').bind('ended', function() {
+                    console.log('video ended')
+                    $('#tunnel-vid').remove();
+                    switchScenes(4);
+                });
             }
 
             if (camera.position.z == -50) {
                 if (headspin) {
-                	console.log('headspin ending now in 3JS')
+                    console.log('headspin ending now in 3JS')
                     headspin = false
                     scene4ready = true
-                    switchscenes(4)
+                    switchScenes(4)
                 }
             }
 
@@ -179,9 +157,28 @@ if (scene1) {
 
         }
 
+        if (scene2) {
+
+            while (scene3count < 4521) {
+                // console.log(scene3count)
+                scene3count++
+
+                if (scene3count == 200) {
+                    console.log('move head now')
+                    headspin = true;
+                }
+
+
+            }
+            if (scene3count == 2520) {
+                console.log('head scene ended')
+                    // switchscenes(4)
+            }
+        }
+
+
+
+
     }
-
-
-
 
 }
