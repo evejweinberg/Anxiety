@@ -25,12 +25,6 @@ if (scene1) {
     });
 }
 
-// if (scene4ready){
-//     console.log('scene4 switch')
-//     switchscenes(4)
-//     scene4ready = false
-//     console.log('scene4 is' + scene4ready)
-// }
 
 function switchscenes(newscene) {
     //change this to a switch case with 'breaks'
@@ -530,13 +524,13 @@ function Scene4() {
             videoTexture = new THREE.Texture(videoImage);
             allvideoTextures.push(videoTexture)
 
-            var sound1 = new THREE.PositionalAudio(listener);
-            sound1.load("http://evejweinberg.github.io/samples/" + [i + 1] + ".wav");
+            var sound = new THREE.PositionalAudio(listener);
+            sound.load("http://evejweinberg.github.io/samples/" + [i + 1] + ".wav");
             //fade out distance
-            sound1.setRefDistance(20);
-            sound1.autoplay = true;
-            sound1.setLoop(true);
-            voices.push(sound1)
+            sound.setRefDistance(20);
+            sound.autoplay = true;
+            sound.setLoop(true);
+            voices.push(sound)
                 // mesh1.add(sound1);
 
             mat = new THREE.MeshBasicMaterial({ color: 0x808080, map: videoTexture, side: THREE.DoubleSide, opacity: 0.8 });

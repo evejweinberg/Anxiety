@@ -47,7 +47,7 @@
 		var controls;
 		var mouse = new THREE.Vector2();
 
-		var headtextureLoader = new THREE.headtextureLoader();
+		var headtextureLoader = new THREE.ImageLoader();
 var camStartDist = 200
 		var mouseHelper;
 		var p = new THREE.Vector3( 0, 0, 0 );
@@ -139,16 +139,17 @@ var camStartDist = 200
 
 			loader.load( '../models/evehead1/ESP.js', function( geometry ) {
 
-				var material = new THREE.MeshPhongMaterial( {
-					specular: 0x111111,
-					// map: headtextureLoader.load( '../models/leeperrysmith/Map-COL.jpg' ),
+var material = new THREE.MeshPhongMaterial( { color: 0x00ff00, wireframe: true } );
+				// var material = new THREE.MeshPhongMaterial( {
+				// 	specular: 0x111111,
+				// 	// map: headtextureLoader.load( '../models/leeperrysmith/Map-COL.jpg' ),
 
-					map: headtextureLoader.load( '../models/evehead1/ESP.jpg' ),
-					// specularMap: headtextureLoader.load( '../models/evehead1/ESP.jpg' ),
-					// normalMap: headtextureLoader.load( '../models/evehead1/ESP.jpg'),
-					// normalScale: new THREE.Vector2( 0.75, 0.75 ),
-					shininess: 25
-				} );
+				// 	map: headtextureLoader.load( '../models/evehead1/ESP.jpg' ),
+				// 	// specularMap: headtextureLoader.load( '../models/evehead1/ESP.jpg' ),
+				// 	// normalMap: headtextureLoader.load( '../models/evehead1/ESP.jpg'),
+				// 	// normalScale: new THREE.Vector2( 0.75, 0.75 ),
+				// 	shininess: 25
+				// } );
 
 				mesh = new THREE.Mesh( geometry, material );
 				scene.add( mesh );
