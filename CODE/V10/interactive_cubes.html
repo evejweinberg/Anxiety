@@ -23,9 +23,10 @@
     <script>
     var container;
     var camera, scene, renderer;
-    var raycaster;
+    var OnOffraycaster;
     var mouse;
     var voicestate = true;
+    var onOffCubes = []
     var INTERSECTED;
     var objects = [];
 
@@ -42,7 +43,8 @@
 
         scene = new THREE.Scene();
 
-        var geometry = new THREE.BoxGeometry(100, 100, 100);
+        var onoffcube = new THREE.BoxGeometry(200, 100, 100);
+
         // var AudioOn = THREE.ImageUtils.loadTexture("../assets/audioIcon.png")
         // var mat = new THREE.MeshPhongMaterial();
         // mat.map = AudioOn;
@@ -50,35 +52,40 @@
         for (var i = 0; i < 6; i++) {
 
             //default to RED for 'on'
-            var defaultMaterial = new THREE.MeshBasicMaterial({
+            var onoffmaterial = 
+
+            // new THREE.MeshPhongMaterial( { color: 0xFF0000, specular: 0x990000, shininess: 30 } )
+
+
+
+            new THREE.MeshBasicMaterial({
                 color: 0xFF0000,
                 opacity: 1
             })
-            var object = new THREE.Mesh(geometry, defaultMaterial);
-            object.position.x = -400 + (i * 200);
-            object.position.y = 0;
-            object.position.z = -200;
+            var onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
+            onoffbutton.position.x = -400 + (i * 200);
+            onoffbutton.position.y = 0;
+            onoffbutton.position.z = -200;
 
-            object.scale.x = 2;
-            object.scale.y = 2;
-            object.scale.z = 2;
+            onoffbutton.scale.set(1,1,1);
+          
 
-            object.rotation.x = Math.random() * 2 * Math.PI;
-            object.rotation.y = Math.random() * 2 * Math.PI;
-            object.rotation.z = Math.random() * 2 * Math.PI;
+            // onoffbutton.rotation.x = Math.random() * 2 * Math.PI;
+            // onoffbutton.rotation.y = Math.random() * 2 * Math.PI;
+            // onoffbutton.rotation.z = Math.random() * 2 * Math.PI;
 
-            scene.add(object);
+            scene.add(onoffbutton);
             //default to TRUE for 'on'
-            object.voicestate = true
+            onoffbutton.voicestate = true
 
-            objects.push(object);
+            onOffCubes.push(onoffbutton);
 
         }
 
 
 
 
-        raycaster = new THREE.Raycaster();
+        OnOffraycaster = new THREE.Raycaster();
         mouse = new THREE.Vector2();
 
         renderer = new THREE.CanvasRenderer();
@@ -89,69 +96,62 @@
 
 
         document.addEventListener('mousedown', onDocumentMouseDown, false);
-        // document.addEventListener('mouseenter', onDocumentMouseEnter, false);
-        document.addEventListener('touchstart', onDocumentTouchStart, false);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
+        // document.addEventListener('touchstart', onDocumentTouchStart, false);
 
 
-        window.addEventListener('resize', onWindowResize, false);
-
-    }
-
-    function onWindowResize() {
-
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        // window.addEventListener('resize', onWindowResize, false);
 
     }
 
-    function onDocumentTouchStart(event) {
-        console.log("touch")
-        event.preventDefault();
+    // function onWindowResize() {
 
-        event.clientX = event.touches[0].clientX;
-        event.clientY = event.touches[0].clientY;
-        onDocumentMouseDown(event);
+    //     camera.aspect = window.innerWidth / window.innerHeight;
+    //     camera.updateProjectionMatrix();
+
+    //     renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // }
+
+    // function onDocumentTouchStart(event) {
+    //     console.log("touch")
+    //     event.preventDefault();
+
+    //     event.clientX = event.touches[0].clientX;
+    //     event.clientY = event.touches[0].clientY;
+    //     onDocumentMouseDown(event);
 
 
-    }
+    // }
 
     function onDocumentMouseMove(event) {
         event.preventDefault();
-
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-        // console.log(mouse.x+','+mouse.y)
-
-
     }
 
     function onDocumentMouseDown(event) {
-        console.log('down')
+        // console.log('down')
 
         event.preventDefault();
 
         mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
         mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
 
-        raycaster.setFromCamera(mouse, camera);
+        OnOffraycaster.setFromCamera(mouse, camera);
 
-        var intersects = raycaster.intersectObjects(objects);
+        var intersects = OnOffraycaster.intersectObjects(onOffCubes);
 
         if (intersects.length > 0) {
 
             if (intersects[0].object.voicestate == true) {
                 intersects[0].object.material.color.setHex(0x808080);
                 intersects[0].object.material.opacity = .5
-
                 intersects[0].object.voicestate = false
 
             } else {
                 intersects[0].object.material.color.setHex(0xFF0000);
                 intersects[0].object.material.opacity = 1
-
                 intersects[0].object.voicestate = true
 
             }
@@ -163,52 +163,51 @@
 
     function animate() {
 
-
-
-
-
         requestAnimationFrame(animate);
         render();
     }
 
 
     function render() {
-        raycaster.setFromCamera(mouse, camera);
-        var intersects = raycaster.intersectObjects(scene.children);
+        OnOffraycaster.setFromCamera(mouse, camera);
+        var intersects = OnOffraycaster.intersectObjects(onOffCubes);
         // returns an array of all objects
         //if you are currently intersecting
         if (intersects.length > 0) {
-            // console.log('currently intersected with something')
-            console.log('intersected =' + INTERSECTED)
+        //     // console.log('currently intersected with something')
+        //     // console.log('intersected =' + INTERSECTED)
             if (INTERSECTED != intersects[0].object) {
-                //the first object
-                console.log('intersect object 0' + intersects[0].object)
-                var oac = intersects[0].object.material.opacity = .8
+        //         //the first object
+        //         // console.log('intersect object 0' + intersects[0].object)
+        //         var oac = intersects[0].object.material.opacity = .8
                 if (INTERSECTED) {
-                    console.log("new object")
-                        // intersects[0].object.material.opacity = 1
+        //             // console.log("new object")
+        //             // intersects[0].object.material.opacity = 1
 
                 }
 
-                INTERSECTED = intersects[0].object;
-                // INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-                // INTERSECTED.material.emissive.setHex(0xeeb000);
+        //         INTERSECTED = intersects[0].object;
+        //         INTERSECTED.currentHex = INTERSECTED.material.getHex();
+        //         // INTERSECTED.material.emissive.setHex(0xeeb000);
 
             }
 
         } else {
-            console.log('no intersections')
+        //     // console.log('no intersections')
             if (INTERSECTED) {
-                console.log(intersects[0] + "stat2")
-                oac = 1
-                    // intersects[0].object.material.opacity = 1
-                    // INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+        //         // console.log(intersects[0] + "stat2")
+        //         oac = 1
+        //             // intersects[0].object.material.opacity = 1
+        //         INTERSECTED.material = new THREE.MeshBasicMaterial({
+        //             color: 0xFF0000,
+        //             opacity: 1
+        //         })
 
-                // console.log('end of intersecting')
+        //         // console.log('end of intersecting')
             }
 
             INTERSECTED = null;
-            //set intersected to false
+        //     //set intersected to false
 
         }
 

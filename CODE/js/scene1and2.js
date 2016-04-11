@@ -1,3 +1,5 @@
+
+
 if (scene1) {
 
     function Scene1() {
@@ -127,16 +129,17 @@ if (scene1) {
                 // console.log('cam position is ' +camera.position.z)
                 mesh.rotation.y = mesh.rotation.y - .018;
                 mesh.position.y = mesh.position.y - .1
-                camera.position.z--
+                camera.position.z-=5
+                   // camera.position.z--
             }
 
             if (camera.position.z == 0) {
-                console.log('load tunnel video now')
+                // console.log('load tunnel video now')
 
                 $('#tunnel-vid').show();
                 loadingOvervid.play();
                 $('video#tunnel-vid').bind('ended', function() {
-                    console.log('video ended')
+                    // console.log('video ended')
                     $('#tunnel-vid').remove();
                     switchScenes(4);
                 });
@@ -144,7 +147,7 @@ if (scene1) {
 
             if (camera.position.z == -50) {
                 if (headspin) {
-                    console.log('headspin ending now in 3JS')
+                    // console.log('headspin ending now in 3JS')
                     headspin = false
                     scene4ready = true
                     switchScenes(4)

@@ -24,6 +24,7 @@
     var mouse = new THREE.Vector2(),
         INTERSECTED;
     var radius = 100;
+    var allcubes = []
 
     init();
     animate();
@@ -48,13 +49,15 @@
         for (var i = 0; i < 6; i++) {
 
             var object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
-                color: 0xffffff
+                color: 0xffffff, opacity:.5
             }));
 
             object.position.x = -40 + (i * 30);
             object.position.y = 0;
             object.position.z = -100;
+            allcubes.push(object)
             scene.add(object);
+
 
         }
 
@@ -116,18 +119,21 @@
         // returns an array of all objects
         //if you are currently intersecting
         if (intersects.length > 0) {
-            console.log('currently intersected with something')
+            // console.log('currently intersected with something. INTERSECTED ='+ INTERSECTED)
 
             if (INTERSECTED != intersects[0].object) {
                 //the first object
-
+                 console.log(INTERSECTED+"!="+intersects[0].object)
                 if (INTERSECTED) {
+                	console.log(INTERSECTED)
                     INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
                     // console.log('what is this')
                 }
-
+                console.log('set'+INTERSECTED)
                 INTERSECTED = intersects[0].object;
+                // console.log('set'+INTERSECTED)
                 INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+                //change color
                 INTERSECTED.material.emissive.setHex(0xeeb000);
 
             }
@@ -135,6 +141,7 @@
         } else {
 
             if (INTERSECTED) {
+            	console.log(INTERSECTED)
                 INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
 
                 console.log('end of intersecting')

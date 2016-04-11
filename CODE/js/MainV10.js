@@ -8,7 +8,7 @@ var scene4ready;
 var headZstart;
 var loadingOvervid;
 var videoSources;
-var experiences = [];
+// var experiences = [];
 var distances = [];
 
 //setup global variables
@@ -22,8 +22,8 @@ renderIntro();
 
 function setupVariables() {
     scene1 = true,
-    scene2 = false,
-    headspin = false;
+        scene2 = false,
+        headspin = false;
     scene3count = 0;
     scene4ready = false;
     headZstart = -50;
@@ -37,7 +37,7 @@ function renderIntro() {
         Scene1();
         $("#blocker").hide();
         loadingOvervid.pause();
-        console.log('scene1')
+        // console.log('scene1')
         $('#next-button').click(function() {
             scene2 = true
             headspin = true;
@@ -48,7 +48,7 @@ function renderIntro() {
 }
 
 function preloadMedia() {
-    console.log("preload the contents");
+    // console.log("preload the contents");
 
     for (var i = 0; i < experiences.length; i++) {
         var newVideo = "https://evejweinberg.github.io/videos/" + [i + 1] + "b.mov";
@@ -69,16 +69,16 @@ function switchScenes(newscene) {
         $("scene1").hide();
         $('#tunnel').show();
         // Scene3()
-        console.log('scene3')
+        // console.log('scene3')
     } else if (newscene == 4) {
         if (scene4ready) {
             scene1 = false;
             $('#loadingvideo').hide();
             $("#blocker").show();
-            console.log('scene4')
+            // console.log('scene4')
             Scene4();
             scene4ready = false
-            console.log('scene4 is ' + scene4ready)
+                // console.log('scene4 is ' + scene4ready)
         }
     }
 }
@@ -94,12 +94,14 @@ function switchScenes(newscene) {
 
 function Scene4() {
 
-    console.log('scene4 was called')
+    // console.log('scene4 was called')
 
     //var experiences = [1, 2, 3, 4, 5, 6]
     var videos = [];
     var voices = [];
-    //begin aaron
+    var newSounds = []
+    var onOffCubes = []
+        //begin aaron
     var filters = [];
     var audioContext;
     var ambientSounds = [];
@@ -262,6 +264,11 @@ function Scene4() {
         light = new THREE.DirectionalLight(0xffffff, 1);
         light.position.set(-1, 1, 4000);
         scene.add(light);
+        hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
+        hemiLight.color.setHSL(0.1, 1, 0.6);
+        hemiLight.groundColor.setHSL(0.005, 1, 0.75);
+        hemiLight.position.set(0, 500, 0);
+        scene.add(hemiLight);
 
         // CAMERA
         // PerspectiveCamera( field of view, aspect, near, far )
@@ -353,12 +360,12 @@ function Scene4() {
                 case 38: // up
                 case 87: // w
                     moveForward = false;
-                    console.log('up')
+                    // console.log('up')
                     break;
 
                 case 37: // left
                 case 65: // a
-                    console.log('left')
+                    // console.log('left')
                     moveLeft = false;
                     break;
 
@@ -370,7 +377,7 @@ function Scene4() {
                 case 39: // right
                 case 68: // d
                     moveRight = false;
-                    console.log('right')
+                    // console.log('right')
                     break;
 
             }
@@ -460,7 +467,7 @@ function Scene4() {
         render();
 
         if (scene4ready) {
-          // calculateDistances();
+            // calculateDistances();
         }
 
 
@@ -503,10 +510,10 @@ function Scene4() {
         }
         renderer.render(scene, cameraThree);
         //console.log(cameraThree.position);
-        var vec1 = new THREE.Vector3(100,100,100)
-        console.log(cameraThree.position)
+        var vec1 = new THREE.Vector3(100, 100, 100)
+            // console.log(cameraThree.position)
         var distance = vec1.distanceTo(cameraThree.position)
-        console.log(distance)
+            // console.log(distance)
     }
 
 
@@ -521,6 +528,7 @@ function Scene4() {
 
 
     function buildGeo() {
+        var onoffcube = new THREE.BoxGeometry(100, 50, 50);
 
         //make all video textures
         for (var i = 0; i < experiences.length; i++) {
@@ -552,17 +560,27 @@ function Scene4() {
             newVoice.setRefDistance(20);
             newVoice.autoplay = true;
             newVoice.setLoop(true);
-            newVoice.push(newVoice);
-                // mesh1.add(sound1);
+            voices.push(newVoice);
+            // mesh1.add(sound1);
 
-            var newSound = new THREE.PositionalAudio(listener);
-            ositionalAudio(listener);
-            newSound.load("http://aamontoya89.github.io/soundfx/anxiety" + [i + 1] + ".wav");
-            //fade out distance
-            newSound.setRefDistance(20);
-            newSound.autoplay = true;
-            newSound.setLoop(true);
-            newSound.push(newVoice);
+            // var newSound = new THREE.PositionalAudio(listener);
+
+            // newSound.load("http://aamontoya89.github.io/soundfx/anxiety" + [i + 1] + ".wav");
+            // //fade out distance
+            // newSound.setRefDistance(20);
+            // newSound.autoplay = true;
+            // newSound.setLoop(true);
+            // newSounds.push(newVoice);
+
+            //VOICE ON/OFF BUTTON
+            var onoffmaterial = new THREE.MeshBasicMaterial({
+                color: 0xFF0000,
+                opacity: 1
+            })
+            var onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
+            onoffbutton.scale.set(.15, .15, .15)
+            scene.add(onoffbutton)
+            onOffCubes.push(onoffbutton);
 
 
 
@@ -587,6 +605,7 @@ function Scene4() {
 
         } //FOR LOOP OVER
 
+
         readyAllVideos = true
 
         //place all cubes
@@ -596,14 +615,16 @@ function Scene4() {
 
             var zCenter = Math.sin(toRadians(k * spacing))
 
+            onOffCubes[k].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
+            onOffCubes[k].rotateY(k * (360 / experiences.length))
             for (var j = 0; j < 10; j++) {
 
-                var randOffset = Math.floor((Math.random() * 50) + -55);
-                var size = 5 + 20 * Math.random();
+                var randOffset = Math.floor((Math.random() * 60) + -75);
+                var size = 5 + Math.random()*50-0;
 
                 geo = new THREE.BoxGeometry(size, size, size);
                 var mesh = new THREE.Mesh(geo, allMats[k]);
-                mesh.position.set(videoRadius * xCenter + randOffset, 50 + randOffset, randOffset + (videoRadius * zCenter))
+                mesh.position.set(videoRadius * xCenter + (2*randOffset), 90 + randOffset, randOffset + (videoRadius * zCenter))
                 mesh.rotateZ(randOffset)
                 mesh.rotateX(randOffset)
                 if (j == 0) {
@@ -630,6 +651,8 @@ function Scene4() {
 
 
     function DrawCenterArea() {
+        var cubeMaterial3 = new THREE.MeshLambertMaterial( 
+            { color: 0xFF0000, shininess: 200, reflectivity: 0.3 } );
         var map = new THREE.TextureLoader().load('../textures/fbtxt.png');
         map.wrapS = map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 10;
@@ -637,7 +660,7 @@ function Scene4() {
             map: map,
             side: THREE.DoubleSide
         });
-        object = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius, centerRadius, 10, experiences.length, 1), material);
+        object = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius, centerRadius, 10, experiences.length, 1), cubeMaterial3);
         object.position.set(0, 0, 0);
         scene.add(object);
 
@@ -660,22 +683,7 @@ function Scene4() {
             floorMat.map = map;
             floorMat.needsUpdate = true;
         });
-        // textureLoader.load("../textures/hardwood2_bump.jpg", function(map) {
-        //     map.wrapS = THREE.RepeatWrapping;
-        //     map.wrapT = THREE.RepeatWrapping;
-        //     map.anisotropy = 4;
-        //     map.repeat.set(10, 24);
-        //     floorMat.bumpMap = map;
-        //     floorMat.needsUpdate = true;
-        // });
-        // textureLoader.load("../textures/hardwood2_roughness.jpg", function(map) {
-        //     map.wrapS = THREE.RepeatWrapping;
-        //     map.wrapT = THREE.RepeatWrapping;
-        //     map.anisotropy = 4;
-        //     map.repeat.set(10, 24);
-        //     floorMat.roughnessMap = map;
-        //     floorMat.needsUpdate = true;
-        // });
+    
 
         var floorGeometry = new THREE.PlaneBufferGeometry(worldRadius * 2, worldRadius * 2);
         var floorMesh = new THREE.Mesh(floorGeometry, floorMat);
@@ -686,18 +694,26 @@ function Scene4() {
 
 
     function OuterSphere() {
-        var map = new THREE.TextureLoader().load('../textures/fbtxt.png');
-        map.wrapS = map.wrapT = THREE.RepeatWrapping;
-        map.anisotropy = 10;
-        var material = new THREE.MeshLambertMaterial({
-            map: map,
-            side: THREE.DoubleSide
+        walls = new THREE.MeshBasicMaterial({
+            roughness: 0.8,
+            color: 0xaf8585,
+            metalness: 0.2,
+            side: THREE.DoubleSide,
+            // bumpScale: 0.0005,
         });
-        // object = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius, centerRadius, 10, experiences.length, 1), material);
-
-        //radius, width segments, height segments
-        worldSphere = createMesh(new THREE.SphereGeometry(worldRadius, 10, 10));
-        // add the sphere to the scene
+        var textureLoader = new THREE.TextureLoader();
+        textureLoader.load("../textures/wallpaper1.png", function(map) {
+            map.wrapS = THREE.RepeatWrapping;
+            map.wrapT = THREE.RepeatWrapping;
+            map.anisotropy = 4;
+            map.repeat.set(10, 10);
+            walls.map = map;
+            walls.needsUpdate = true;
+        });
+     
+        worldgeo = new THREE.SphereGeometry(worldRadius, 10, 10)
+        worldSphere = new THREE.Mesh(worldgeo, walls)
+ 
         scene.add(worldSphere);
 
     }
@@ -767,11 +783,11 @@ function Scene4() {
 
 function calculateDistances() {
 
-  for (var i = 0; i < experiences.length ; i++) {
-    //var point1 = Scene4.cameraThree.matrixWorld.getPosition().clone();
-    //var point2 = Scene4.cameraThree.matrixWorld.getPosition().clone();
-      //distances[i] = point1.distanceTo(point2);
-      //console.log(Scene4.cameraThree.position);
-  }
+    for (var i = 0; i < experiences.length; i++) {
+        //var point1 = Scene4.cameraThree.matrixWorld.getPosition().clone();
+        //var point2 = Scene4.cameraThree.matrixWorld.getPosition().clone();
+        //distances[i] = point1.distanceTo(point2);
+        //console.log(Scene4.cameraThree.position);
+    }
 
 }

@@ -23,7 +23,7 @@ if (scene1) {
     });
 }
 
-function switchscenes(newscene) {
+function switchScenes(newscene) {
     //change this to a switch case with 'breaks'
     if (newscene == 2) {
         scene1 = false;
@@ -36,16 +36,16 @@ function switchscenes(newscene) {
         $("scene1").hide();
         $('#tunnel').show();
         // Scene3()
-        console.log('scene3')
+        // console.log('scene3')
     } else if (newscene == 4) {
         if (scene4ready) {
             scene1 = false;
             $('#loadingvideo').hide();
             $("#blocker").show();
-            console.log('scene4')
+            // console.log('scene4')
             Scene4()
             scene4ready = false
-            console.log('scene4 is ' + scene4ready)
+            // console.log('scene4 is ' + scene4ready)
         }
     }
 }
@@ -66,6 +66,7 @@ function Scene4() {
     var experiences = [1, 2, 3, 4, 5, 6]
     var videos = [];
     var voices = [];
+     var onOffCubes = []
     //begin aaron
     var filters = [];
     var audioContext;
