@@ -96,22 +96,21 @@ var videos = [];
 var voices = [];
 var newSounds = []
 var centerPieces = []
+var onoffbutton;
+var filters = [];
+var audioContext;
+var ambientSounds = [];
+var soundisOn = [];
+var allvideoTextures = [];
+var videoImageContexts = [];
+var allMats = [];
+var mouseX = 0;
+var mouseY = 0;
+
+
 
 function Scene4() {
 
-
-
-
-    var onoffbutton;
-    //begin aaron
-    var filters = [];
-    var audioContext;
-    var ambientSounds = [];
-    //var distances = [];
-    //end aaron
-    var allvideoTextures = [];
-    var videoImageContexts = [];
-    var allMats = [];
     var scene, cameraThree, renderer;
     var light;
     var readyAllVideos = false;
@@ -124,8 +123,6 @@ function Scene4() {
     var screenHeight = window.innerHeight;
     var centerRadius = 10;
     var worldSphere
-    var mouseX = 0;
-    var mouseY = 0;
     var windowHalfX = window.innerWidth / 2;
     var windowHalfY = window.innerHeight / 2;
 
@@ -397,6 +394,142 @@ function Scene4() {
 
     } //INIT ENDS
 
+
+ //--------------------------------------------------------------------------------------------------//
+    //--------------------------------------------------------------------------------------------------//
+    // ((_)_  _ ((_)(_)) (_)) (_))_   _(())\_)() ((_) (_)) (_)) (_))_
+    //  | _ )| | | ||_ _|| |   |   \  \ \((_)/ // _ \ | _ \| |   |   \
+    //  | _ \| |_| | | | | |__ | |) |  \ \/\/ /| (_) ||   /| |__ | |) |
+    //  |___/ \___/ |___||____||___/    \_/\_/  \___/ |_|_\|____||___/
+    //--------------------------------------------------------------------------------------------------//
+    //--------------------------------------------------------------------------------------------------//
+
+    function BuildCubes() {
+
+        //place all cubes
+
+        for (var k = 0; k < experiences.length; k++) {
+
+            var xCenter = Math.cos(toRadians(k * spacing))
+
+            var zCenter = Math.sin(toRadians(k * spacing))
+
+            onOffCubes[k].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
+            onOffCubes[k].rotateY(k * (360 / experiences.length))
+            for (var j = 0; j < 10; j++) {
+
+                var randOffset = Math.floor((Math.random() * 60) + -75);
+                var size = 5 + Math.random() * 50 - 0;
+
+                geo = new THREE.BoxGeometry(size, size, size);
+                var mesh = new THREE.Mesh(geo, allMats[k]);
+                mesh.position.set(videoRadius * xCenter + (2 * randOffset), 90 + randOffset, randOffset + (videoRadius * zCenter))
+                mesh.rotateZ(randOffset)
+                mesh.rotateX(randOffset)
+
+                //ATTACH THE AUDIO TO ONE OF THE CUBES IN EACH ARRAY
+                if (j == 0) {
+
+                    mesh.add(voices[k])
+                }
+
+                scene.add(mesh);
+
+            }
+
+        }
+        readyAllVideos = true
+
+
+    }
+
+    function buildGeo() {
+        var onoffcube = new THREE.BoxGeometry(100, 50, 50);
+
+        //make all video textures
+        for (var i = 0; i < experiences.length; i++) {
+            video = document.createElement('video');
+            // video.setAttribute("webkit-playsinline", "");
+            video.setAttribute('crossorigin', 'anonymous');
+
+            video.autoplay = true;
+            video.loop = true;
+            video.preload = "auto";
+            //video.src = "https://evejweinberg.github.io/videos/" + [i + 1] + "b.mov";
+            video.src = videoSources[i];
+            videos.push(video);
+
+            videoImage = document.createElement('canvas');
+            videoImage.width = 512;
+            videoImage.height = 512;
+            videoImageContext = videoImage.getContext('2d');
+            videoImageContext.fillStyle = '#000000';
+            videoImageContext.fillRect(0, 0, videoImage.width, videoImage.height);
+            videoImageContexts.push(videoImageContext)
+
+            videoTexture = new THREE.Texture(videoImage);
+            allvideoTextures.push(videoTexture);
+
+            var newVoice = new THREE.PositionalAudio(listener);
+            newVoice.load("http://evejweinberg.github.io/samples/" + [i + 1] + ".wav");
+            //fade out distance
+            newVoice.setRefDistance(20);
+            newVoice.autoplay = true;
+            newVoice.setLoop(true);
+            voices.push(newVoice);
+            // mesh1.add(sound1);
+
+            // var newSound = new THREE.PositionalAudio(listener);
+
+            // newSound.load("http://aamontoya89.github.io/soundfx/anxiety" + [i + 1] + ".wav");
+            // //fade out distance
+            // newSound.setRefDistance(20);
+            // newSound.autoplay = true;
+            // newSound.setLoop(true);
+            // newSounds.push(newVoice);
+
+            //VOICE ON/OFF BUTTON
+            var onoffmaterial = new THREE.MeshBasicMaterial({
+                color: 0xFF0000,
+                opacity: 1
+            })
+            onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
+            onoffbutton.scale.set(.15, .15, .15)
+            scene.add(onoffbutton)
+            onOffCubes.push(onoffbutton);
+            soundisOn[i] = true
+
+
+            //begin aaron
+            var newFilter = listener.context.createBiquadFilter();
+            newFilter.type = 'lowpass';
+            newFilter.Q.value = 10;
+            newFilter.frequency.value = 440;
+            filters.push(newFilter);
+            //end aaron
+
+            mat = new THREE.MeshBasicMaterial({
+                color: 0x808080,
+                map: videoTexture,
+                side: THREE.DoubleSide,
+                opacity: 0.8
+            });
+            // mat.blending = THREE["AdditiveBlending"];
+
+            allMats.push(mat);
+
+
+        } //FOR LOOP OVER
+
+    } //BUILD GEO OVER
+
+
+
+
+
+
+
+
     ////////////////////////////////////////////////////////////////////////////////////
     //     _      _   _                  __  __      _       _____  U _____ u 
     // U  /"\  u | \ |"|       ___     U|' \/ '|uU  /"\  u  |_ " _| \| ___"|/ 
@@ -411,18 +544,28 @@ function Scene4() {
 
         raycaster.set(controls.getObject().position, controls.getDirection(), 0, 30)
             // console.log(controls.getObject().position)
-        var intersects = raycaster.intersectObjects(scene.children);
+            // add true so it goes in deeper to the children's children
+        var intersects = raycaster.intersectObjects(scene.children, true);
 
 
         if (intersects.length > 0) {
-            console.log('checking')
+            //CURRENTLY INTERSECTING SOMETHING
             for (var i = 0; i < onOffCubes.length; i++) {
                 if (intersects[0].object == onOffCubes[i]) {
-                    console.log('a cube!')
                     intersects[0].object.material.color.set(0xeeb000);
                     //ADD MOUSECLICK HERE
                 }
             }
+        }
+        //IF WE ARE NOT INTERSECTING ANYTHING
+        else {
+            for (var i = 0; i < onOffCubes.length; i++) {
+                //if the audio is playing
+                onOffCubes[i].material.color.set(0xff0000);
+                //the audio is not playing
+                // intersects[0].object.material.color.set(0xff0000);
+            }
+
         }
 
         // }
@@ -543,130 +686,7 @@ function Scene4() {
     }
 
 
-    //--------------------------------------------------------------------------------------------------//
-    //--------------------------------------------------------------------------------------------------//
-    // ((_)_  _ ((_)(_)) (_)) (_))_   _(())\_)() ((_) (_)) (_)) (_))_
-    //  | _ )| | | ||_ _|| |   |   \  \ \((_)/ // _ \ | _ \| |   |   \
-    //  | _ \| |_| | | | | |__ | |) |  \ \/\/ /| (_) ||   /| |__ | |) |
-    //  |___/ \___/ |___||____||___/    \_/\_/  \___/ |_|_\|____||___/
-    //--------------------------------------------------------------------------------------------------//
-    //--------------------------------------------------------------------------------------------------//
-
-    function BuildCubes() {
-
-        //place all cubes
-
-        for (var k = 0; k < experiences.length; k++) {
-            var xCenter = Math.cos(toRadians(k * spacing))
-
-            var zCenter = Math.sin(toRadians(k * spacing))
-
-            onOffCubes[k].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
-            onOffCubes[k].rotateY(k * (360 / experiences.length))
-            for (var j = 0; j < 10; j++) {
-
-                var randOffset = Math.floor((Math.random() * 60) + -75);
-                var size = 5 + Math.random() * 50 - 0;
-
-                geo = new THREE.BoxGeometry(size, size, size);
-                var mesh = new THREE.Mesh(geo, allMats[k]);
-                mesh.position.set(videoRadius * xCenter + (2 * randOffset), 90 + randOffset, randOffset + (videoRadius * zCenter))
-                mesh.rotateZ(randOffset)
-                mesh.rotateX(randOffset)
-                if (j == 0) {
-                    // console.log('added a voice')
-                    mesh.add(voices[k])
-                }
-
-                scene.add(mesh);
-
-            }
-            // }
-        }
-        readyAllVideos = true
-
-
-    }
-
-    function buildGeo() {
-        var onoffcube = new THREE.BoxGeometry(100, 50, 50);
-
-        //make all video textures
-        for (var i = 0; i < experiences.length; i++) {
-            video = document.createElement('video');
-            // video.setAttribute("webkit-playsinline", "");
-            video.setAttribute('crossorigin', 'anonymous');
-
-            video.autoplay = true;
-            video.loop = true;
-            video.preload = "auto";
-            //video.src = "https://evejweinberg.github.io/videos/" + [i + 1] + "b.mov";
-            video.src = videoSources[i];
-            videos.push(video);
-
-            videoImage = document.createElement('canvas');
-            videoImage.width = 512;
-            videoImage.height = 512;
-            videoImageContext = videoImage.getContext('2d');
-            videoImageContext.fillStyle = '#000000';
-            videoImageContext.fillRect(0, 0, videoImage.width, videoImage.height);
-            videoImageContexts.push(videoImageContext)
-
-            videoTexture = new THREE.Texture(videoImage);
-            allvideoTextures.push(videoTexture);
-
-            var newVoice = new THREE.PositionalAudio(listener);
-            newVoice.load("http://evejweinberg.github.io/samples/" + [i + 1] + ".wav");
-            //fade out distance
-            newVoice.setRefDistance(20);
-            newVoice.autoplay = true;
-            newVoice.setLoop(true);
-            voices.push(newVoice);
-            // mesh1.add(sound1);
-
-            // var newSound = new THREE.PositionalAudio(listener);
-
-            // newSound.load("http://aamontoya89.github.io/soundfx/anxiety" + [i + 1] + ".wav");
-            // //fade out distance
-            // newSound.setRefDistance(20);
-            // newSound.autoplay = true;
-            // newSound.setLoop(true);
-            // newSounds.push(newVoice);
-
-            //VOICE ON/OFF BUTTON
-            var onoffmaterial = new THREE.MeshBasicMaterial({
-                color: 0xFF0000,
-                opacity: 1
-            })
-            onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
-            onoffbutton.scale.set(.15, .15, .15)
-            scene.add(onoffbutton)
-            onOffCubes.push(onoffbutton);
-
-
-
-            //begin aaron
-            var newFilter = listener.context.createBiquadFilter();
-            newFilter.type = 'lowpass';
-            newFilter.Q.value = 10;
-            newFilter.frequency.value = 440;
-            filters.push(newFilter);
-            //end aaron
-
-            mat = new THREE.MeshBasicMaterial({
-                color: 0x808080,
-                map: videoTexture,
-                side: THREE.DoubleSide,
-                opacity: 0.8
-            });
-            // mat.blending = THREE["AdditiveBlending"];
-
-            allMats.push(mat);
-
-
-        } //FOR LOOP OVER
-
-    } //BUILD GEO OVER
+   ////////////////////////////////////////////////////////
 
 
 
@@ -687,7 +707,7 @@ function Scene4() {
 
     function DrawCenterArea() {
 
-        var cubeMaterial3 = new THREE.MeshLambertMaterial({ color: 0xFF0000, shininess: 200, reflectivity: 0.3 });
+        var cubeMaterial3 = new THREE.MeshLambertMaterial({ color: 0xFF0000, reflectivity: 0.3 });
         var map = new THREE.TextureLoader().load('../textures/fbtxt.png');
         map.wrapS = map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 10;
