@@ -242,12 +242,15 @@ function Scene4() {
     //set it up and kick off animation
     init();
     animate();
+    // soundBed();
 
 
 
     ///////////////////////////////////////////////////////////
     // FUNCTIONS
     ///////////////////////////////////////////////////////////
+
+
 
     function init() {
         clock = new THREE.Clock();
@@ -395,7 +398,7 @@ function Scene4() {
     } //INIT ENDS
 
 
- //--------------------------------------------------------------------------------------------------//
+    //--------------------------------------------------------------------------------------------------//
     //--------------------------------------------------------------------------------------------------//
     // ((_)_  _ ((_)(_)) (_)) (_))_   _(())\_)() ((_) (_)) (_)) (_))_
     //  | _ )| | | ||_ _|| |   |   \  \ \((_)/ // _ \ | _ \| |   |   \
@@ -443,6 +446,8 @@ function Scene4() {
 
     }
 
+    bufferLoadingCounter = 0;
+
     function buildGeo() {
         var onoffcube = new THREE.BoxGeometry(100, 50, 50);
 
@@ -470,14 +475,26 @@ function Scene4() {
             videoTexture = new THREE.Texture(videoImage);
             allvideoTextures.push(videoTexture);
 
+            var buffer = new THREE.AudioBuffer(listener.context);
+            buffer.load("http://evejweinberg.github.io/samples/" + [i + 1] + ".wav");
+            buffer.onReady(function(){
+                bufferLoadingCounter++;
+                if (bufferLoadingCounter===experiences.length){
+                    //close loading screen
+                }
+                console.log("here");
+            });
+
             var newVoice = new THREE.PositionalAudio(listener);
-            newVoice.load("http://evejweinberg.github.io/samples/" + [i + 1] + ".wav");
+            newVoice.setBuffer(buffer);
+            // newVoice.load("http://evejweinberg.github.io/samples/" + [i + 1] + ".wav");
+
             //fade out distance
             newVoice.setRefDistance(20);
             newVoice.autoplay = true;
             newVoice.setLoop(true);
             voices.push(newVoice);
-            // mesh1.add(sound1);
+
 
             // var newSound = new THREE.PositionalAudio(listener);
 
@@ -487,17 +504,22 @@ function Scene4() {
             // newSound.autoplay = true;
             // newSound.setLoop(true);
             // newSounds.push(newVoice);
+            // 
+            // attach these things to something, like a tansparent cube
 
             //VOICE ON/OFF BUTTON
             var onoffmaterial = new THREE.MeshBasicMaterial({
                 color: 0xFF0000,
                 opacity: 1
             })
+
             onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
             onoffbutton.scale.set(.15, .15, .15)
             scene.add(onoffbutton)
             onOffCubes.push(onoffbutton);
             soundisOn[i] = true
+
+            onoffbutton.userData.sound = newVoice;
 
 
             //begin aaron
@@ -547,12 +569,19 @@ function Scene4() {
             // add true so it goes in deeper to the children's children
         var intersects = raycaster.intersectObjects(scene.children, true);
 
-
+        console.log(intersects.length);
         if (intersects.length > 0) {
             //CURRENTLY INTERSECTING SOMETHING
             for (var i = 0; i < onOffCubes.length; i++) {
                 if (intersects[0].object == onOffCubes[i]) {
                     intersects[0].object.material.color.set(0xeeb000);
+                    if (!intersects[0].object.userData.playing){
+                        intersects[0].object.userData.playing = true;
+                        intersects[0].object.userData.sound.play();
+                        console.log("start sound here");
+                    }
+                    // console.log(intersects[0].object.userData.sound);
+                    // console.log("start sound here");
                     //ADD MOUSECLICK HERE
                 }
             }
@@ -560,10 +589,18 @@ function Scene4() {
         //IF WE ARE NOT INTERSECTING ANYTHING
         else {
             for (var i = 0; i < onOffCubes.length; i++) {
-                //if the audio is playing
-                onOffCubes[i].material.color.set(0xff0000);
-                //the audio is not playing
+                //if (the audio[i] is playing)
+                //pause the audio[i]
+                if (onOffCubes[i] && onOffCubes[i].userData.playing){
+                    onOffCubes[i].userData.playing = false;
+                    onOffCubes[i].userData.sound.pause();
+                    onOffCubes[i].material.color.set(0xff0000);
+                    console.log("stop sound here");
+                }
+                //if (the audio[i] is not playing){
                 // intersects[0].object.material.color.set(0xff0000);
+                // play the audio[i]
+                //}
             }
 
         }
@@ -686,7 +723,7 @@ function Scene4() {
     }
 
 
-   ////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////
 
 
 

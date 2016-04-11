@@ -113,6 +113,18 @@ if (scene1) {
         }
 
 
+            function soundBed() {
+        var player = new Tone.Player("../assets/heartbeat.wav");
+        player.toMaster();
+        player.volume.value = -15
+          Tone.Buffer.on("load", function() {
+            player.start();
+        });
+
+//create a tone player and connect to master and loop
+    }
+
+
 
         function onWindowResize() {
 
@@ -142,6 +154,7 @@ if (scene1) {
                     // console.log('video ended')
                     $('#tunnel-vid').remove();
                     switchScenes(4);
+                    soundBed();
                 });
             }
 
