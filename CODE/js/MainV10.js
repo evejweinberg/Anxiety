@@ -51,7 +51,7 @@ function preloadMedia() {
     // console.log("preload the contents");
 
     for (var i = 0; i < experiences.length; i++) {
-        var newVideo = "https://evejweinberg.github.io/videos/" + [i + 1] + "b.mov";
+        var newVideo = "https://evejweinberg.github.io/videos/" + [i + 1] + ".mp4";
         videoSources.push(newVideo);
     }
 }
@@ -91,17 +91,19 @@ function switchScenes(newscene) {
 // /_n_//___//___/   /_/ /_n_//_/`_\/___//___/\_,'/___,' /___,'/___/|__,'/_//_/|_//___,'
 //////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
+var onOffCubes = []
+var videos = [];
+var voices = [];
+var newSounds = []
+var centerPieces = []
 
 function Scene4() {
 
-    // console.log('scene4 was called')
 
-    //var experiences = [1, 2, 3, 4, 5, 6]
-    var videos = [];
-    var voices = [];
-    var newSounds = []
-    var onOffCubes = []
-        //begin aaron
+
+
+    var onoffbutton;
+    //begin aaron
     var filters = [];
     var audioContext;
     var ambientSounds = [];
@@ -220,7 +222,7 @@ function Scene4() {
                 document.addEventListener('fullscreenchange', fullscreenchange, false);
                 document.addEventListener('mozfullscreenchange', fullscreenchange, false);
                 //origin, direction, near, far
-                raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
+
 
                 element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
 
@@ -302,8 +304,10 @@ function Scene4() {
 
 
         raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
+        // raycaster.set(origin,direction)
 
         buildGeo();
+        BuildCubes();
 
 
         DrawCenterArea();
@@ -315,6 +319,7 @@ function Scene4() {
         // EVENTS
         // automatically resize renderer
         window.addEventListener('resize', onWindowResize, false);
+        window.addEventListener('mousedown', onMouseDown, false);
 
 
         controls = new THREE.PointerLockControls(cameraThree);
@@ -390,20 +395,43 @@ function Scene4() {
 
         /////////controls over
 
-
-
-        // animate();
-
     } //INIT ENDS
 
-
+    ////////////////////////////////////////////////////////////////////////////////////
+    //     _      _   _                  __  __      _       _____  U _____ u 
+    // U  /"\  u | \ |"|       ___     U|' \/ '|uU  /"\  u  |_ " _| \| ___"|/ 
+    //  \/ _ \/ <|  \| |>     |_"_|    \| |\/| |/ \/ _ \/     | |    |  _|"   
+    //  / ___ \ U| |\  |u      | |      | |  | |  / ___ \    /| |\   | |___   
+    // /_/   \_\ |_| \_|     U/| |\u    |_|  |_| /_/   \_\  u |_|U   |_____|  
+    //  \\    >> ||   \\,-.-,_|___|_,-.<<,-,,-.   \\    >>  _// \\_  <<   >>  
+    // (__)  (__)(_")  (_/ \_)-' '-(_/  (./  \.) (__)  (__)(__) (__)(__) (__) 
+    ////////////////////////////////////////////////////////////////////////////////////
 
     function animate() {
+
+        raycaster.set(controls.getObject().position, controls.getDirection(), 0, 30)
+            // console.log(controls.getObject().position)
+        var intersects = raycaster.intersectObjects(scene.children);
+
+
+        if (intersects.length > 0) {
+            console.log('checking')
+            for (var i = 0; i < onOffCubes.length; i++) {
+                if (intersects[0].object == onOffCubes[i]) {
+                    console.log('a cube!')
+                    intersects[0].object.material.color.set(0xeeb000);
+                    //ADD MOUSECLICK HERE
+                }
+            }
+        }
+
+        // }
+
+
         requestAnimationFrame(animate); //http://creativejs.com/resources/requestanimationframe/
         ///CONTROLS
         if (controlsEnabled) {
-            //console.log('controls enabled')
-            //console.log(raycaster)
+
             //copies the value of what is inside
             raycaster.ray.origin.copy(controls.getObject().position);
             raycaster.ray.origin.y -= 10;
@@ -460,15 +488,14 @@ function Scene4() {
 
 
         ///CONTROLS ENS
-        ///
-        ///
+
 
         update();
         render();
 
-        if (scene4ready) {
-            // calculateDistances();
-        }
+        // if (scene4ready) {
+        //     // calculateDistances();
+        // }
 
 
     }
@@ -492,23 +519,22 @@ function Scene4() {
         //
         // worldRadius = guicontrols.worldradius
         //gui ends
-        for (var i = 0; i < experiences.length; i++) {
-            if (videos[i].readyState === videos[i].HAVE_ENOUGH_DATA) {
-                if (readyAllVideos == true) {
+        if (readyAllVideos == true) {
 
+            for (var i = 0; i < experiences.length; i++) {
+                if (videos[i].readyState === videos[i].HAVE_ENOUGH_DATA) {
 
-                    if (videos[i].readyState === videos[i].HAVE_ENOUGH_DATA) {
-                        videoImageContexts[i].drawImage(videos[i], 0, 0);
-                        if (allvideoTextures[i])
-                            allvideoTextures[i].needsUpdate = true;
-                    }
+                    videoImageContexts[i].drawImage(videos[i], 0, 0);
+
+                    if (allvideoTextures[i])
+                        allvideoTextures[i].needsUpdate = true;
 
                 }
-
-
             }
         }
+
         renderer.render(scene, cameraThree);
+
         //console.log(cameraThree.position);
         var vec1 = new THREE.Vector3(100, 100, 100)
             // console.log(cameraThree.position)
@@ -526,6 +552,41 @@ function Scene4() {
     //--------------------------------------------------------------------------------------------------//
     //--------------------------------------------------------------------------------------------------//
 
+    function BuildCubes() {
+
+        //place all cubes
+
+        for (var k = 0; k < experiences.length; k++) {
+            var xCenter = Math.cos(toRadians(k * spacing))
+
+            var zCenter = Math.sin(toRadians(k * spacing))
+
+            onOffCubes[k].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
+            onOffCubes[k].rotateY(k * (360 / experiences.length))
+            for (var j = 0; j < 10; j++) {
+
+                var randOffset = Math.floor((Math.random() * 60) + -75);
+                var size = 5 + Math.random() * 50 - 0;
+
+                geo = new THREE.BoxGeometry(size, size, size);
+                var mesh = new THREE.Mesh(geo, allMats[k]);
+                mesh.position.set(videoRadius * xCenter + (2 * randOffset), 90 + randOffset, randOffset + (videoRadius * zCenter))
+                mesh.rotateZ(randOffset)
+                mesh.rotateX(randOffset)
+                if (j == 0) {
+                    // console.log('added a voice')
+                    mesh.add(voices[k])
+                }
+
+                scene.add(mesh);
+
+            }
+            // }
+        }
+        readyAllVideos = true
+
+
+    }
 
     function buildGeo() {
         var onoffcube = new THREE.BoxGeometry(100, 50, 50);
@@ -577,7 +638,7 @@ function Scene4() {
                 color: 0xFF0000,
                 opacity: 1
             })
-            var onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
+            onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
             onoffbutton.scale.set(.15, .15, .15)
             scene.add(onoffbutton)
             onOffCubes.push(onoffbutton);
@@ -605,38 +666,12 @@ function Scene4() {
 
         } //FOR LOOP OVER
 
+    } //BUILD GEO OVER
 
-        readyAllVideos = true
 
-        //place all cubes
 
-        for (var k = 0; k < experiences.length; k++) {
-            var xCenter = Math.cos(toRadians(k * spacing))
 
-            var zCenter = Math.sin(toRadians(k * spacing))
-
-            onOffCubes[k].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
-            onOffCubes[k].rotateY(k * (360 / experiences.length))
-            for (var j = 0; j < 10; j++) {
-
-                var randOffset = Math.floor((Math.random() * 60) + -75);
-                var size = 5 + Math.random()*50-0;
-
-                geo = new THREE.BoxGeometry(size, size, size);
-                var mesh = new THREE.Mesh(geo, allMats[k]);
-                mesh.position.set(videoRadius * xCenter + (2*randOffset), 90 + randOffset, randOffset + (videoRadius * zCenter))
-                mesh.rotateZ(randOffset)
-                mesh.rotateX(randOffset)
-                if (j == 0) {
-                    // console.log('added a voice')
-                    mesh.add(voices[k])
-                }
-
-                scene.add(mesh);
-
-            }
-            // }
-        }
+    function onMouseDown() {
 
     }
 
@@ -651,8 +686,8 @@ function Scene4() {
 
 
     function DrawCenterArea() {
-        var cubeMaterial3 = new THREE.MeshLambertMaterial( 
-            { color: 0xFF0000, shininess: 200, reflectivity: 0.3 } );
+
+        var cubeMaterial3 = new THREE.MeshLambertMaterial({ color: 0xFF0000, shininess: 200, reflectivity: 0.3 });
         var map = new THREE.TextureLoader().load('../textures/fbtxt.png');
         map.wrapS = map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 10;
@@ -663,6 +698,7 @@ function Scene4() {
         object = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius, centerRadius, 10, experiences.length, 1), cubeMaterial3);
         object.position.set(0, 0, 0);
         scene.add(object);
+        centerPieces.push(object)
 
     }
 
@@ -683,7 +719,7 @@ function Scene4() {
             floorMat.map = map;
             floorMat.needsUpdate = true;
         });
-    
+
 
         var floorGeometry = new THREE.PlaneBufferGeometry(worldRadius * 2, worldRadius * 2);
         var floorMesh = new THREE.Mesh(floorGeometry, floorMat);
@@ -710,10 +746,10 @@ function Scene4() {
             walls.map = map;
             walls.needsUpdate = true;
         });
-     
-        worldgeo = new THREE.SphereGeometry(worldRadius, 10, 10)
+
+        worldgeo = new THREE.SphereGeometry(worldRadius, 20, 20)
         worldSphere = new THREE.Mesh(worldgeo, walls)
- 
+
         scene.add(worldSphere);
 
     }
@@ -743,10 +779,6 @@ function Scene4() {
 
     }
 
-    // function onDocumentMouseMove(event) {
-    //     // mouseX = (event.clientX - windowHalfX) * 10;
-    //     // mouseY = (event.clientY - windowHalfY) * 10;
-    // }
 
     function isTouchDevice() {
         return 'ontouchstart' in window || !!(navigator.msMaxTouchPoints);
