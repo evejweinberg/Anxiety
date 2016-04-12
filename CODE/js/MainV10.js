@@ -106,7 +106,9 @@ var videoImageContexts = [];
 var allMats = [];
 var mouseX = 0;
 var mouseY = 0;
-
+var bufferLoadingCounter = 0
+var spacing = 360 / 6
+var HowManyPlaying = 6
 
 
 function Scene4() {
@@ -417,8 +419,13 @@ function Scene4() {
 
             var zCenter = Math.sin(toRadians(k * spacing))
 
+
+            //the volume buttons
             onOffCubes[k].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
             onOffCubes[k].rotateY(k * (360 / experiences.length))
+
+
+            // the 10 videos per experience cubes 
             for (var j = 0; j < 10; j++) {
 
                 var randOffset = Math.floor((Math.random() * 60) + -75);
@@ -512,14 +519,82 @@ function Scene4() {
                 color: 0xFF0000,
                 opacity: 1
             })
+            var manager = new THREE.LoadingManager();
+            manager.onProgress = function(item, loaded, total) {
+                // console.log( item, loaded, total );
 
-            onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
-            onoffbutton.scale.set(.15, .15, .15)
-            scene.add(onoffbutton)
-            onOffCubes.push(onoffbutton);
-            soundisOn[i] = true
+            };
 
-            onoffbutton.userData.sound = newVoice;
+            var onProgress = function(xhr) {
+                if (xhr.lengthComputable) {
+                    var percentComplete = xhr.loaded / xhr.total * 100;
+                    console.log(Math.round(percentComplete, 2) + '% downloaded');
+                    console.log(percentComplete)
+                }
+                //  if ((onOffCubes.length == experiences.length)) {
+                //     console.log("hi")
+                //     console.log(onOffCubes.length)
+                //     onOffCubes[i].position.set(40,40,40)
+                //     onOffCubes[i].scale.set(4,4,4)
+                //     // onOffCubes[i].rotateY(i * (360 / experiences.length))
+                // }
+            };
+
+            var onError = function(xhr) {};
+            var loader = new THREE.OBJLoader(manager);
+            loader.load('../models/AudioIcon.obj', function(object) {
+                object.traverse(function(child) {
+                    if (child instanceof THREE.Mesh) {
+                        child.material = new THREE.MeshBasicMaterial({
+                            color: 0xFF0000,
+                            opacity: 1
+                        })
+                    }
+                });
+                // var xCenter = Math.cos(toRadians(i * spacing))
+
+                // var zCenter = Math.sin(toRadians(i * spacing))
+
+
+                //the volume buttons
+                // var onoffbutton = object;
+                // scene.add(argus);
+                // onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
+                // onoffbutton.scale.set(.15, .15, .15)
+                // scene.add(onoffbutton)
+                // onOffCubes.push(onoffbutton);
+                // soundisOn[i] = true
+                // if (onOffCubes.length == experiences.length) {
+                //     onOffCubes[i].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
+                //     onOffCubes[i].rotateY(i * (360 / experiences.length))
+                // }
+                // onoffbutton.userData.sound = newVoice;
+                // var xCenter = Math.cos(toRadians(k * spacing))
+
+                // var zCenter = Math.sin(toRadians(k * spacing))
+                // for (var k = 0; k < experiences.length; k++) {
+                //     onOffCubes[k].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
+                //     onOffCubes[k].rotateY(k * (360 / experiences.length))
+                // }
+
+            }, onProgress, onError);
+
+            //the volume buttons
+                // var onoffbutton = object;
+                // scene.add(argus);
+                onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
+                onoffbutton.scale.set(.15, .15, .15)
+                scene.add(onoffbutton)
+                onOffCubes.push(onoffbutton);
+                onoffbutton.userData.sound = newVoice;
+                // soundisOn[i] = true
+                // if (onOffCubes.length == experiences.length) {
+                //     onOffCubes[i].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
+                //     onOffCubes[i].rotateY(i * (360 / experiences.length))
+                // }
+
+
+
 
 
             //begin aaron
@@ -572,12 +647,18 @@ function Scene4() {
         // console.log(intersects.length);
         if (intersects.length > 0) {
             //CURRENTLY INTERSECTING SOMETHING
+            //look through all on/off buttons
             for (var i = 0; i < onOffCubes.length; i++) {
+                //if the first thing the raycaster sees is a cube
                 if (intersects[0].object == onOffCubes[i]) {
+                    //turn that object this color
                     intersects[0].object.material.color.set(0xeeb000);
+                    //if it's not playing
                     if (!intersects[0].object.userData.playing) {
                         intersects[0].object.userData.playing = true;
                         intersects[0].object.userData.sound.play();
+                        if (HowManyPlaying<6)
+                        {HowManyPlaying++}
                         console.log("start sound here");
                     }
                     // console.log(intersects[0].object.userData.sound);
@@ -595,7 +676,8 @@ function Scene4() {
                     onOffCubes[i].userData.playing = false;
                     onOffCubes[i].userData.sound.pause();
                     onOffCubes[i].material.color.set(0xff0000);
-                    console.log("stop sound here");
+                       HowManyPlaying--
+                    console.log("stop sound here"+ "||"+HowManyPlaying);
                 }
                 //if (the audio[i] is not playing){
                 // intersects[0].object.material.color.set(0xff0000);
@@ -671,6 +753,7 @@ function Scene4() {
 
 
         update();
+        finished()
         render();
 
         // if (scene4ready) {
@@ -681,8 +764,17 @@ function Scene4() {
     }
 
     function update() {
-        // controls.update();
+      
 
+    }
+
+    function finished(){
+        for (var i=0;i<experiences.length;i++){
+            if(HowManyPlaying == 0){
+                console.log('Done')
+            }
+
+        }
     }
     //////////////////////////////////////////////////////////////////
     //    ____    U _____ u _   _    ____  U _____ u   ____
@@ -744,17 +836,18 @@ function Scene4() {
 
     function DrawCenterArea() {
         //make one center cylinder that's really clear
-            // object = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius,centerRadius, 10,22, 1), material);
-            // object.position.set(0, 0, 0);
-            //scene.add(object);
-            // 
+        var centerpiecemat = new THREE.MeshPhongMaterial({ side: THREE.DoubleSide, color: 0xFF0000, specular: 0xFF0000, emissive: 0xFF0000, shininess: 10, shading: THREE.SmoothShading, opacity: 0.1, transparent: true })
+        centerpiece = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius * 1.5, centerRadius * 1.5, worldRadius, 22, 1), centerpiecemat);
+        centerpiece.position.set(0, 0, 0);
+        scene.add(centerpiece);
+        // 
 
 
         for (var i = 0; i < experiences.length; i++) {
             var spacing = 360 / 6
 
-            var x = centerRadius*Math.cos(toRadians(i * spacing))
-            var z = centerRadius*Math.sin(toRadians(i * spacing))
+            var x = centerRadius * Math.cos(toRadians(i * spacing))
+            var z = centerRadius * Math.sin(toRadians(i * spacing))
             var cubeMaterial3 = new THREE.MeshLambertMaterial({ color: 0xFF0000, reflectivity: 0.3 });
 
             var map = new THREE.TextureLoader().load('../assets/lipTxt.png');
@@ -766,7 +859,7 @@ function Scene4() {
             });
             //top rad, bottom rad, height, radseg, heightseg
             //CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded, thetaStart, thetaLength)
-            object = new THREE.Mesh(new THREE.CylinderGeometry(2,2, 10,22, 1), material);
+            object = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, 10, 22, 1), material);
             object.position.set(x, 0, z);
             scene.add(object);
             centerPieces.push(object)
