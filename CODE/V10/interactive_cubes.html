@@ -30,10 +30,32 @@
     var INTERSECTED;
     var objects = [];
 
+
+    var lipVideoURL
+    var AlllipVideos = []
+    var lipVideoTexture
+    var allLipvideoTextures = []
+    var lipsMaterial
+    var allLipMaterials = []
+    var allLipVideosReady = false
+    var lipDisk
+    var lipDiskMesh
+    var allLipDiskMeshes = []
+    var videoLipImageContext
+    var videoLipImageContexts = []
+
+
+    var voicePlaying = [true,true,true,true,true,true]
+
     init();
     animate();
 
     function init() {
+
+
+        lipVideoURL = "../assets/lipTxt.mp4";
+
+
 
         container = document.createElement('div');
         document.body.appendChild(container);
@@ -45,34 +67,57 @@
 
         var onoffcube = new THREE.BoxGeometry(200, 100, 100);
 
-        // var AudioOn = THREE.ImageUtils.loadTexture("../assets/audioIcon.png")
-        // var mat = new THREE.MeshPhongMaterial();
-        // mat.map = AudioOn;
 
         for (var i = 0; i < 6; i++) {
 
-            //default to RED for 'on'
-            var onoffmaterial = 
 
-            // new THREE.MeshPhongMaterial( { color: 0xFF0000, specular: 0x990000, shininess: 30 } )
+            videoEl = document.createElement('video');
+            videoEl.setAttribute('crossorigin', 'anonymous');
+
+            videoEl.autoplay = true;
+            videoEl.loop = true;
+            videoEl.preload = "auto";
+            //PULL FROM PRELOAD
+            videoEl.src = lipVideoURL;
+            AlllipVideos.push(videoEl);
+
+            videoCanvas = document.createElement('canvas');
+            videoCanvas.width = 128;
+            videoCanvas.height = 128;
+            videoLipImageContext = videoCanvas.getContext('2d');
+            videoLipImageContext.fillStyle = '#000000';
+            videoLipImageContext.fillRect(0, 0, videoCanvas.width, videoCanvas.height);
+            videoLipImageContexts.push(videoLipImageContext)
+
+            lipVideoTexture = new THREE.Texture(videoCanvas);
+            allLipvideoTextures.push(lipVideoTexture);
+
+
+            lipsMaterial = new THREE.MeshBasicMaterial({
+                color: 0x808080,
+                map: lipVideoTexture,
+                wireframe: false,
+                side: THREE.DoubleSide,
+                opacity: 1
+            });
+            // mat.blending = THREE["AdditiveBlending"];
+
+            allLipMaterials.push(lipsMaterial);
 
 
 
-            new THREE.MeshBasicMaterial({
+
+
+
+            var onoffbutton = new THREE.Mesh(onoffcube, new THREE.MeshBasicMaterial({
                 color: 0xFF0000,
                 opacity: 1
-            })
-            var onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
+            }));
             onoffbutton.position.x = -400 + (i * 200);
             onoffbutton.position.y = 0;
             onoffbutton.position.z = -200;
 
-            onoffbutton.scale.set(1,1,1);
-          
-
-            // onoffbutton.rotation.x = Math.random() * 2 * Math.PI;
-            // onoffbutton.rotation.y = Math.random() * 2 * Math.PI;
-            // onoffbutton.rotation.z = Math.random() * 2 * Math.PI;
+            onoffbutton.scale.set(1, 1, 1);
 
             scene.add(onoffbutton);
             //default to TRUE for 'on'
@@ -80,6 +125,17 @@
 
             onOffCubes.push(onoffbutton);
 
+        }
+
+        allLipVideosReady = true
+
+        for (var i = 0; i < 6; i++) {
+            lipDisk = new THREE.CircleGeometry(32, 12);
+
+            lipDiskMesh = new THREE.Mesh(lipDisk, allLipMaterials[i]);
+            lipDiskMesh.position.x = -400 + (i * 100);
+            allLipDiskMeshes.push(lipDiskMesh)
+            scene.add(lipDiskMesh)
         }
 
 
@@ -97,32 +153,11 @@
 
         document.addEventListener('mousedown', onDocumentMouseDown, false);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
-        // document.addEventListener('touchstart', onDocumentTouchStart, false);
 
-
-        // window.addEventListener('resize', onWindowResize, false);
 
     }
 
-    // function onWindowResize() {
 
-    //     camera.aspect = window.innerWidth / window.innerHeight;
-    //     camera.updateProjectionMatrix();
-
-    //     renderer.setSize(window.innerWidth, window.innerHeight);
-
-    // }
-
-    // function onDocumentTouchStart(event) {
-    //     console.log("touch")
-    //     event.preventDefault();
-
-    //     event.clientX = event.touches[0].clientX;
-    //     event.clientY = event.touches[0].clientY;
-    //     onDocumentMouseDown(event);
-
-
-    // }
 
     function onDocumentMouseMove(event) {
         event.preventDefault();
@@ -131,6 +166,11 @@
     }
 
     function onDocumentMouseDown(event) {
+
+
+
+        // voicePlaying = [true,false,true,false,true,false]
+         AddorRemoveLips();
         // console.log('down')
 
         event.preventDefault();
@@ -161,6 +201,18 @@
     }
 
 
+    function AddorRemoveLips(){
+        for (var i=0;i<6;i++){
+if (voicePlaying[i]== true){
+    scene.remove(allLipDiskMeshes[i])
+    voicePlaying[i] = false
+    break
+} 
+else if (voicePlaying[i]== false){
+    scene.add(allLipDiskMeshes)
+    voicePlaying[i] = true
+}}
+    }
     function animate() {
 
         requestAnimationFrame(animate);
@@ -169,45 +221,63 @@
 
 
     function render() {
+
+
+
+        if (allLipVideosReady == true) {
+
+            for (var i = 0; i < 6; i++) {
+                if (voicePlaying[i]) {
+                    if (AlllipVideos[i].readyState === AlllipVideos[i].HAVE_ENOUGH_DATA) {
+                        videoImageContexts[i].drawImage(AlllipVideos[i], 0, 0);
+                        if (allLipvideoTextures[i])
+                            allLipvideoTextures[i].needsUpdate = true;
+                    }
+                }
+            }
+        }
+
+
+
         OnOffraycaster.setFromCamera(mouse, camera);
         var intersects = OnOffraycaster.intersectObjects(onOffCubes);
         // returns an array of all objects
         //if you are currently intersecting
         if (intersects.length > 0) {
-        //     // console.log('currently intersected with something')
-        //     // console.log('intersected =' + INTERSECTED)
+            //     // console.log('currently intersected with something')
+            //     // console.log('intersected =' + INTERSECTED)
             if (INTERSECTED != intersects[0].object) {
-        //         //the first object
-        //         // console.log('intersect object 0' + intersects[0].object)
-        //         var oac = intersects[0].object.material.opacity = .8
+                //         //the first object
+                //         // console.log('intersect object 0' + intersects[0].object)
+                //         var oac = intersects[0].object.material.opacity = .8
                 if (INTERSECTED) {
-        //             // console.log("new object")
-        //             // intersects[0].object.material.opacity = 1
+                    //             // console.log("new object")
+                    //             // intersects[0].object.material.opacity = 1
 
                 }
 
-        //         INTERSECTED = intersects[0].object;
-        //         INTERSECTED.currentHex = INTERSECTED.material.getHex();
-        //         // INTERSECTED.material.emissive.setHex(0xeeb000);
+                //         INTERSECTED = intersects[0].object;
+                //         INTERSECTED.currentHex = INTERSECTED.material.getHex();
+                //         // INTERSECTED.material.emissive.setHex(0xeeb000);
 
             }
 
         } else {
-        //     // console.log('no intersections')
+            //     // console.log('no intersections')
             if (INTERSECTED) {
-        //         // console.log(intersects[0] + "stat2")
-        //         oac = 1
-        //             // intersects[0].object.material.opacity = 1
-        //         INTERSECTED.material = new THREE.MeshBasicMaterial({
-        //             color: 0xFF0000,
-        //             opacity: 1
-        //         })
+                //         // console.log(intersects[0] + "stat2")
+                //         oac = 1
+                //             // intersects[0].object.material.opacity = 1
+                //         INTERSECTED.material = new THREE.MeshBasicMaterial({
+                //             color: 0xFF0000,
+                //             opacity: 1
+                //         })
 
-        //         // console.log('end of intersecting')
+                //         // console.log('end of intersecting')
             }
 
             INTERSECTED = null;
-        //     //set intersected to false
+            //     //set intersected to false
 
         }
 
