@@ -477,12 +477,12 @@ function Scene4() {
 
             var buffer = new THREE.AudioBuffer(listener.context);
             buffer.load("http://evejweinberg.github.io/samples/" + [i + 1] + ".wav");
-            buffer.onReady(function(){
+            buffer.onReady(function() {
                 bufferLoadingCounter++;
-                if (bufferLoadingCounter===experiences.length){
+                if (bufferLoadingCounter === experiences.length) {
                     //close loading screen
                 }
-                console.log("here");
+                // console.log("here");
             });
 
             var newVoice = new THREE.PositionalAudio(listener);
@@ -569,13 +569,13 @@ function Scene4() {
             // add true so it goes in deeper to the children's children
         var intersects = raycaster.intersectObjects(scene.children, true);
 
-        console.log(intersects.length);
+        // console.log(intersects.length);
         if (intersects.length > 0) {
             //CURRENTLY INTERSECTING SOMETHING
             for (var i = 0; i < onOffCubes.length; i++) {
                 if (intersects[0].object == onOffCubes[i]) {
                     intersects[0].object.material.color.set(0xeeb000);
-                    if (!intersects[0].object.userData.playing){
+                    if (!intersects[0].object.userData.playing) {
                         intersects[0].object.userData.playing = true;
                         intersects[0].object.userData.sound.play();
                         console.log("start sound here");
@@ -591,7 +591,7 @@ function Scene4() {
             for (var i = 0; i < onOffCubes.length; i++) {
                 //if (the audio[i] is playing)
                 //pause the audio[i]
-                if (onOffCubes[i] && onOffCubes[i].userData.playing){
+                if (onOffCubes[i] && onOffCubes[i].userData.playing) {
                     onOffCubes[i].userData.playing = false;
                     onOffCubes[i].userData.sound.pause();
                     onOffCubes[i].material.color.set(0xff0000);
@@ -743,19 +743,34 @@ function Scene4() {
 
 
     function DrawCenterArea() {
+        //make one center cylinder that's really clear
+            // object = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius,centerRadius, 10,22, 1), material);
+            // object.position.set(0, 0, 0);
+            //scene.add(object);
+            // 
 
-        var cubeMaterial3 = new THREE.MeshLambertMaterial({ color: 0xFF0000, reflectivity: 0.3 });
-        var map = new THREE.TextureLoader().load('../textures/fbtxt.png');
-        map.wrapS = map.wrapT = THREE.RepeatWrapping;
-        map.anisotropy = 10;
-        var material = new THREE.MeshLambertMaterial({
-            map: map,
-            side: THREE.DoubleSide
-        });
-        object = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius, centerRadius, 10, experiences.length, 1), cubeMaterial3);
-        object.position.set(0, 0, 0);
-        scene.add(object);
-        centerPieces.push(object)
+
+        for (var i = 0; i < experiences.length; i++) {
+            var spacing = 360 / 6
+
+            var x = centerRadius*Math.cos(toRadians(i * spacing))
+            var z = centerRadius*Math.sin(toRadians(i * spacing))
+            var cubeMaterial3 = new THREE.MeshLambertMaterial({ color: 0xFF0000, reflectivity: 0.3 });
+
+            var map = new THREE.TextureLoader().load('../assets/lipTxt.png');
+            map.wrapS = map.wrapT = THREE.RepeatWrapping;
+            map.anisotropy = 10;
+            var material = new THREE.MeshLambertMaterial({
+                map: map,
+                side: THREE.DoubleSide
+            });
+            //top rad, bottom rad, height, radseg, heightseg
+            //CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded, thetaStart, thetaLength)
+            object = new THREE.Mesh(new THREE.CylinderGeometry(2,2, 10,22, 1), material);
+            object.position.set(x, 0, z);
+            scene.add(object);
+            centerPieces.push(object)
+        }
 
     }
 
