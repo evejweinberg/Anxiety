@@ -106,9 +106,11 @@ var videoImageContexts = [];
 var allMats = [];
 var mouseX = 0;
 var mouseY = 0;
-var bufferLoadingCounter = 0
-var spacing = 360 / 6
-var HowManyPlaying = 6
+var bufferLoadingCounter = 0;
+var spacing = 360 / 6;
+var HowManyPlaying = 6;
+
+var audIcon;
 
 
 function Scene4() {
@@ -308,8 +310,48 @@ function Scene4() {
         raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
         // raycaster.set(origin,direction)
 
-        buildGeo();
-        BuildCubes();
+        var manager = new THREE.LoadingManager();
+        manager.onProgress = function(item, loaded, total) {
+            // console.log( item, loaded, total );
+
+        };
+
+        var onProgress = function(xhr) {
+            if (xhr.lengthComputable) {
+                var percentComplete = xhr.loaded / xhr.total * 100;
+                console.log(Math.round(percentComplete, 2) + '% downloaded');
+                console.log(percentComplete)
+            }
+            //  if ((onOffCubes.length == experiences.length)) {
+            //     console.log("hi")
+            //     console.log(onOffCubes.length)
+            //     onOffCubes[i].position.set(40,40,40)
+            //     onOffCubes[i].scale.set(4,4,4)
+            //     // onOffCubes[i].rotateY(i * (360 / experiences.length))
+            // }
+        };
+
+        var onError = function(xhr) {};
+
+        var loader = new THREE.OBJLoader(manager);
+        loader.load('../models/AudioIcon.obj', function(object) {
+            object.traverse(function(child) {
+                if (child instanceof THREE.Mesh) {
+                    child.material = new THREE.MeshBasicMaterial({
+                        color: 0xFF0000,
+                        opacity: 1,
+                        side: THREE.DoubleSide
+                    })
+                }
+            });
+            object.scale.set(0.005, 0.005, 0.005);
+            audIcon = object;
+
+            buildGeo();
+            BuildCubes();
+
+        }, onProgress, onError);
+
 
 
         DrawCenterArea();
@@ -422,9 +464,10 @@ function Scene4() {
 
             //the volume buttons
             onOffCubes[k].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
-            onOffCubes[k].rotateY(k * (360 / experiences.length))
+            onOffCubes[k].lookAt(new THREE.Vector3(0, 0, 0))
+                // onOffCubes[k].rotateY(k * (360 / experiences.length))
 
-
+            var group = new THREE.Object3D();
             // the 10 videos per experience cubes 
             for (var j = 0; j < 10; j++) {
 
@@ -433,7 +476,8 @@ function Scene4() {
 
                 geo = new THREE.BoxGeometry(size, size, size);
                 var mesh = new THREE.Mesh(geo, allMats[k]);
-                mesh.position.set(videoRadius * xCenter + (2 * randOffset), 90 + randOffset, randOffset + (videoRadius * zCenter))
+                mesh.position.set( (2 * randOffset), 90 + randOffset, randOffset );
+                // mesh.lookAt(new THREE.Vector3(0, 0, 0))
                 mesh.rotateZ(randOffset)
                 mesh.rotateX(randOffset)
 
@@ -442,10 +486,13 @@ function Scene4() {
 
                     mesh.add(voices[k])
                 }
-
-                scene.add(mesh);
+                group.add(mesh);
+                // scene.add(mesh);
 
             }
+            group.position.set(videoRadius * xCenter, 90, videoRadius * zCenter);
+            group.lookAt(new THREE.Vector3())
+            scene.add(group)
 
         }
         readyAllVideos = true
@@ -457,6 +504,7 @@ function Scene4() {
 
     function buildGeo() {
         var onoffcube = new THREE.BoxGeometry(100, 50, 50);
+
 
         //make all video textures
         for (var i = 0; i < experiences.length; i++) {
@@ -519,79 +567,98 @@ function Scene4() {
                 color: 0xFF0000,
                 opacity: 1
             })
-            var manager = new THREE.LoadingManager();
-            manager.onProgress = function(item, loaded, total) {
-                // console.log( item, loaded, total );
 
-            };
+            onoffbutton = audIcon.clone();
+            scene.add(onoffbutton)
+            onOffCubes.push(onoffbutton);
+            onoffbutton.userData.sound = newVoice;
 
-            var onProgress = function(xhr) {
-                if (xhr.lengthComputable) {
-                    var percentComplete = xhr.loaded / xhr.total * 100;
-                    console.log(Math.round(percentComplete, 2) + '% downloaded');
-                    console.log(percentComplete)
-                }
-                //  if ((onOffCubes.length == experiences.length)) {
-                //     console.log("hi")
-                //     console.log(onOffCubes.length)
-                //     onOffCubes[i].position.set(40,40,40)
-                //     onOffCubes[i].scale.set(4,4,4)
-                //     // onOffCubes[i].rotateY(i * (360 / experiences.length))
-                // }
-            };
+            // var manager = new THREE.LoadingManager();
+            // manager.onProgress = function(item, loaded, total) {
+            //     // console.log( item, loaded, total );
 
-            var onError = function(xhr) {};
-            var loader = new THREE.OBJLoader(manager);
-            loader.load('../models/AudioIcon.obj', function(object) {
-                object.traverse(function(child) {
-                    if (child instanceof THREE.Mesh) {
-                        child.material = new THREE.MeshBasicMaterial({
-                            color: 0xFF0000,
-                            opacity: 1
-                        })
-                    }
-                });
-                // var xCenter = Math.cos(toRadians(i * spacing))
+            // };
 
-                // var zCenter = Math.sin(toRadians(i * spacing))
+            // var onProgress = function(xhr) {
+            //     if (xhr.lengthComputable) {
+            //         var percentComplete = xhr.loaded / xhr.total * 100;
+            //         console.log(Math.round(percentComplete, 2) + '% downloaded');
+            //         console.log(percentComplete)
+            //     }
+            //     //  if ((onOffCubes.length == experiences.length)) {
+            //     //     console.log("hi")
+            //     //     console.log(onOffCubes.length)
+            //     //     onOffCubes[i].position.set(40,40,40)
+            //     //     onOffCubes[i].scale.set(4,4,4)
+            //     //     // onOffCubes[i].rotateY(i * (360 / experiences.length))
+            //     // }
+            // };
+
+            // var onError = function(xhr) {};
+            // var loader = new THREE.OBJLoader(manager);
+            // loader.load('../models/AudioIcon.obj', function(object) {
+            //     object.traverse(function(child) {
+            //         if (child instanceof THREE.Mesh) {
+            //             child.material = new THREE.MeshBasicMaterial({
+            //                 color: 0xFF0000,
+            //                 opacity: 1,
+            //                 side: THREE.DoubleSide
+            //             })
+            //         }
+            //     });
+            //     object.scale.set(0.005,0.005,0.005);
+            //     audIcon = object;
+            //     // console.log(audIcon);
+            //     // scene.add(audIcon);
+            //     // var xCenter = Math.cos(toRadians(i * spacing))
+
+            //     // var zCenter = Math.sin(toRadians(i * spacing))
 
 
-                //the volume buttons
-                // var onoffbutton = object;
-                // scene.add(argus);
-                // onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
-                // onoffbutton.scale.set(.15, .15, .15)
-                // scene.add(onoffbutton)
-                // onOffCubes.push(onoffbutton);
-                // soundisOn[i] = true
-                // if (onOffCubes.length == experiences.length) {
-                //     onOffCubes[i].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
-                //     onOffCubes[i].rotateY(i * (360 / experiences.length))
-                // }
-                // onoffbutton.userData.sound = newVoice;
-                // var xCenter = Math.cos(toRadians(k * spacing))
+            //     //the volume buttons
+            //     // var onoffbutton = object;
+            //     // scene.add(argus);
+            //     // onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
+            //     // onoffbutton.scale.set(.15, .15, .15)
+            //     // scene.add(onoffbutton)
+            //     // onOffCubes.push(onoffbutton);
+            //     // soundisOn[i] = true
+            //     // if (onOffCubes.length == experiences.length) {
+            //     //     onOffCubes[i].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
+            //     //     onOffCubes[i].rotateY(i * (360 / experiences.length))
+            //     // }
+            //     // onoffbutton.userData.sound = newVoice;
+            //     // var xCenter = Math.cos(toRadians(k * spacing))
 
-                // var zCenter = Math.sin(toRadians(k * spacing))
-                // for (var k = 0; k < experiences.length; k++) {
-                //     onOffCubes[k].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
-                //     onOffCubes[k].rotateY(k * (360 / experiences.length))
-                // }
+            //     // var zCenter = Math.sin(toRadians(k * spacing))
+            //     // for (var k = 0; k < experiences.length; k++) {
+            //     //     onOffCubes[k].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
+            //     //     onOffCubes[k].rotateY(k * (360 / experiences.length))
+            //     // }
+            //     // 
+            //     onoffbutton = audIcon.clone();
 
-            }, onProgress, onError);
+            //     scene.add(onoffbutton)
+            //     onOffCubes.push(onoffbutton);
+            //     onoffbutton.userData.sound = newVoice;
+
+            // }, onProgress, onError);
 
             //the volume buttons
-                // var onoffbutton = object;
-                // scene.add(argus);
-                onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
-                onoffbutton.scale.set(.15, .15, .15)
-                scene.add(onoffbutton)
-                onOffCubes.push(onoffbutton);
-                onoffbutton.userData.sound = newVoice;
-                // soundisOn[i] = true
-                // if (onOffCubes.length == experiences.length) {
-                //     onOffCubes[i].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
-                //     onOffCubes[i].rotateY(i * (360 / experiences.length))
-                // }
+            // var onoffbutton = object;
+            // scene.add(argus);
+            // 
+            // onoffbutton = new THREE.Mesh(onoffcube, onoffmaterial);
+            // onoffbutton.scale.set(.15, .15, .15);
+            // scene.add(onoffbutton)
+            // onOffCubes.push(onoffbutton);
+            // onoffbutton.userData.sound = newVoice;
+            // 
+            // soundisOn[i] = true
+            // if (onOffCubes.length == experiences.length) {
+            //     onOffCubes[i].position.set(videoRadius * xCenter, 10, videoRadius * zCenter)
+            //     onOffCubes[i].rotateY(i * (360 / experiences.length))
+            // }
 
 
 
@@ -657,8 +724,7 @@ function Scene4() {
                     if (!intersects[0].object.userData.playing) {
                         intersects[0].object.userData.playing = true;
                         intersects[0].object.userData.sound.play();
-                        if (HowManyPlaying<6)
-                        {HowManyPlaying++}
+                        if (HowManyPlaying < 6) { HowManyPlaying++ }
                         console.log("start sound here");
                     }
                     // console.log(intersects[0].object.userData.sound);
@@ -676,8 +742,8 @@ function Scene4() {
                     onOffCubes[i].userData.playing = false;
                     onOffCubes[i].userData.sound.pause();
                     onOffCubes[i].material.color.set(0xff0000);
-                       HowManyPlaying--
-                    console.log("stop sound here"+ "||"+HowManyPlaying);
+                    HowManyPlaying--
+                    console.log("stop sound here" + "||" + HowManyPlaying);
                 }
                 //if (the audio[i] is not playing){
                 // intersects[0].object.material.color.set(0xff0000);
@@ -764,13 +830,13 @@ function Scene4() {
     }
 
     function update() {
-      
+
 
     }
 
-    function finished(){
-        for (var i=0;i<experiences.length;i++){
-            if(HowManyPlaying == 0){
+    function finished() {
+        for (var i = 0; i < experiences.length; i++) {
+            if (HowManyPlaying == 0) {
                 console.log('Done')
             }
 
