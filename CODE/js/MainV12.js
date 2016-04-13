@@ -128,8 +128,10 @@ var lipDiskMesh
 var allLipDiskMeshes = []
 var videoLipImageContext
 var videoLipImageContexts = []
+    //////////////////////////
 var circleRad = 2
 var AudioIcontxt;
+var interactableDist = 30;
 //////////////////////
 
 
@@ -460,9 +462,11 @@ function Scene4() {
         console.log('clicked')
         for (i in experiences) {
             if (ExperiencesData[i].userClose == true && ExperiencesData[i].songPlaying == false) {
+               voices[i].play()
                 ExperiencesData[i].songPlaying = true
             } else if (ExperiencesData[i].userClose == true && ExperiencesData[i].songPlaying == true) {
                 ExperiencesData[i].songPlaying = false
+                voices[i].pause()
             }
 
 
@@ -640,6 +644,106 @@ function Scene4() {
         readyAllVideos = true
 
 
+    } //BUILD CUBES ENDS
+
+
+    function DrawCenterArea() {
+
+        //make one center cylinder that's really clear
+        var centerpiecemat = new THREE.MeshPhongMaterial({ side: THREE.DoubleSide, color: 0xFF0000, specular: 0xFF0000, emissive: 0xFF0000, shininess: 10, shading: THREE.SmoothShading, opacity: 0.1, transparent: true })
+        centerpiece = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius * 1.5, centerRadius * 1.5, worldRadius, 22, 1), centerpiecemat);
+        centerpiece.position.set(0, 0, 0);
+        scene.add(centerpiece);
+        // 
+
+
+        for (var i = 0; i < experiences.length; i++) {
+
+
+
+
+            var spacing = 360 / 6
+
+            var x = centerRadius * Math.cos(toRadians(i * spacing))
+            var z = centerRadius * Math.sin(toRadians(i * spacing))
+            var cubeMaterial3 = new THREE.MeshLambertMaterial({ color: 0xFF0000, reflectivity: 0.3 });
+
+            var map = new THREE.TextureLoader().load('../assets/lipTxt.png');
+            map.wrapS = map.wrapT = THREE.RepeatWrapping;
+            map.anisotropy = 10;
+            var material = new THREE.MeshLambertMaterial({
+                map: map,
+                side: THREE.DoubleSide
+            });
+            //top rad, bottom rad, height, radseg, heightseg
+            //CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded, thetaStart, thetaLength)
+            object = new THREE.Mesh(new THREE.CylinderGeometry(circleRad, circleRad, 10, 22, 1), material);
+            object.position.set(x, 0, z);
+
+            lipDisk = new THREE.CircleGeometry(circleRad, 12);
+
+            lipDiskMesh = new THREE.Mesh(lipDisk, allLipMaterials[i]);
+            lipDiskMesh.position.set(x, 10, z)
+            lipDiskMesh.lookAt(new THREE.Vector3())
+            allLipDiskMeshes.push(lipDiskMesh)
+            scene.add(lipDiskMesh)
+
+            scene.add(object);
+            centerPieces.push(object)
+        }
+
+    }
+
+
+    function Floor() {
+        floorMat = new THREE.MeshStandardMaterial({
+            roughness: 0.8,
+            color: 0xffffff,
+            metalness: 0.2,
+            bumpScale: 0.0005,
+        });
+        var textureLoader = new THREE.TextureLoader();
+        textureLoader.load("../textures/wallpaper1.png", function(map) {
+            map.wrapS = THREE.RepeatWrapping;
+            map.wrapT = THREE.RepeatWrapping;
+            map.anisotropy = 4;
+            map.repeat.set(10, 10);
+            floorMat.map = map;
+            floorMat.needsUpdate = true;
+        });
+
+
+        var floorGeometry = new THREE.PlaneBufferGeometry(worldRadius * 2, worldRadius * 2);
+        var floorMesh = new THREE.Mesh(floorGeometry, floorMat);
+        floorMesh.receiveShadow = true;
+        floorMesh.rotation.x = -Math.PI / 2.0;
+        scene.add(floorMesh);
+    }
+
+
+    function OuterSphere() {
+        walls = new THREE.MeshBasicMaterial({
+            roughness: 0.8,
+            color: 0xaf8585,
+            metalness: 0.2,
+            side: THREE.DoubleSide,
+            // bumpScale: 0.0005,
+        });
+        var textureLoader = new THREE.TextureLoader();
+        textureLoader.load("../textures/wallpaper1.png", function(map) {
+            map.wrapS = THREE.RepeatWrapping;
+            map.wrapT = THREE.RepeatWrapping;
+            map.anisotropy = 4;
+            map.repeat.set(10, 10);
+            walls.map = map;
+            walls.needsUpdate = true;
+        });
+
+        worldgeo = new THREE.SphereGeometry(worldRadius, 20, 20)
+        worldSphere = new THREE.Mesh(worldgeo, walls)
+
+        scene.add(worldSphere);
+
     }
 
 
@@ -667,392 +771,318 @@ function Scene4() {
 
         if (readyAllVideos == true) {
 
-            // var intersects = [];
+
             raycaster.set(controls.getObject().position, controls.getDirection(), 0, 40)
-                // console.log(controls.getObject().position)
-                // add true so it goes in deeper to the children's children
+
             for (i in experiences) {
-                if (controls.getObject().position.distanceTo(onOffCubes[i].position) < 30)
-                    console.log('intersected' + i)
+                if (controls.getObject().position.distanceTo(onOffCubes[i].position) < interactableDist) {
+                    ExperiencesData[i].userClose = true
+
+                    if (ExperiencesData[i].songPlaying == true) {
+                        console.log('song is playing and I am inside')
+                            //change color to bright red
+                        onOffCubes[i].children[0].material.color.set(colorPlayingClose)
+                            // AudioIcontxt[i].color.set(colorPlayingClose)
+                            //add text to say "click anywhere to silence voice"
+                    } else if (ExperiencesData[i].songPlaying == false) {
+                        console.log('song is OFF and I am inside')
+                        onOffCubes[i].children[0].material.color.set(colorNotPlayingClose)
+
                     }
 
-                // var intersects = raycaster.intersectObjects(scene.children, true)
-                // console.log (cameraThree.position)
-                // console.log(controls.getObject().position.distanceTo(onOffCubes[0].position))
-                // console.log (cameraThree.position.distanceTo(onOffCubes[0]))
-                // console.log('onOffcubes is greater than 0')
-                // for (i in experiences) {
-                var intersects = raycaster.intersectObjects(scene.children, true);
-                // }
-
-                if (intersects.length > 0) {
-                    for (i in experiences) {
-                        // intersects = raycaster.intersectObjects(onOffCubes[i], true);
-                        // console.log(intersects[0])
-
-                        //if the first thing the raycaster sees is a cube
-                        if (intersects[0].group == onOffCubes[i].children) {
-                            ExperiencesData[i].userClose = true
-                            console.log(ExperiencesData[i].userClose)
-                            console.log('intersected')
-                                //turn that object this color
-                            intersects[0].object.material.color.set(0xeeb000);
-                            //if it's not playing
-                            if (!ExperiencesData[i].songPlaying) {
-                                console.log("song wasn't playing")
-                                intersects[0].object.userData.playing = true;
-                                intersects[0].object.userData.sound.play();
-                                if (HowManyPlaying < 6) { HowManyPlaying++ }
-                                console.log("start sound here");
-                            }
-                            // console.log(intersects[0].object.userData.sound);
-                            // console.log("start sound here");
-                            //ADD MOUSECLICK HERE
-                        }
+                } else {
+                    //IF CONTROLS ARE NOT CLOSE TO THE SOUND, make it false
+                    ExperiencesData[i].userClose = false
+                    if (ExperiencesData[i].songPlaying == true) {
+                        //if song is playing, set color
+                        onOffCubes[i].children[0].material.color.set(colorPlayingFar)
+                    } else if (ExperiencesData[i].songPlaying == false) {
+                        //if song is not playing set color
+                        onOffCubes[i].children[0].material.color.set(colorNotPlayingFar)
                     }
                 }
-                //IF WE ARE NOT INTERSECTING ANYTHING
-                else {
-                    for (var i = 0; i < onOffCubes.length; i++) {
-                        //if (the audio[i] is playing)
-                        //pause the audio[i]
-                        if (onOffCubes[i] && onOffCubes[i].userData.playing) {
-                            onOffCubes[i].userData.playing = false;
-                            onOffCubes[i].userData.sound.pause();
-                            onOffCubes[i].material.color.set(0xff0000);
-                            HowManyPlaying--
-                            console.log("stop sound here" + "||" + HowManyPlaying);
-                        }
-                        //if (the audio[i] is not playing){
-                        // intersects[0].object.material.color.set(0xff0000);
-                        // play the audio[i]
-                        //}
-                    }
-
-                }
+                //change color to red
             }
 
+            // ExperiencesData[i].voices.play()
+
+            // var intersects = raycaster.intersectObjects(scene.children, true)
+            // console.log (cameraThree.position)
+            // console.log(controls.getObject().position.distanceTo(onOffCubes[0].position))
+            // console.log (cameraThree.position.distanceTo(onOffCubes[0]))
+            // console.log('onOffcubes is greater than 0')
+            // for (i in experiences) {
+            var intersects = raycaster.intersectObjects(scene.children, true);
             // }
 
+            if (intersects.length > 0) {
+                for (i in experiences) {
+                    // intersects = raycaster.intersectObjects(onOffCubes[i], true);
+                    // console.log(intersects[0])
 
-            requestAnimationFrame(animate); //http://creativejs.com/resources/requestanimationframe/
-            ///CONTROLS
-            if (controlsEnabled) {
-
-                //copies the value of what is inside
-                raycaster.ray.origin.copy(controls.getObject().position);
-                raycaster.ray.origin.y -= 10;
-
-                //looking for every object
-                var objects = scene.children
-                var intersections = raycaster.intersectObjects(objects);
-
-                var isOnObject = intersections.length > 0;
-
-                var time = performance.now();
-                var delta = (time - prevTime) / 1000;
-
-                velocity.x -= velocity.x * 10.0 * delta;
-                velocity.z -= velocity.z * 10.0 * delta;
-                velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
-
-                if (moveForward) velocity.z -= 400.0 * delta;
-                if (moveBackward) velocity.z += 400.0 * delta;
-                if (moveLeft) velocity.x -= 400.0 * delta;
-                if (moveRight) velocity.x += 400.0 * delta;
-
-                if (isOnObject === true) {
-                    velocity.y = Math.max(0, velocity.y);
-                    canJump = true;
-                }
-
-                if (controls.getObject().position.distanceTo(worldCenter) < videoRadius) {
-                    controls.getObject().translateX(velocity.x * delta);
-                    controls.getObject().translateY(velocity.y * delta);
-                    controls.getObject().translateZ(velocity.z * delta);
-                } else {
-                    velocity.multiplyScalar(-1);
-                    controls.getObject().translateX(velocity.x * delta);
-                    controls.getObject().translateY(velocity.y * delta);
-                    controls.getObject().translateZ(velocity.z * delta);
-                }
-                if (controls.getObject().position.y < 10) {
-                    velocity.y = 0;
-                    controls.getObject().position.y = 10;
-                    canJump = true;
-
-                }
-
-                prevTime = time;
-
-            }
-
-
-
-
-
-            update();
-            finished()
-            render();
-
-
-
-
-        }
-
-        function update() {
-
-
-        }
-
-        function finished() {
-            for (var i = 0; i < experiences.length; i++) {
-                if (HowManyPlaying == 0) {
-                    console.log('Done')
-                }
-
-            }
-        }
-        //////////////////////////////////////////////////////////////////
-        //    ____    U _____ u _   _    ____  U _____ u   ____
-        // U |  _"\ u \| ___"|/| \ |"|  |  _"\ \| ___"|/U |  _"\ u
-        //  \| |_) |/  |  _|" <|  \| |>/| | | | |  _|"   \| |_) |/
-        //   |  _ <    | |___ U| |\  |uU| |_| |\| |___    |  _ <
-        //   |_| \_\   |_____| |_| \_|  |____/ u|_____|   |_| \_\
-        //   //   \\_  <<   >> ||   \\,-.|||_   <<   >>   //   \\_
-        //  (__)  (__)(__) (__)(_")  (_/(__)_) (__) (__) (__)  (__)
-        //////////////////////////////////////////////////////////////////
-
-        function render() {
-
-            if (allLipVideosReady == true) {
-
-
-                for (var i = 0; i < experiences.length; i++) {
-                    if (ExperiencesData[i].songPlaying) {
-                        if (AlllipVideos[i].readyState === AlllipVideos[i].HAVE_ENOUGH_DATA) {
-                            videoImageContexts[i].drawImage(AlllipVideos[i], 0, 0);
-                            if (allLipvideoTextures[i])
-                                allLipvideoTextures[i].needsUpdate = true;
+                    //if the first thing the raycaster sees is a cube
+                    if (intersects[0].group == onOffCubes[i].children) {
+                        ExperiencesData[i].userClose = true
+                        console.log(ExperiencesData[i].userClose)
+                        console.log('intersected')
+                            //turn that object this color
+                        intersects[0].object.material.color.set(0xeeb000);
+                        //if it's not playing
+                        if (!ExperiencesData[i].songPlaying) {
+                            console.log("song wasn't playing")
+                            intersects[0].object.userData.playing = true;
+                            intersects[0].object.userData.sound.play();
+                            if (HowManyPlaying < 6) { HowManyPlaying++ }
+                            console.log("start sound here");
                         }
+                        // console.log(intersects[0].object.userData.sound);
+                        // console.log("start sound here");
+                        //ADD MOUSECLICK HERE
                     }
                 }
             }
+            //IF WE ARE NOT INTERSECTING ANYTHING
+            else {
+                // for (var i = 0; i < onOffCubes.length; i++) {
+                //     //if (the audio[i] is playing)
+                //     //pause the audio[i]
+                //     if (onOffCubes[i] && onOffCubes[i].userData.playing) {
+                //         onOffCubes[i].userData.playing = false;
+                //         onOffCubes[i].userData.sound.pause();
+                //         onOffCubes[i].material.color.set(0xff0000);
+                //         HowManyPlaying--
+                //         console.log("stop sound here" + "||" + HowManyPlaying);
+                //     }
+                //     //if (the audio[i] is not playing){
+                //     // intersects[0].object.material.color.set(0xff0000);
+                //     // play the audio[i]
+                //     //}
+                // }
 
-            //
-            // worldRadius = guicontrols.worldradius
-            //gui ends
-            if (readyAllVideos == true) {
-
-                for (var i = 0; i < experiences.length; i++) {
-                    if (videos[i].readyState === videos[i].HAVE_ENOUGH_DATA) {
-
-                        videoImageContexts[i].drawImage(videos[i], 0, 0);
-
-                        if (allvideoTextures[i])
-                            allvideoTextures[i].needsUpdate = true;
-
-                    }
-                }
             }
-
-            renderer.render(scene, cameraThree);
-
-            //console.log(cameraThree.position);
-            var vec1 = new THREE.Vector3(100, 100, 100)
-                // console.log(cameraThree.position)
-            var distance = vec1.distanceTo(cameraThree.position)
-                // console.log(distance)
         }
-
-
-        ////////////////////////////////////////////////////////
-
-
-
-
-        // function onMouseDown() {
 
         // }
 
 
-        function toDegrees(angle) {
-            return angle * (180 / Math.PI);
+        requestAnimationFrame(animate); //http://creativejs.com/resources/requestanimationframe/
+        ///CONTROLS
+        if (controlsEnabled) {
+
+            //copies the value of what is inside
+            raycaster.ray.origin.copy(controls.getObject().position);
+            raycaster.ray.origin.y -= 10;
+
+            //looking for every object
+            var objects = scene.children
+            var intersections = raycaster.intersectObjects(objects);
+
+            var isOnObject = intersections.length > 0;
+
+            var time = performance.now();
+            var delta = (time - prevTime) / 1000;
+
+            velocity.x -= velocity.x * 10.0 * delta;
+            velocity.z -= velocity.z * 10.0 * delta;
+            velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+
+            if (moveForward) velocity.z -= 400.0 * delta;
+            if (moveBackward) velocity.z += 400.0 * delta;
+            if (moveLeft) velocity.x -= 400.0 * delta;
+            if (moveRight) velocity.x += 400.0 * delta;
+
+            if (isOnObject === true) {
+                velocity.y = Math.max(0, velocity.y);
+                canJump = true;
+            }
+
+            if (controls.getObject().position.distanceTo(worldCenter) < videoRadius) {
+                controls.getObject().translateX(velocity.x * delta);
+                controls.getObject().translateY(velocity.y * delta);
+                controls.getObject().translateZ(velocity.z * delta);
+            } else {
+                velocity.multiplyScalar(-1);
+                controls.getObject().translateX(velocity.x * delta);
+                controls.getObject().translateY(velocity.y * delta);
+                controls.getObject().translateZ(velocity.z * delta);
+            }
+            if (controls.getObject().position.y < 10) {
+                velocity.y = 0;
+                controls.getObject().position.y = 10;
+                canJump = true;
+
+            }
+
+            prevTime = time;
+
         }
 
-        function toRadians(angle) {
-            return angle * (Math.PI / 180);
+
+
+
+
+        update();
+        finished()
+        render();
+
+
+
+
+    }
+
+    function update() {
+
+
+    }
+
+    function finished() {
+        for (var i = 0; i < experiences.length; i++) {
+            if (HowManyPlaying == 0) {
+                console.log('Done')
+            }
+
         }
+    }
+    //////////////////////////////////////////////////////////////////
+    //    ____    U _____ u _   _    ____  U _____ u   ____
+    // U |  _"\ u \| ___"|/| \ |"|  |  _"\ \| ___"|/U |  _"\ u
+    //  \| |_) |/  |  _|" <|  \| |>/| | | | |  _|"   \| |_) |/
+    //   |  _ <    | |___ U| |\  |uU| |_| |\| |___    |  _ <
+    //   |_| \_\   |_____| |_| \_|  |____/ u|_____|   |_| \_\
+    //   //   \\_  <<   >> ||   \\,-.|||_   <<   >>   //   \\_
+    //  (__)  (__)(__) (__)(_")  (_/(__)_) (__) (__) (__)  (__)
+    //////////////////////////////////////////////////////////////////
 
+    function render() {
 
-        function DrawCenterArea() {
-
-
-
-
-            //make one center cylinder that's really clear
-            var centerpiecemat = new THREE.MeshPhongMaterial({ side: THREE.DoubleSide, color: 0xFF0000, specular: 0xFF0000, emissive: 0xFF0000, shininess: 10, shading: THREE.SmoothShading, opacity: 0.1, transparent: true })
-            centerpiece = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius * 1.5, centerRadius * 1.5, worldRadius, 22, 1), centerpiecemat);
-            centerpiece.position.set(0, 0, 0);
-            scene.add(centerpiece);
-            // 
+        if (allLipVideosReady == true) {
 
 
             for (var i = 0; i < experiences.length; i++) {
-
-
-
-
-                var spacing = 360 / 6
-
-                var x = centerRadius * Math.cos(toRadians(i * spacing))
-                var z = centerRadius * Math.sin(toRadians(i * spacing))
-                var cubeMaterial3 = new THREE.MeshLambertMaterial({ color: 0xFF0000, reflectivity: 0.3 });
-
-                var map = new THREE.TextureLoader().load('../assets/lipTxt.png');
-                map.wrapS = map.wrapT = THREE.RepeatWrapping;
-                map.anisotropy = 10;
-                var material = new THREE.MeshLambertMaterial({
-                    map: map,
-                    side: THREE.DoubleSide
-                });
-                //top rad, bottom rad, height, radseg, heightseg
-                //CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded, thetaStart, thetaLength)
-                object = new THREE.Mesh(new THREE.CylinderGeometry(circleRad, circleRad, 10, 22, 1), material);
-                object.position.set(x, 0, z);
-
-                lipDisk = new THREE.CircleGeometry(circleRad, 12);
-
-                lipDiskMesh = new THREE.Mesh(lipDisk, allLipMaterials[i]);
-                lipDiskMesh.position.set(x, 10, z)
-                lipDiskMesh.lookAt(new THREE.Vector3())
-                allLipDiskMeshes.push(lipDiskMesh)
-                scene.add(lipDiskMesh)
-
-                scene.add(object);
-                centerPieces.push(object)
+                if (ExperiencesData[i].songPlaying) {
+                    if (AlllipVideos[i].readyState === AlllipVideos[i].HAVE_ENOUGH_DATA) {
+                        videoImageContexts[i].drawImage(AlllipVideos[i], 0, 0);
+                        if (allLipvideoTextures[i])
+                            allLipvideoTextures[i].needsUpdate = true;
+                    }
+                }
             }
-
         }
 
+        //
+        // worldRadius = guicontrols.worldradius
+        //gui ends
+        if (readyAllVideos == true) {
 
-        function Floor() {
-            floorMat = new THREE.MeshStandardMaterial({
-                roughness: 0.8,
-                color: 0xffffff,
-                metalness: 0.2,
-                bumpScale: 0.0005,
-            });
-            var textureLoader = new THREE.TextureLoader();
-            textureLoader.load("../textures/wallpaper1.png", function(map) {
-                map.wrapS = THREE.RepeatWrapping;
-                map.wrapT = THREE.RepeatWrapping;
-                map.anisotropy = 4;
-                map.repeat.set(10, 10);
-                floorMat.map = map;
-                floorMat.needsUpdate = true;
-            });
+            for (var i = 0; i < experiences.length; i++) {
+                if (videos[i].readyState === videos[i].HAVE_ENOUGH_DATA) {
 
+                    videoImageContexts[i].drawImage(videos[i], 0, 0);
 
-            var floorGeometry = new THREE.PlaneBufferGeometry(worldRadius * 2, worldRadius * 2);
-            var floorMesh = new THREE.Mesh(floorGeometry, floorMat);
-            floorMesh.receiveShadow = true;
-            floorMesh.rotation.x = -Math.PI / 2.0;
-            scene.add(floorMesh);
-        }
+                    if (allvideoTextures[i])
+                        allvideoTextures[i].needsUpdate = true;
 
-
-        function OuterSphere() {
-            walls = new THREE.MeshBasicMaterial({
-                roughness: 0.8,
-                color: 0xaf8585,
-                metalness: 0.2,
-                side: THREE.DoubleSide,
-                // bumpScale: 0.0005,
-            });
-            var textureLoader = new THREE.TextureLoader();
-            textureLoader.load("../textures/wallpaper1.png", function(map) {
-                map.wrapS = THREE.RepeatWrapping;
-                map.wrapT = THREE.RepeatWrapping;
-                map.anisotropy = 4;
-                map.repeat.set(10, 10);
-                walls.map = map;
-                walls.needsUpdate = true;
-            });
-
-            worldgeo = new THREE.SphereGeometry(worldRadius, 20, 20)
-            worldSphere = new THREE.Mesh(worldgeo, walls)
-
-            scene.add(worldSphere);
-
-        }
-
-
-        function createMesh(geom) {
-
-            // assign two materials
-            var meshMaterial = new THREE.MeshNormalMaterial();
-            meshMaterial.side = THREE.DoubleSide;
-            var wireFrameMat = new THREE.MeshBasicMaterial();
-            wireFrameMat.wireframe = true;
-
-            // create a multimaterial
-            var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial, wireFrameMat]);
-
-            return mesh;
-        }
-
-
-        function onWindowResize() {
-            windowHalfX = window.innerWidth / 2
-            windowHalfY = window.innerHeight / 2
-            cameraThree.aspect = window.innerWidth / window.innerHeight;
-            cameraThree.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-
-        }
-
-
-        function isTouchDevice() {
-            return 'ontouchstart' in window || !!(navigator.msMaxTouchPoints);
-        }
-
-        /////////////////////////////////////////////////////////////
-        //    ____     _   _
-        // U /"___|uU |"|u| |   ___
-        // \| |  _ / \| |\| |  |_"_|
-        //  | |_| |   | |_| |   | |
-        //   \____|  <<\___/  U/| |\u
-        //   _)(|_  (__) )(.-,_|___|_,-.
-        //  (__)__)     (__)\_)-' '-(_/
-        /////////////////////////////////////////////////////////////
-        ///
-
-        function AddGui() {
-
-            guicontrols = new function() {
-                //default values
-                this.rotationSpeed = 0.02;
-                this.bouncingSpeed = 0.03;
-                this.worldradius = 400;
+                }
             }
-
-            var gui = new dat.GUI();
-            gui.add(guicontrols, 'rotationSpeed', 0, 0.5);
-            gui.add(guicontrols, 'bouncingSpeed', 0, 0.5);
-            gui.add(guicontrols, 'worldradius', 50, 1000)
-        } //GUI ENDS
-
-
-    } ////ALL OF SCENE 2 IS OVER
-
-    function calculateDistances() {
-
-        for (var i = 0; i < experiences.length; i++) {
-            //var point1 = Scene4.cameraThree.matrixWorld.getPosition().clone();
-            //var point2 = Scene4.cameraThree.matrixWorld.getPosition().clone();
-            //distances[i] = point1.distanceTo(point2);
-            //console.log(Scene4.cameraThree.position);
         }
+
+        renderer.render(scene, cameraThree);
+
+        //console.log(cameraThree.position);
+        var vec1 = new THREE.Vector3(100, 100, 100)
+            // console.log(cameraThree.position)
+        var distance = vec1.distanceTo(cameraThree.position)
+            // console.log(distance)
+    }
+
+
+    ////////////////////////////////////////////////////////
+
+
+
+
+    // function onMouseDown() {
+
+    // }
+
+
+    function toDegrees(angle) {
+        return angle * (180 / Math.PI);
+    }
+
+    function toRadians(angle) {
+        return angle * (Math.PI / 180);
+    }
+
+
+
+
+
+    function createMesh(geom) {
+
+        // assign two materials
+        var meshMaterial = new THREE.MeshNormalMaterial();
+        meshMaterial.side = THREE.DoubleSide;
+        var wireFrameMat = new THREE.MeshBasicMaterial();
+        wireFrameMat.wireframe = true;
+
+        // create a multimaterial
+        var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial, wireFrameMat]);
+
+        return mesh;
+    }
+
+
+    function onWindowResize() {
+        windowHalfX = window.innerWidth / 2
+        windowHalfY = window.innerHeight / 2
+        cameraThree.aspect = window.innerWidth / window.innerHeight;
+        cameraThree.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
 
     }
+
+
+    function isTouchDevice() {
+        return 'ontouchstart' in window || !!(navigator.msMaxTouchPoints);
+    }
+
+    /////////////////////////////////////////////////////////////
+    //    ____     _   _
+    // U /"___|uU |"|u| |   ___
+    // \| |  _ / \| |\| |  |_"_|
+    //  | |_| |   | |_| |   | |
+    //   \____|  <<\___/  U/| |\u
+    //   _)(|_  (__) )(.-,_|___|_,-.
+    //  (__)__)     (__)\_)-' '-(_/
+    /////////////////////////////////////////////////////////////
+    ///
+
+    function AddGui() {
+
+        guicontrols = new function() {
+            //default values
+            this.rotationSpeed = 0.02;
+            this.bouncingSpeed = 0.03;
+            this.worldradius = 400;
+        }
+
+        var gui = new dat.GUI();
+        gui.add(guicontrols, 'rotationSpeed', 0, 0.5);
+        gui.add(guicontrols, 'bouncingSpeed', 0, 0.5);
+        gui.add(guicontrols, 'worldradius', 50, 1000)
+    } //GUI ENDS
+
+
+} ////ALL OF SCENE 2 IS OVER
+
+function calculateDistances() {
+
+    for (var i = 0; i < experiences.length; i++) {
+        //var point1 = Scene4.cameraThree.matrixWorld.getPosition().clone();
+        //var point2 = Scene4.cameraThree.matrixWorld.getPosition().clone();
+        //distances[i] = point1.distanceTo(point2);
+        //console.log(Scene4.cameraThree.position);
+    }
+
+}
