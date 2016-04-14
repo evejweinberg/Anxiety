@@ -369,9 +369,10 @@ function Scene4() {
 
 
         DrawCenterArea();
-        Floor()
-        OuterSphere()
+        Floor();
+        OuterSphere();
             // AddGui()
+        dummySounds();
 
 
 
@@ -525,11 +526,6 @@ function Scene4() {
             allLipMaterials.push(lipsMaterial);
             allLipVideosReady = true
 
-
-
-
-
-
             video = document.createElement('video');
             video.setAttribute('crossorigin', 'anonymous');
 
@@ -565,7 +561,7 @@ function Scene4() {
             var newVoice = new THREE.PositionalAudio(listener);
             newVoice.setBuffer(buffer);
             newVoice.setRefDistance(voicefadedist);
-            newVoice.autoplay = true;
+            newVoice.autoplay = false;
             newVoice.setLoop(true);
             voices.push(newVoice);
 
@@ -599,8 +595,28 @@ function Scene4() {
     } //BUILD GEO OVER
 
 
+    function dummySounds() {
+      console.log('called dummy')
+      var buffer = new THREE.AudioBuffer(listener.context);
+      //buffer.load(ExperiencesData[i].voice);
+      buffer.load('../assets/dummy1.wav');
 
+      var newDummy = new THREE.PositionalAudio(listener);
+      newDummy.setBuffer(buffer);
+      newDummy.setRefDistance(voicefadedist);
+      newDummy.autoplay = true;
+      newDummy.setLoop(true);
+      newDummy.setPosition(0,0,0);
+      newDummy.setOrientation(0,1,0);
 
+      var geo = new THREE.BoxGeometry(10,10,10)
+      var mat = new THREE.BasicMaterial({color: 0xffffff, opacity:.5})
+      var mesh = new THREE.Mesh(geo, mat)
+      console.log(mesh)
+      mesh.add(newDummy)
+      scene.add(mesh)
+
+    }
 
     function BuildCubes() {
 
@@ -621,7 +637,7 @@ function Scene4() {
 
             var group = new THREE.Object3D();
 
-            // the 10 videos per experience cubes 
+            // the 10 videos per experience cubes
             for (var j = 0; j < 22; j++) {
 
                 var randOffset = Math.floor((Math.random() * 120) + -35);
@@ -661,7 +677,7 @@ function Scene4() {
         centerpiece = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius * 1.5, centerRadius * 1.5, worldRadius, 22, 1), centerpiecemat);
         centerpiece.position.set(0, 0, 0);
         scene.add(centerpiece);
-        // 
+        //
 
 
         for (var i = 0; i < experiences.length; i++) {
@@ -764,13 +780,13 @@ function Scene4() {
 
 
     ////////////////////////////////////////////////////////////////////////////////////
-    //     _      _   _                  __  __      _       _____  U _____ u 
-    // U  /"\  u | \ |"|       ___     U|' \/ '|uU  /"\  u  |_ " _| \| ___"|/ 
-    //  \/ _ \/ <|  \| |>     |_"_|    \| |\/| |/ \/ _ \/     | |    |  _|"   
-    //  / ___ \ U| |\  |u      | |      | |  | |  / ___ \    /| |\   | |___   
-    // /_/   \_\ |_| \_|     U/| |\u    |_|  |_| /_/   \_\  u |_|U   |_____|  
-    //  \\    >> ||   \\,-.-,_|___|_,-.<<,-,,-.   \\    >>  _// \\_  <<   >>  
-    // (__)  (__)(_")  (_/ \_)-' '-(_/  (./  \.) (__)  (__)(__) (__)(__) (__) 
+    //     _      _   _                  __  __      _       _____  U _____ u
+    // U  /"\  u | \ |"|       ___     U|' \/ '|uU  /"\  u  |_ " _| \| ___"|/
+    //  \/ _ \/ <|  \| |>     |_"_|    \| |\/| |/ \/ _ \/     | |    |  _|"
+    //  / ___ \ U| |\  |u      | |      | |  | |  / ___ \    /| |\   | |___
+    // /_/   \_\ |_| \_|     U/| |\u    |_|  |_| /_/   \_\  u |_|U   |_____|
+    //  \\    >> ||   \\,-.-,_|___|_,-.<<,-,,-.   \\    >>  _// \\_  <<   >>
+    // (__)  (__)(_")  (_/ \_)-' '-(_/  (./  \.) (__)  (__)(__) (__)(__) (__)
     ////////////////////////////////////////////////////////////////////////////////////
 
     function animate() {
