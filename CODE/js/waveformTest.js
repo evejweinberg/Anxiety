@@ -41,10 +41,10 @@ analyser.minDecibels = -30;
 
     //make a line
     //
-var WaveFormSt = new THREE.Vector3( 10, 0, 0 )
-var WaveFormEnd = new THREE.Vector3( 0, 10, 0  )
-var oneWaveForm = Line3(WaveFormSt, WaveFormEnd)
-scene.add(oneWaveForm)
+// var WaveFormSt = new THREE.Vector3( 10, 0, 0 )
+// var WaveFormEnd = new THREE.Vector3( 0, 10, 0  )
+// var oneWaveForm = Line3(WaveFormSt, WaveFormEnd)
+// scene.add(oneWaveForm)
 
 //OR
 //

@@ -7,7 +7,7 @@ ExperiencesData = [
 		songPlaying : true,
 		userClose : false,
 		video : "https://evejweinberg.github.io/videos/1.mp4",
-		voice : "https://evejweinberg.github.io/samples/1.wav",
+		voice : "https://evejweinberg.github.io/samples/1c.wav",
 		
 	},
 	{
@@ -18,7 +18,7 @@ ExperiencesData = [
 		songPlaying : true,
 		userClose : false,
 		video : "https://evejweinberg.github.io/videos/2.mp4",
-		voice : "https://evejweinberg.github.io/samples/2.wav",
+		voice : "https://evejweinberg.github.io/samples/2c.wav",
 	},
 	{
 		num : 3,
@@ -28,7 +28,7 @@ ExperiencesData = [
 		songPlaying : true,
 		userClose : false,
 		video : "https://evejweinberg.github.io/videos/3.mp4",
-		voice : "https://evejweinberg.github.io/samples/3.wav",
+		voice : "https://evejweinberg.github.io/samples/3c.wav",
 	},
 	{
 		num : 4,
@@ -38,7 +38,7 @@ ExperiencesData = [
 		songPlaying : true,
 		userClose : false,
 		video : "https://evejweinberg.github.io/videos/4.mp4",
-		voice : "https://evejweinberg.github.io/samples/4.wav",
+		voice : "https://evejweinberg.github.io/samples/4c.wav",
 	},
 	{
 		num : 5,
@@ -48,7 +48,7 @@ ExperiencesData = [
 		songPlaying : true,
 		userClose : false,
 		video : "https://evejweinberg.github.io/videos/5.mp4",
-		voice : "https://evejweinberg.github.io/samples/5.wav",
+		voice : "https://evejweinberg.github.io/samples/5c.wav",
 	},
 	{
 		num : 6,
@@ -58,5 +58,5 @@ ExperiencesData = [
 		songPlaying : true,
 		userClose : false,
 		video : "https://evejweinberg.github.io/videos/6.mp4",
-		voice : "https://evejweinberg.github.io/samples/6.wav",
+		voice : "https://evejweinberg.github.io/samples/6c.wav",
 	}]

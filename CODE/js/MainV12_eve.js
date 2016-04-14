@@ -132,6 +132,8 @@ var videoLipImageContexts = []
 var circleRad = 2
 var AudioIcontxt;
 var interactableDist = 30;
+var text1;
+var allTexts = []
 //////////////////////
 
 
@@ -501,6 +503,54 @@ function Scene4() {
     //--------------------------------------------------------------------------------------------------//
 
     function buildGeo() {
+     //      var options = {
+     //        size: 90,
+     //        height: 90,
+     //        weight: "normal",
+     //        // font: "helvetiker",
+     //        bevelThickness: 2,
+     //        bevelSize: 0.5,
+     //        bevelSegments: 3,
+     //        bevelEnabled: true,
+     //        curveSegments: 12,
+     //        steps: 1
+     //    };
+      
+
+     //    ///////create Text
+     //    function createMesh(geom) {
+
+
+     //        var meshMaterial = new THREE.MeshPhongMaterial({
+     //            specular: 0xffffff,
+     //            color: 0xeeffff,
+     //            shininess: 100,
+     //            metal: true
+     //        });
+     //        var plane = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
+
+     //        return plane;
+     //    }
+
+     // text1 = createMesh(new THREE.TextGeometry("Click to Silence Voice", options));
+
+
+        ////OR
+        // var textMat = new THREE.MeshPhongMaterial({
+        //     specular: 0xffffff,
+        //     color: 0xeeffff,
+        //     shininess: 100,
+        //     metal: true
+        // });
+        // var textGeo = new THREE.TextGeometry("Click to Silence Voice", options)
+        // text1 = THREE.SceneUtils.createMultiMaterialObject(textGeo, textMat);
+        // text1.position.z = -100;
+        // text1.position.y = 100;
+        // scene.add(text1);
+        // allTexts.push(text1)
+
+
+
         var onoffcube = new THREE.BoxGeometry(100, 50, 50);
 
         //make all video textures
@@ -671,23 +721,8 @@ function Scene4() {
             }
             group.position.set(videoRadius * xCenter, 90, videoRadius * zCenter);
 
-            // var WaveFormSt = new THREE.Vector3(xCenter, 10, zCenter)
-            // var WaveFormEnd = new THREE.Vector3(0, 10, 0)
-            // var oneWaveForm = new THREE.Line3(WaveFormSt, WaveFormEnd)
-            // scene.add(oneWaveForm)
-            var Linematerial = new THREE.LineBasicMaterial({
-                color: 0x0000ff
-            });
 
-            var Linegeometry = new THREE.Geometry();
-            Linegeometry.vertices.push(
-                new THREE.Vector3(videoRadius*xCenter, 1, zCenter*videoRadius),
-                new THREE.Vector3(0, 1, 0)
-                // new THREE.Vector3(10, 0, 0)
-            );
 
-            var line = new THREE.Line(Linegeometry, Linematerial);
-            scene.add(line);
 
             group.lookAt(new THREE.Vector3())
             scene.add(group)
@@ -707,12 +742,35 @@ function Scene4() {
         centerpiece = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius * 1.5, centerRadius * 1.5, worldRadius, 22, 1), centerpiecemat);
         centerpiece.position.set(0, 0, 0);
         scene.add(centerpiece);
-        // 
+
+
+        ////////DRAW LINES/////////
+        for (k in experiences){
+                var xCenter = Math.cos(toRadians(k * spacing))
+                var zCenter = Math.sin(toRadians(k * spacing))
+                var Linematerial = new THREE.LineBasicMaterial({
+                    color: colorPlayingClose
+                });
+        
+                var Linegeometry = new THREE.Geometry();
+                Linegeometry.vertices.push(
+                    new THREE.Vector3(videoRadius * xCenter, 1, zCenter * videoRadius),
+                    new THREE.Vector3(xCenter*centerRadius, 1, zCenter*centerRadius)
+                    // new THREE.Vector3(10, 0, 0)
+                );
+        
+                var line = new THREE.Line(Linegeometry, Linematerial);
+                scene.add(line);}
+        /////////////////FINISH LINES
 
     }
 
     function DrawLips() {
         for (var i = 0; i < experiences.length; i++) {
+
+
+
+
 
             var spacing = 360 / 6
 
