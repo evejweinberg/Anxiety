@@ -229,7 +229,7 @@ else if (voicePlaying[i]== false){
             for (var i = 0; i < 6; i++) {
                 if (voicePlaying[i]) {
                     if (AlllipVideos[i].readyState === AlllipVideos[i].HAVE_ENOUGH_DATA) {
-                        videoImageContexts[i].drawImage(AlllipVideos[i], 0, 0);
+                        videoLipImageContexts[i].drawImage(AlllipVideos[i], 0, 0);
                         if (allLipvideoTextures[i])
                             allLipvideoTextures[i].needsUpdate = true;
                     }

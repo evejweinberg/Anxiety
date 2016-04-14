@@ -1,5 +1,3 @@
-
-
 if (scene1) {
 
     function Scene1() {
@@ -81,19 +79,20 @@ if (scene1) {
             animate();
 
         }
+        
 
         function loadHeadModel(callback) {
 
             var loader = new THREE.JSONLoader();
 
-            //loader.load('../models/evehead1/ESP.js', function(geometry) {
-            loader.load('../models/Suzanne.js', function(geometry) {
+            loader.load('../models/ESP_working.js', function(geometry) {
+                // loader.load('../models/Suzanne.js', function(geometry) {
 
                 var material = new THREE.MeshPhongMaterial({
                     specular: 0x111111,
                     // map: headtextureLoader.load( '../models/leeperrysmith/Map-COL.jpg' ),
 
-                    map: textureLoader.load('../models/evehead1/ESP.jpg'),
+                    map: textureLoader.load('../models/ESP_workingsmall.jpg'),
                     // specularMap: headtextureLoader.load( '../models/evehead1/ESP.jpg' ),
                     // normalMap: headtextureLoader.load( '../models/evehead1/ESP.jpg'),
                     // normalScale: new THREE.Vector2( 0.75, 0.75 ),
@@ -101,7 +100,19 @@ if (scene1) {
                 });
 
                 mesh = new THREE.Mesh(geometry, material);
+                // mesh.geometry.boundingSphere.center.set(0, 0, 0)
+                // console.log(mesh.geometry)
                 scene.add(mesh);
+                // mesh.centroid = new THREE.Vector3();
+                // for (var i = 0, l = geometry.vertices.length; i < l; i++) {
+                //     mesh.centroid.addSelf(
+                //         geometry.vertices[i].clone()
+                //     );
+                // }
+                // console.log(mesh.centroid)
+                // var offset = mesh.centroid.clone();
+                // mesh.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(-offset.x, -offset.y, -offset.z));
+                // mesh.position.copy(objMesh.centroid);
                 mesh.scale.set(10, 10, 10);
                 mesh.position.set(0, 0, geostart)
                 mesh.rotation.z = -10
@@ -113,16 +124,16 @@ if (scene1) {
         }
 
 
-            function soundBed() {
-        var player = new Tone.Player("../assets/heartbeat.wav");
-        player.toMaster();
-        player.volume.value = -15
-          Tone.Buffer.on("load", function() {
-            player.start();
-        });
+        function soundBed() {
+            var player = new Tone.Player("../assets/heartbeat.wav");
+            player.toMaster();
+            player.volume.value = -15
+            Tone.Buffer.on("load", function() {
+                player.start();
+            });
 
-//create a tone player and connect to master and loop
-    }
+            //create a tone player and connect to master and loop
+        }
 
 
 
@@ -141,8 +152,8 @@ if (scene1) {
                 // console.log('cam position is ' +camera.position.z)
                 mesh.rotation.y = mesh.rotation.y - .018;
                 mesh.position.y = mesh.position.y - .1
-                camera.position.z-=5
-                   // camera.position.z--
+                    camera.position.z-=5
+                // camera.position.z--
             }
 
             if (camera.position.z == 0) {

@@ -108,7 +108,7 @@ var HowManyPlaying = 6;
 var colorPlayingFar = 0xd84343
 var colorPlayingClose = 0xe82727
 var colorNotPlayingFar = 0x777474
-var colorNotPlayingClose = 0x545353
+var colorNotPlayingClose = 0x545353 //drk grey
 var audIcon;
 var readyAllVideos = false;
 var worldRadius = 420;
@@ -462,10 +462,13 @@ function Scene4() {
         console.log('clicked')
         for (i in experiences) {
             if (ExperiencesData[i].userClose == true && ExperiencesData[i].songPlaying == false) {
-               voices[i].play()
+                voices[i].play()
                 ExperiencesData[i].songPlaying = true
+                onOffCubes[i].children[0].material.color.set(colorPlayingClose)
             } else if (ExperiencesData[i].userClose == true && ExperiencesData[i].songPlaying == true) {
+
                 ExperiencesData[i].songPlaying = false
+                onOffCubes[i].children[0].material.color.set(colorNotPlayingClose)
                 voices[i].pause()
             }
 
@@ -572,9 +575,11 @@ function Scene4() {
             newFilter.frequency.value = 440;
             filters.push(newFilter);
 
-            onoffbutton = audIcon.clone();
-            scene.add(onoffbutton)
-            onOffCubes.push(onoffbutton);
+            // for (i in experiences) {
+                onoffbutton = audIcon.clone();
+                scene.add(onoffbutton)
+                onOffCubes.push(onoffbutton);
+            // }
             //instead of this, use the json file
             onoffbutton.userData.sound = voices;
 
@@ -613,6 +618,7 @@ function Scene4() {
             onOffCubes[k].lookAt(new THREE.Vector3(0, 0, 0))
             onOffCubes[k].add(voices[k])
 
+
             var group = new THREE.Object3D();
 
             // the 10 videos per experience cubes 
@@ -649,7 +655,8 @@ function Scene4() {
 
     function DrawCenterArea() {
 
-        //make one center cylinder that's really clear
+        //make one center cylinder that's really transparent
+        //try and make it blurry if you can
         var centerpiecemat = new THREE.MeshPhongMaterial({ side: THREE.DoubleSide, color: 0xFF0000, specular: 0xFF0000, emissive: 0xFF0000, shininess: 10, shading: THREE.SmoothShading, opacity: 0.1, transparent: true })
         centerpiece = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius * 1.5, centerRadius * 1.5, worldRadius, 22, 1), centerpiecemat);
         centerpiece.position.set(0, 0, 0);
@@ -779,13 +786,14 @@ function Scene4() {
                     ExperiencesData[i].userClose = true
 
                     if (ExperiencesData[i].songPlaying == true) {
-                        console.log('song is playing and I am inside')
-                            //change color to bright red
+                        // console.log('song is playing and I am inside')
+                        //change color to bright red
+
                         onOffCubes[i].children[0].material.color.set(colorPlayingClose)
                             // AudioIcontxt[i].color.set(colorPlayingClose)
                             //add text to say "click anywhere to silence voice"
                     } else if (ExperiencesData[i].songPlaying == false) {
-                        console.log('song is OFF and I am inside')
+                        // console.log('song is OFF and I am inside')
                         onOffCubes[i].children[0].material.color.set(colorNotPlayingClose)
 
                     }
@@ -794,9 +802,11 @@ function Scene4() {
                     //IF CONTROLS ARE NOT CLOSE TO THE SOUND, make it false
                     ExperiencesData[i].userClose = false
                     if (ExperiencesData[i].songPlaying == true) {
+                        // console.log('I am Far from'+ i + 'and song is playing')
                         //if song is playing, set color
                         onOffCubes[i].children[0].material.color.set(colorPlayingFar)
                     } else if (ExperiencesData[i].songPlaying == false) {
+                        // console.log('I am Far from'+ i + 'and song is not playing')
                         //if song is not playing set color
                         onOffCubes[i].children[0].material.color.set(colorNotPlayingFar)
                     }
@@ -815,51 +825,51 @@ function Scene4() {
             var intersects = raycaster.intersectObjects(scene.children, true);
             // }
 
-            if (intersects.length > 0) {
-                for (i in experiences) {
-                    // intersects = raycaster.intersectObjects(onOffCubes[i], true);
-                    // console.log(intersects[0])
+            // if (intersects.length > 0) {
+            //     for (i in experiences) {
+            //         // intersects = raycaster.intersectObjects(onOffCubes[i], true);
+            //         // console.log(intersects[0])
 
-                    //if the first thing the raycaster sees is a cube
-                    if (intersects[0].group == onOffCubes[i].children) {
-                        ExperiencesData[i].userClose = true
-                        console.log(ExperiencesData[i].userClose)
-                        console.log('intersected')
-                            //turn that object this color
-                        intersects[0].object.material.color.set(0xeeb000);
-                        //if it's not playing
-                        if (!ExperiencesData[i].songPlaying) {
-                            console.log("song wasn't playing")
-                            intersects[0].object.userData.playing = true;
-                            intersects[0].object.userData.sound.play();
-                            if (HowManyPlaying < 6) { HowManyPlaying++ }
-                            console.log("start sound here");
-                        }
-                        // console.log(intersects[0].object.userData.sound);
-                        // console.log("start sound here");
-                        //ADD MOUSECLICK HERE
-                    }
-                }
-            }
+            //         //if the first thing the raycaster sees is a cube
+            //         if (intersects[0].group == onOffCubes[i].children) {
+            //             ExperiencesData[i].userClose = true
+            //             console.log(ExperiencesData[i].userClose)
+            //             // console.log('intersected')
+            //                 //turn that object this color
+            //             intersects[0].object.material.color.set(0xeeb000);
+            //             //if it's not playing
+            //             if (!ExperiencesData[i].songPlaying) {
+            //                 // console.log("song wasn't playing")
+            //                 intersects[0].object.userData.playing = true;
+            //                 intersects[0].object.userData.sound.play();
+            //                 if (HowManyPlaying < 6) { HowManyPlaying++ }
+            //                 // console.log("start sound here");
+            //             }
+            //             // console.log(intersects[0].object.userData.sound);
+            //             // console.log("start sound here");
+            //             //ADD MOUSECLICK HERE
+            //         }
+            //     }
+            // }
             //IF WE ARE NOT INTERSECTING ANYTHING
-            else {
-                // for (var i = 0; i < onOffCubes.length; i++) {
-                //     //if (the audio[i] is playing)
-                //     //pause the audio[i]
-                //     if (onOffCubes[i] && onOffCubes[i].userData.playing) {
-                //         onOffCubes[i].userData.playing = false;
-                //         onOffCubes[i].userData.sound.pause();
-                //         onOffCubes[i].material.color.set(0xff0000);
-                //         HowManyPlaying--
-                //         console.log("stop sound here" + "||" + HowManyPlaying);
-                //     }
-                //     //if (the audio[i] is not playing){
-                //     // intersects[0].object.material.color.set(0xff0000);
-                //     // play the audio[i]
-                //     //}
-                // }
+            // else {
+            // for (var i = 0; i < onOffCubes.length; i++) {
+            //     //if (the audio[i] is playing)
+            //     //pause the audio[i]
+            //     if (onOffCubes[i] && onOffCubes[i].userData.playing) {
+            //         onOffCubes[i].userData.playing = false;
+            //         onOffCubes[i].userData.sound.pause();
+            //         onOffCubes[i].material.color.set(0xff0000);
+            //         HowManyPlaying--
+            //         console.log("stop sound here" + "||" + HowManyPlaying);
+            //     }
+            //     //if (the audio[i] is not playing){
+            //     // intersects[0].object.material.color.set(0xff0000);
+            //     // play the audio[i]
+            //     //}
+            // }
 
-            }
+            // }
         }
 
         // }
@@ -955,13 +965,17 @@ function Scene4() {
 
     function render() {
 
-        if (allLipVideosReady == true) {
+        // if (allLipVideosReady == true) {
+        if (allLipMaterials.length > 3) {
+            // console.log(allLipMaterials.length + 'is length of lipMaterials')
 
 
             for (var i = 0; i < experiences.length; i++) {
                 if (ExperiencesData[i].songPlaying) {
+                    // console.log('song is playing  - lips')
                     if (AlllipVideos[i].readyState === AlllipVideos[i].HAVE_ENOUGH_DATA) {
-                        videoImageContexts[i].drawImage(AlllipVideos[i], 0, 0);
+                        // console.log('i have enough data')
+                        videoLipImageContexts[i].drawImage(AlllipVideos[i], 0, 0);
                         if (allLipvideoTextures[i])
                             allLipvideoTextures[i].needsUpdate = true;
                     }
