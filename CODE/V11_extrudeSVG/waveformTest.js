@@ -41,9 +41,9 @@ analyser.minDecibels = -30;
 
     //make a line
 
-geometry = new THREE.PlaneGeometry()
-material =  Basic
-mesh = THREE.Mesh();
+geometry = new THREE.PlaneGeometry(10,4)
+material =  new THREE.BasicMaterial()
+mesh = THREE.Mesh(geometry,material);
 plane.verticies
 //your image is one giant array
 // index = y * width + x

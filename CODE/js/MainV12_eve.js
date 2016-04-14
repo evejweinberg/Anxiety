@@ -353,7 +353,10 @@ function Scene4() {
 
         var loader = new THREE.OBJLoader(manager);
         loader.load('../models/AudioIcon2.obj', function(object) {
+
+
             object.traverse(function(child) {
+
                 if (child instanceof THREE.Mesh) {
                     child.material = AudioIcontxt
                 }
@@ -363,6 +366,8 @@ function Scene4() {
 
             buildGeo();
             BuildCubes();
+
+            DrawLips();
 
         }, onProgress, onError);
 
@@ -464,12 +469,21 @@ function Scene4() {
             if (ExperiencesData[i].userClose == true && ExperiencesData[i].songPlaying == false) {
                 voices[i].play()
                 ExperiencesData[i].songPlaying = true
+                HowManyPlaying++
+                console.log(HowManyPlaying)
                 onOffCubes[i].children[0].material.color.set(colorPlayingClose)
+
+                checkIfFinished();
+
             } else if (ExperiencesData[i].userClose == true && ExperiencesData[i].songPlaying == true) {
 
                 ExperiencesData[i].songPlaying = false
                 onOffCubes[i].children[0].material.color.set(colorNotPlayingClose)
                 voices[i].pause()
+                HowManyPlaying--
+                console.log(HowManyPlaying)
+
+                checkIfFinished();
             }
 
 
@@ -523,7 +537,7 @@ function Scene4() {
             // mat.blending = THREE["AdditiveBlending"];
 
             allLipMaterials.push(lipsMaterial);
-            allLipVideosReady = true
+
 
 
 
@@ -576,9 +590,20 @@ function Scene4() {
             filters.push(newFilter);
 
             // for (i in experiences) {
-                onoffbutton = audIcon.clone();
-                scene.add(onoffbutton)
-                onOffCubes.push(onoffbutton);
+            onoffbutton = audIcon.clone();
+            AudioIcontxt = new THREE.MeshBasicMaterial({
+                color: colorPlayingFar,
+                opacity: 1,
+                side: THREE.DoubleSide
+            })
+            onoffbutton.traverse(function(child) {
+                if (child instanceof THREE.Mesh) {
+                    child.material = AudioIcontxt
+                }
+            });
+
+            scene.add(onoffbutton)
+            onOffCubes.push(onoffbutton);
             // }
             //instead of this, use the json file
             onoffbutton.userData.sound = voices;
@@ -604,7 +629,9 @@ function Scene4() {
 
     function BuildCubes() {
 
-        //place all cubes
+
+
+
 
         for (var k = 0; k < experiences.length; k++) {
 
@@ -643,6 +670,25 @@ function Scene4() {
 
             }
             group.position.set(videoRadius * xCenter, 90, videoRadius * zCenter);
+
+            // var WaveFormSt = new THREE.Vector3(xCenter, 10, zCenter)
+            // var WaveFormEnd = new THREE.Vector3(0, 10, 0)
+            // var oneWaveForm = new THREE.Line3(WaveFormSt, WaveFormEnd)
+            // scene.add(oneWaveForm)
+            var Linematerial = new THREE.LineBasicMaterial({
+                color: 0x0000ff
+            });
+
+            var Linegeometry = new THREE.Geometry();
+            Linegeometry.vertices.push(
+                new THREE.Vector3(videoRadius*xCenter, 1, zCenter*videoRadius),
+                new THREE.Vector3(0, 1, 0)
+                // new THREE.Vector3(10, 0, 0)
+            );
+
+            var line = new THREE.Line(Linegeometry, Linematerial);
+            scene.add(line);
+
             group.lookAt(new THREE.Vector3())
             scene.add(group)
 
@@ -663,11 +709,10 @@ function Scene4() {
         scene.add(centerpiece);
         // 
 
+    }
 
+    function DrawLips() {
         for (var i = 0; i < experiences.length; i++) {
-
-
-
 
             var spacing = 360 / 6
 
@@ -698,7 +743,7 @@ function Scene4() {
             scene.add(object);
             centerPieces.push(object)
         }
-
+        allLipVideosReady = true;
     }
 
 
@@ -779,7 +824,7 @@ function Scene4() {
         if (readyAllVideos == true) {
 
 
-            raycaster.set(controls.getObject().position, controls.getDirection(), 0, 40)
+            // raycaster.set(controls.getObject().position, controls.getDirection(), 0, 40)
 
             for (i in experiences) {
                 if (controls.getObject().position.distanceTo(onOffCubes[i].position) < interactableDist) {
@@ -920,7 +965,6 @@ function Scene4() {
                 velocity.y = 0;
                 controls.getObject().position.y = 10;
                 canJump = true;
-
             }
 
             prevTime = time;
@@ -932,7 +976,7 @@ function Scene4() {
 
 
         update();
-        finished()
+
         render();
 
 
@@ -945,13 +989,12 @@ function Scene4() {
 
     }
 
-    function finished() {
-        for (var i = 0; i < experiences.length; i++) {
-            if (HowManyPlaying == 0) {
-                console.log('Done')
-            }
+    function checkIfFinished() {
 
+        if (HowManyPlaying == 0) {
+            console.log('Done')
         }
+
     }
     //////////////////////////////////////////////////////////////////
     //    ____    U _____ u _   _    ____  U _____ u   ____
@@ -965,8 +1008,8 @@ function Scene4() {
 
     function render() {
 
-        // if (allLipVideosReady == true) {
-        if (allLipMaterials.length > 3) {
+        if (allLipVideosReady == true) {
+            // if (allLipMaterials.length > 0) {
             // console.log(allLipMaterials.length + 'is length of lipMaterials')
 
 
