@@ -10,7 +10,7 @@ if (scene1) {
         var raycaster;
         var line;
         // var ReadyToMove = false;
-        var geostart = -50
+        var geostart = -20
         var lightHelper
 
         var controls;
@@ -58,14 +58,14 @@ if (scene1) {
             light.position.set(1, 0.75, 0.5);
             scene.add(light);
             lightHelper = new THREE.DirectionalLightHelper(light, 50);
-            scene.add(lightHelper);
+            // scene.add(lightHelper);
 
             //red light
             var light = new THREE.DirectionalLight(0xFF0000, 1);
             light.position.set(-1, 0.75, -0.5);
             scene.add(light);
             lightHelper = new THREE.DirectionalLightHelper(light, 50);
-            scene.add(lightHelper);
+            // scene.add(lightHelper);
 
 
 
@@ -79,20 +79,20 @@ if (scene1) {
             animate();
 
         }
-        
+
 
         function loadHeadModel(callback) {
 
             var loader = new THREE.JSONLoader();
 
-            loader.load('../models/ESP_working.js', function(geometry) {
+            loader.load('../models/ESP_v3.js', function(geometry) {
                 // loader.load('../models/Suzanne.js', function(geometry) {
 
                 var material = new THREE.MeshPhongMaterial({
                     specular: 0x111111,
                     // map: headtextureLoader.load( '../models/leeperrysmith/Map-COL.jpg' ),
 
-                    map: textureLoader.load('../models/ESP_workingsmall.jpg'),
+                    map: textureLoader.load('../models/ESP_v2Tex1.jpg'),
                     // specularMap: headtextureLoader.load( '../models/evehead1/ESP.jpg' ),
                     // normalMap: headtextureLoader.load( '../models/evehead1/ESP.jpg'),
                     // normalScale: new THREE.Vector2( 0.75, 0.75 ),
@@ -113,9 +113,11 @@ if (scene1) {
                 // var offset = mesh.centroid.clone();
                 // mesh.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(-offset.x, -offset.y, -offset.z));
                 // mesh.position.copy(objMesh.centroid);
-                mesh.scale.set(10, 10, 10);
-                mesh.position.set(0, 0, geostart)
-                mesh.rotation.z = -10
+                mesh.scale.set(20,20,20)
+                // mesh.position.set(0, 0, 0)
+                mesh.position.set(0, -30, geostart)
+                mesh.rotation.z = Math.PI / 2
+                mesh.rotation.y = Math.PI
 
 
 
@@ -151,9 +153,9 @@ if (scene1) {
             if (headspin == true) {
                 // console.log('cam position is ' +camera.position.z)
                 mesh.rotation.y = mesh.rotation.y - .018;
-                mesh.position.y = mesh.position.y - .1
-                    camera.position.z-=5
-                // camera.position.z--
+                // mesh.position.y = mesh.position.y - .1
+                // camera.position.z-=5
+                camera.position.z--
             }
 
             if (camera.position.z == 0) {

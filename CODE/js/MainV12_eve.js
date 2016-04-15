@@ -9,6 +9,7 @@ var headZstart;
 var loadingOvervid;
 var videoSources;
 var ExperiencesData;
+var gameOver = false;
 // var experiences = [];
 var distances = [];
 
@@ -38,11 +39,11 @@ function renderIntro() {
         Scene1();
         $("#blocker").hide();
         loadingOvervid.pause();
-        // console.log('scene1')
+      
         $('#next-button').click(function() {
             scene2 = true
             headspin = true;
-            // switchscenes(2)
+           
             $("#intro").hide();
         });
     }
@@ -76,6 +77,8 @@ function switchScenes(newscene) {
             Scene4();
             scene4ready = false
         }
+    } else if (newscene == 5){
+        scene5 = true;
     }
 }
 
@@ -104,7 +107,7 @@ var mouseX = 0;
 var mouseY = 0;
 var bufferLoadingCounter = 0;
 var spacing = 360 / 6;
-var HowManyPlaying = 6;
+var HowManyPlaying = 1;
 var colorPlayingFar = 0xd84343
 var colorPlayingClose = 0xe82727
 var colorNotPlayingFar = 0x777474
@@ -134,6 +137,8 @@ var AudioIcontxt;
 var interactableDist = 30;
 var text1;
 var allTexts = []
+var thetaStart = 0
+var walls;
 //////////////////////
 
 
@@ -503,36 +508,36 @@ function Scene4() {
     //--------------------------------------------------------------------------------------------------//
 
     function buildGeo() {
-     //      var options = {
-     //        size: 90,
-     //        height: 90,
-     //        weight: "normal",
-     //        // font: "helvetiker",
-     //        bevelThickness: 2,
-     //        bevelSize: 0.5,
-     //        bevelSegments: 3,
-     //        bevelEnabled: true,
-     //        curveSegments: 12,
-     //        steps: 1
-     //    };
-      
-
-     //    ///////create Text
-     //    function createMesh(geom) {
+        //      var options = {
+        //        size: 90,
+        //        height: 90,
+        //        weight: "normal",
+        //        // font: "helvetiker",
+        //        bevelThickness: 2,
+        //        bevelSize: 0.5,
+        //        bevelSegments: 3,
+        //        bevelEnabled: true,
+        //        curveSegments: 12,
+        //        steps: 1
+        //    };
 
 
-     //        var meshMaterial = new THREE.MeshPhongMaterial({
-     //            specular: 0xffffff,
-     //            color: 0xeeffff,
-     //            shininess: 100,
-     //            metal: true
-     //        });
-     //        var plane = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
+        //    ///////create Text
+        //    function createMesh(geom) {
 
-     //        return plane;
-     //    }
 
-     // text1 = createMesh(new THREE.TextGeometry("Click to Silence Voice", options));
+        //        var meshMaterial = new THREE.MeshPhongMaterial({
+        //            specular: 0xffffff,
+        //            color: 0xeeffff,
+        //            shininess: 100,
+        //            metal: true
+        //        });
+        //        var plane = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
+
+        //        return plane;
+        //    }
+
+        // text1 = createMesh(new THREE.TextGeometry("Click to Silence Voice", options));
 
 
         ////OR
@@ -745,22 +750,23 @@ function Scene4() {
 
 
         ////////DRAW LINES/////////
-        for (k in experiences){
-                var xCenter = Math.cos(toRadians(k * spacing))
-                var zCenter = Math.sin(toRadians(k * spacing))
-                var Linematerial = new THREE.LineBasicMaterial({
-                    color: colorPlayingClose
-                });
-        
-                var Linegeometry = new THREE.Geometry();
-                Linegeometry.vertices.push(
-                    new THREE.Vector3(videoRadius * xCenter, 1, zCenter * videoRadius),
-                    new THREE.Vector3(xCenter*centerRadius, 1, zCenter*centerRadius)
-                    // new THREE.Vector3(10, 0, 0)
-                );
-        
-                var line = new THREE.Line(Linegeometry, Linematerial);
-                scene.add(line);}
+        for (k in experiences) {
+            var xCenter = Math.cos(toRadians(k * spacing))
+            var zCenter = Math.sin(toRadians(k * spacing))
+            var Linematerial = new THREE.LineBasicMaterial({
+                color: colorPlayingClose
+            });
+
+            var Linegeometry = new THREE.Geometry();
+            Linegeometry.vertices.push(
+                new THREE.Vector3(videoRadius * xCenter, 1, zCenter * videoRadius),
+                new THREE.Vector3(xCenter * centerRadius, 1, zCenter * centerRadius)
+                // new THREE.Vector3(10, 0, 0)
+            );
+
+            var line = new THREE.Line(Linegeometry, Linematerial);
+            scene.add(line);
+        }
         /////////////////FINISH LINES
 
     }
@@ -849,7 +855,10 @@ function Scene4() {
             walls.needsUpdate = true;
         });
 
-        worldgeo = new THREE.SphereGeometry(worldRadius, 20, 20)
+        // new THREE.SphereGeometry(controls.radius, controls.widthSegments, controls.heightSegments, controls.phiStart, controls.phiLength, controls.thetaStart, controls.thetaLength));
+
+        worldgeo = new THREE.SphereGeometry(worldRadius, 20, 20, 0, Math.PI * 2, thetaStart)
+        worldgeo.thetaStart = 0;
         worldSphere = new THREE.Mesh(worldgeo, walls)
 
         scene.add(worldSphere);
@@ -877,6 +886,29 @@ function Scene4() {
     ////////////////////////////////////////////////////////////////////////////////////
 
     function animate() {
+
+        if (gameOver) {
+            if (cameraThree.position.y == 250){
+                switchScenes(5)
+            }
+            // scene.remove(worldSphere);
+            worldgeo = new THREE.SphereGeometry(worldRadius, 20, 20, 0, Math.PI * 2, thetaStart)
+            worldgeo.thetaStart = 0;
+            worldSphere = new THREE.Mesh(worldgeo, walls)
+
+            // scene.add(worldSphere);
+
+console.log(cameraThree.position.y)
+            cameraThree.position.y += .5
+            hemiLight.color.setHSL(0.1, 1, 1);
+            walls.opacity = .5
+            if (lighten < 1) { lighten = lighten + .01 } else {
+                lighten = 1
+            }
+        } else {
+            var lighten = 0.6;
+
+        }
 
 
         if (readyAllVideos == true) {
@@ -917,65 +949,13 @@ function Scene4() {
                 //change color to red
             }
 
-            // ExperiencesData[i].voices.play()
 
-            // var intersects = raycaster.intersectObjects(scene.children, true)
-            // console.log (cameraThree.position)
-            // console.log(controls.getObject().position.distanceTo(onOffCubes[0].position))
-            // console.log (cameraThree.position.distanceTo(onOffCubes[0]))
-            // console.log('onOffcubes is greater than 0')
-            // for (i in experiences) {
             var intersects = raycaster.intersectObjects(scene.children, true);
-            // }
 
-            // if (intersects.length > 0) {
-            //     for (i in experiences) {
-            //         // intersects = raycaster.intersectObjects(onOffCubes[i], true);
-            //         // console.log(intersects[0])
 
-            //         //if the first thing the raycaster sees is a cube
-            //         if (intersects[0].group == onOffCubes[i].children) {
-            //             ExperiencesData[i].userClose = true
-            //             console.log(ExperiencesData[i].userClose)
-            //             // console.log('intersected')
-            //                 //turn that object this color
-            //             intersects[0].object.material.color.set(0xeeb000);
-            //             //if it's not playing
-            //             if (!ExperiencesData[i].songPlaying) {
-            //                 // console.log("song wasn't playing")
-            //                 intersects[0].object.userData.playing = true;
-            //                 intersects[0].object.userData.sound.play();
-            //                 if (HowManyPlaying < 6) { HowManyPlaying++ }
-            //                 // console.log("start sound here");
-            //             }
-            //             // console.log(intersects[0].object.userData.sound);
-            //             // console.log("start sound here");
-            //             //ADD MOUSECLICK HERE
-            //         }
-            //     }
-            // }
-            //IF WE ARE NOT INTERSECTING ANYTHING
-            // else {
-            // for (var i = 0; i < onOffCubes.length; i++) {
-            //     //if (the audio[i] is playing)
-            //     //pause the audio[i]
-            //     if (onOffCubes[i] && onOffCubes[i].userData.playing) {
-            //         onOffCubes[i].userData.playing = false;
-            //         onOffCubes[i].userData.sound.pause();
-            //         onOffCubes[i].material.color.set(0xff0000);
-            //         HowManyPlaying--
-            //         console.log("stop sound here" + "||" + HowManyPlaying);
-            //     }
-            //     //if (the audio[i] is not playing){
-            //     // intersects[0].object.material.color.set(0xff0000);
-            //     // play the audio[i]
-            //     //}
-            // }
-
-            // }
         }
 
-        // }
+
 
 
         requestAnimationFrame(animate); //http://creativejs.com/resources/requestanimationframe/
@@ -1050,6 +1030,7 @@ function Scene4() {
     function checkIfFinished() {
 
         if (HowManyPlaying == 0) {
+            gameOver = true;
             console.log('Done')
         }
 
@@ -1108,6 +1089,8 @@ function Scene4() {
             // console.log(cameraThree.position)
         var distance = vec1.distanceTo(cameraThree.position)
             // console.log(distance)
+            // 
+
     }
 
 
