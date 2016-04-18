@@ -328,8 +328,11 @@ function Scene4() {
         // \\_, )
         //  `--'
         listener = new THREE.AudioListener();
-        //Tone.setContext(listener.context);
-        cameraThree.add(listener);
+        //if we're using tone, include this line
+        // Tone.setContext(listener.context);
+        // cameraThree.add(listener);
+        //controls.getObject().add(listener);
+
         ////////////////////////////////
 
 
@@ -461,6 +464,7 @@ function Scene4() {
 
 
         controls = new THREE.PointerLockControls(cameraThree);
+        controls.getObject().add(listener);
         scene.add(controls.getObject());
 
         var onKeyDown = function(event) {
@@ -659,7 +663,11 @@ function Scene4() {
 
             var newVoice = new THREE.PositionalAudio(listener);
             newVoice.setBuffer(buffer);
-            newVoice.setRefDistance(voicefadedist);
+            //units of rolloff factor
+            // newVoice.setRefDistance(voicefadedist);
+            // try units
+            newVoice.setMaxDistance(.1)
+            // newVoice.setRolloffFactor(.5);
             newVoice.autoplay = true;
             newVoice.setLoop(true);
             voices.push(newVoice);
@@ -1076,6 +1084,7 @@ function Scene4() {
     //////////////////////////////////////////////////////////////////
 
     function render() {
+        // console.log('campos' +cameraThree.position.x)
 
         if (allLipVideosReady == true) {
             // if (allLipMaterials.length > 0) {
