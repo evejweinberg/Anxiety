@@ -7,7 +7,9 @@ ExperiencesData = [
 		songPlaying : true,
 		userClose : false,
 		video : "https://evejweinberg.github.io/videos/1.mp4",
-		voice : "https://evejweinberg.github.io/samples/1c.wav",
+		voice : "https://evejweinberg.github.io/anxeity/01_01.wav",
+		firstSfx : "https://evejweinberg.github.io/anxeity/01_02.wav",
+		secondSfx : "https://evejweinberg.github.io/anxeity/01_03.wav",
 		
 	},
 	{
@@ -18,7 +20,9 @@ ExperiencesData = [
 		songPlaying : true,
 		userClose : false,
 		video : "https://evejweinberg.github.io/videos/2.mp4",
-		voice : "https://evejweinberg.github.io/samples/2c.wav",
+		voice : "https://evejweinberg.github.io/anxeity/02_01.wav",
+		firstSfx : "https://evejweinberg.github.io/anxeity/02_02.wav",
+		secondSfx : "https://evejweinberg.github.io/anxeity/02_03.wav",
 	},
 	{
 		num : 3,
@@ -28,7 +32,9 @@ ExperiencesData = [
 		songPlaying : true,
 		userClose : false,
 		video : "https://evejweinberg.github.io/videos/3.mp4",
-		voice : "https://evejweinberg.github.io/samples/3c.wav",
+		voice : "https://evejweinberg.github.io/anxeity/03_01.wav",
+		firstSfx : "https://evejweinberg.github.io/anxeity/03_02.wav",
+		secondSfx : "https://evejweinberg.github.io/anxeity/03_03.wav",
 	},
 	{
 		num : 4,
@@ -38,7 +44,9 @@ ExperiencesData = [
 		songPlaying : true,
 		userClose : false,
 		video : "https://evejweinberg.github.io/videos/4.mp4",
-		voice : "https://evejweinberg.github.io/samples/4c.wav",
+		voice : "https://evejweinberg.github.io/anxeity/04_01.wav",
+		firstSfx : "https://evejweinberg.github.io/anxeity/04_02.wav",
+		secondSfx : "https://evejweinberg.github.io/anxeity/04_03.wav",
 	},
 	{
 		num : 5,
@@ -48,7 +56,9 @@ ExperiencesData = [
 		songPlaying : true,
 		userClose : false,
 		video : "https://evejweinberg.github.io/videos/5.mp4",
-		voice : "https://evejweinberg.github.io/samples/5c.wav",
+		voice : "https://evejweinberg.github.io/anxeity/05_01.wav",
+		firstSfx : "https://evejweinberg.github.io/anxeity/05_02.wav",
+		secondSfx : "https://evejweinberg.github.io/anxeity/05_03.wav",
 	},
 	{
 		num : 6,
@@ -58,5 +68,7 @@ ExperiencesData = [
 		songPlaying : true,
 		userClose : false,
 		video : "https://evejweinberg.github.io/videos/6.mp4",
-		voice : "https://evejweinberg.github.io/samples/6c.wav",
+		voice : "https://evejweinberg.github.io/anxeity/06_01.wav",
+		firstSfx : "https://evejweinberg.github.io/anxeity/06_02.wav",
+		secondSfx : "https://evejweinberg.github.io/anxeity/06_03.wav",
 	}]

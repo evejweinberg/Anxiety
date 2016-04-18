@@ -39,11 +39,11 @@ function renderIntro() {
         Scene1();
         $("#blocker").hide();
         loadingOvervid.pause();
-      
+
         $('#next-button').click(function() {
             scene2 = true
             headspin = true;
-           
+
             $("#intro").hide();
         });
     }
@@ -77,7 +77,7 @@ function switchScenes(newscene) {
             Scene4();
             scene4ready = false
         }
-    } else if (newscene == 5){
+    } else if (newscene == 5) {
         scene5 = true;
     }
 }
@@ -107,7 +107,7 @@ var mouseX = 0;
 var mouseY = 0;
 var bufferLoadingCounter = 0;
 var spacing = 360 / 6;
-var HowManyPlaying = 1;
+var HowManyPlaying = 6;
 var colorPlayingFar = 0xd84343
 var colorPlayingClose = 0xe82727
 var colorNotPlayingFar = 0x777474
@@ -116,6 +116,7 @@ var audIcon;
 var readyAllVideos = false;
 var worldRadius = 420;
 var videoRadius = worldRadius * .8;
+var textRadius = worldRadius * .85;
 var spacing = 360 / experiences.length;
 var voicefadedist = 10
     ////////////LIP VIDEOS
@@ -139,7 +140,8 @@ var text1;
 var allTexts = []
 var thetaStart = 0
 var walls;
-//////////////////////
+var allType = []
+    //////////////////////
 
 
 
@@ -358,6 +360,10 @@ function Scene4() {
 
         var onError = function(xhr) {};
 
+
+
+        ////draw type
+
         var loader = new THREE.OBJLoader(manager);
         loader.load('../models/AudioIcon2.obj', function(object) {
 
@@ -377,6 +383,69 @@ function Scene4() {
             DrawLips();
 
         }, onProgress, onError);
+
+
+        var loader = new THREE.FontLoader();
+        loader.load('../js/helvetiker_regular.typeface.js', function(font) {
+
+            DrawType(font);
+
+
+        });
+
+
+
+
+
+
+        function DrawType(font) {
+
+            for (i in experiences) {
+
+
+                var theText = "Click to silence voice";
+
+                var hash = document.location.hash.substr(1);
+
+                if (hash.length !== 0) {
+
+                    theText = hash;
+
+                }
+
+                var geometry = new THREE.TextGeometry(theText, {
+                    font: font,
+                    size: 1,
+                    height: 0.5,
+                    curveSegments: 7
+                });
+
+                // 
+                geometry.computeBoundingBox();
+                var centerOffset = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+
+                var material = new THREE.MultiMaterial([new THREE.MeshBasicMaterial({
+                    color: 0xffffff,
+                    overdraw: 0.5
+                }), new THREE.MeshBasicMaterial({
+                    color: 0x000000,
+                    overdraw: 0.5
+                })]);
+                var xCenter = Math.cos(toRadians(i * spacing))
+
+                var zCenter = Math.sin(toRadians(i * spacing))
+                var mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(videoRadius * xCenter+centerOffset, 8 , videoRadius * zCenter);
+
+                mesh.lookAt(new THREE.Vector3(0, 0, 0))
+                allType.push(mesh)
+
+                scene.add(allType[i]);
+            }
+        } //end of draw Type
+
+
+
 
 
 
@@ -471,9 +540,10 @@ function Scene4() {
 
 
     function onClick() {
-        console.log('clicked')
+        // console.log('clicked')
         for (i in experiences) {
             if (ExperiencesData[i].userClose == true && ExperiencesData[i].songPlaying == false) {
+                scene.remove(allType[i]);
                 voices[i].play()
                 ExperiencesData[i].songPlaying = true
                 HowManyPlaying++
@@ -483,7 +553,7 @@ function Scene4() {
                 checkIfFinished();
 
             } else if (ExperiencesData[i].userClose == true && ExperiencesData[i].songPlaying == true) {
-
+                scene.remove(allType[i]);
                 ExperiencesData[i].songPlaying = false
                 onOffCubes[i].children[0].material.color.set(colorNotPlayingClose)
                 voices[i].pause()
@@ -508,51 +578,7 @@ function Scene4() {
     //--------------------------------------------------------------------------------------------------//
 
     function buildGeo() {
-        //      var options = {
-        //        size: 90,
-        //        height: 90,
-        //        weight: "normal",
-        //        // font: "helvetiker",
-        //        bevelThickness: 2,
-        //        bevelSize: 0.5,
-        //        bevelSegments: 3,
-        //        bevelEnabled: true,
-        //        curveSegments: 12,
-        //        steps: 1
-        //    };
 
-
-        //    ///////create Text
-        //    function createMesh(geom) {
-
-
-        //        var meshMaterial = new THREE.MeshPhongMaterial({
-        //            specular: 0xffffff,
-        //            color: 0xeeffff,
-        //            shininess: 100,
-        //            metal: true
-        //        });
-        //        var plane = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
-
-        //        return plane;
-        //    }
-
-        // text1 = createMesh(new THREE.TextGeometry("Click to Silence Voice", options));
-
-
-        ////OR
-        // var textMat = new THREE.MeshPhongMaterial({
-        //     specular: 0xffffff,
-        //     color: 0xeeffff,
-        //     shininess: 100,
-        //     metal: true
-        // });
-        // var textGeo = new THREE.TextGeometry("Click to Silence Voice", options)
-        // text1 = THREE.SceneUtils.createMultiMaterialObject(textGeo, textMat);
-        // text1.position.z = -100;
-        // text1.position.y = 100;
-        // scene.add(text1);
-        // allTexts.push(text1)
 
 
 
@@ -696,7 +722,7 @@ function Scene4() {
 
 
             //the volume buttons and attach voices to them
-            onOffCubes[k].position.set(videoRadius * xCenter, 5, videoRadius * zCenter)
+            onOffCubes[k].position.set(videoRadius * xCenter, 15, videoRadius * zCenter)
             onOffCubes[k].lookAt(new THREE.Vector3(0, 0, 0))
             onOffCubes[k].add(voices[k])
 
@@ -888,17 +914,17 @@ function Scene4() {
     function animate() {
 
         if (gameOver) {
-            if (cameraThree.position.y == 250){
+            if (cameraThree.position.y == 250) {
                 switchScenes(5)
             }
-            // scene.remove(worldSphere);
+
             worldgeo = new THREE.SphereGeometry(worldRadius, 20, 20, 0, Math.PI * 2, thetaStart)
             worldgeo.thetaStart = 0;
             worldSphere = new THREE.Mesh(worldgeo, walls)
 
-            // scene.add(worldSphere);
 
-console.log(cameraThree.position.y)
+
+            // console.log(cameraThree.position.y)
             cameraThree.position.y += .5
             hemiLight.color.setHSL(0.1, 1, 1);
             walls.opacity = .5
@@ -917,12 +943,15 @@ console.log(cameraThree.position.y)
             // raycaster.set(controls.getObject().position, controls.getDirection(), 0, 40)
 
             for (i in experiences) {
+                //if you're near the object
                 if (controls.getObject().position.distanceTo(onOffCubes[i].position) < interactableDist) {
                     ExperiencesData[i].userClose = true
 
+
                     if (ExperiencesData[i].songPlaying == true) {
-                        // console.log('song is playing and I am inside')
-                        //change color to bright red
+                        scene.add(allType[i])
+                            // console.log('song is playing and I am inside')
+                            //change color to bright red
 
                         onOffCubes[i].children[0].material.color.set(colorPlayingClose)
                             // AudioIcontxt[i].color.set(colorPlayingClose)
@@ -934,6 +963,7 @@ console.log(cameraThree.position.y)
                     }
 
                 } else {
+                    if (allType[i]) { scene.remove(allType[i]) }
                     //IF CONTROLS ARE NOT CLOSE TO THE SOUND, make it false
                     ExperiencesData[i].userClose = false
                     if (ExperiencesData[i].songPlaying == true) {
