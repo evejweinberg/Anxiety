@@ -132,6 +132,7 @@ if (scene1) {
             player.volume.value = -15
             Tone.Buffer.on("load", function() {
                 player.start();
+                player.loop = true;
             });
 
             //create a tone player and connect to master and loop

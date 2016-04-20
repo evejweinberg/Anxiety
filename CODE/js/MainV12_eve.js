@@ -92,7 +92,11 @@ function switchScenes(newscene) {
 /////////////////////////////////////////////////////////////////////////////////////////////
 var onOffCubes = []
 var videos = [];
-var voices = [];
+var voices = [],
+    voicesCenter = [],
+    sfx1 = [],
+    sfx2 = [];
+var allLines = []
 var newSounds = []
 var centerPieces = []
 var onoffbutton;
@@ -330,8 +334,8 @@ function Scene4() {
         listener = new THREE.AudioListener();
         //if we're using tone, include this line
         // Tone.setContext(listener.context);
-        // cameraThree.add(listener);
-        //controls.getObject().add(listener);
+        cameraThree.add(listener);
+        // controls.getObject().add(listener);
 
         ////////////////////////////////
 
@@ -438,7 +442,7 @@ function Scene4() {
 
                 var zCenter = Math.sin(toRadians(i * spacing))
                 var mesh = new THREE.Mesh(geometry, material);
-                mesh.position.set(videoRadius * xCenter+centerOffset, 8 , videoRadius * zCenter);
+                mesh.position.set(videoRadius * xCenter + centerOffset, 8, videoRadius * zCenter);
 
                 mesh.lookAt(new THREE.Vector3(0, 0, 0))
                 allType.push(mesh)
@@ -549,6 +553,7 @@ function Scene4() {
             if (ExperiencesData[i].userClose == true && ExperiencesData[i].songPlaying == false) {
                 scene.remove(allType[i]);
                 voices[i].play()
+                voicesCenter[i].play()
                 ExperiencesData[i].songPlaying = true
                 HowManyPlaying++
                 console.log(HowManyPlaying)
@@ -561,6 +566,7 @@ function Scene4() {
                 ExperiencesData[i].songPlaying = false
                 onOffCubes[i].children[0].material.color.set(colorNotPlayingClose)
                 voices[i].pause()
+                voicesCenter[i].pause()
                 HowManyPlaying--
                 console.log(HowManyPlaying)
 
@@ -582,6 +588,8 @@ function Scene4() {
     //--------------------------------------------------------------------------------------------------//
 
     function buildGeo() {
+
+        addAllSounds()
 
 
 
@@ -661,16 +669,65 @@ function Scene4() {
                 // console.log("here");
             });
 
+            var buffersfx1 = new THREE.AudioBuffer(listener.context);
+            buffersfx1.load(ExperiencesData[i].firstSfx);
+            buffersfx1.onReady(function() {
+
+                // if (bufferLoadingCounter === experiences.length) {
+                //     console.log('done loading sfx1')
+                //         //close loading screen
+                // }
+                // console.log("here");
+            });
+
+            var buffersfx2 = new THREE.AudioBuffer(listener.context);
+            buffersfx2.load(ExperiencesData[i].secondSfx);
+            buffersfx2.onReady(function() {
+
+                // if (bufferLoadingCounter === experiences.length) {
+                //     console.log('done loading sfx2')
+                //         //close loading screen
+                // }
+                // console.log("here");
+            });
+
+            var newsfx1 = new THREE.PositionalAudio(listener);
+            newsfx1.setBuffer(buffersfx1)
+            newsfx1.autoplay = true;
+            newsfx1.setLoop(true);
+            sfx1.push(newsfx1)
+
+            var newsfx2 = new THREE.PositionalAudio(listener);
+            newsfx2.setBuffer(buffersfx2)
+            newsfx2.autoplay = true;
+            newsfx2.setLoop(true);
+            sfx2.push(newsfx2)
+
             var newVoice = new THREE.PositionalAudio(listener);
+            var panner = newVoice.getOutput();
+            // newVoice.volume.
+            // panner.coneInnerAngle = 5;
+            // panner.coneOuterAngle = 30;
+            // panner.coneOuterGain = outerGainFactor;
             newVoice.setBuffer(buffer);
-            //units of rolloff factor
-            // newVoice.setRefDistance(voicefadedist);
-            // try units
-            newVoice.setMaxDistance(.1)
-            // newVoice.setRolloffFactor(.5);
+            newVoice.setRefDistance(2);
             newVoice.autoplay = true;
             newVoice.setLoop(true);
             voices.push(newVoice);
+
+            var newVoiceCenter = new THREE.PositionalAudio(listener);
+            var panner = newVoiceCenter.getOutput();
+            // panner.coneInnerAngle = 5;
+            // panner.coneOuterAngle = 30;
+            newVoiceCenter.setBuffer(buffer);
+            newVoiceCenter.setRefDistance(2);
+            newVoiceCenter.autoplay = true;
+            newVoiceCenter.setLoop(true);
+            voicesCenter.push(newVoiceCenter);
+            // newVoice.setMaxDistance(2)
+            // try units
+            // newVoice.setMaxDistance(.1)
+            // newVoice.setRolloffFactor(.5);
 
             var newFilter = listener.context.createBiquadFilter();
             newFilter.type = 'lowpass';
@@ -695,7 +752,7 @@ function Scene4() {
             onOffCubes.push(onoffbutton);
             // }
             //instead of this, use the json file
-            onoffbutton.userData.sound = voices;
+            // onoffbutton.userData.sound = voices;
 
             mat = new THREE.MeshBasicMaterial({
                 color: 0x808080,
@@ -799,6 +856,7 @@ function Scene4() {
             );
 
             var line = new THREE.Line(Linegeometry, Linematerial);
+            allLines.push(line)
             scene.add(line);
         }
         /////////////////FINISH LINES
@@ -835,6 +893,7 @@ function Scene4() {
             lipDiskMesh = new THREE.Mesh(lipDisk, allLipMaterials[i]);
             lipDiskMesh.position.set(x, 10, z)
             lipDiskMesh.lookAt(new THREE.Vector3())
+            lipDiskMesh.add(voicesCenter[i])
             allLipDiskMeshes.push(lipDiskMesh)
             scene.add(lipDiskMesh)
 
@@ -901,6 +960,40 @@ function Scene4() {
 
 
 
+    function addAllSounds() {
+
+        for (i in experiences) {
+            //make a cube
+            var sfxCube1 = new THREE.BoxGeometry(100, 50, 50);
+            var sfxCube2 = new THREE.BoxGeometry(100, 50, 50);
+
+            var xCenter = Math.cos(toRadians(k * spacing))
+
+            var zCenter = Math.sin(toRadians(k * spacing))
+
+
+            //the volume buttons and attach voices to them
+            // sfxCube1.position.set(videoRadius * xCenter * .5, 15, videoRadius * .5 * zCenter)
+            
+            // sfxCube1.add(sfx1[i])
+            // sfxCube2.position.set(videoRadius * xCenter * .7, 15, videoRadius * .7 * zCenter)
+              
+            // sfxCube2[i].add(sfx2[i])
+
+        }
+
+
+
+
+
+
+
+
+
+    }
+
+
+
 
 
 
@@ -921,6 +1014,8 @@ function Scene4() {
 
     function animate() {
 
+
+
         if (gameOver) {
             if (cameraThree.position.y == 250) {
                 switchScenes(5)
@@ -931,8 +1026,6 @@ function Scene4() {
             worldSphere = new THREE.Mesh(worldgeo, walls)
 
 
-
-            // console.log(cameraThree.position.y)
             cameraThree.position.y += .5
             hemiLight.color.setHSL(0.1, 1, 1);
             walls.opacity = .5
@@ -948,8 +1041,6 @@ function Scene4() {
         if (readyAllVideos == true) {
 
 
-            // raycaster.set(controls.getObject().position, controls.getDirection(), 0, 40)
-
             for (i in experiences) {
                 //if you're near the object
                 if (controls.getObject().position.distanceTo(onOffCubes[i].position) < interactableDist) {
@@ -962,11 +1053,13 @@ function Scene4() {
                             //change color to bright red
 
                         onOffCubes[i].children[0].material.color.set(colorPlayingClose)
+                        allLines[i].material.color.set(colorPlayingClose)
                             // AudioIcontxt[i].color.set(colorPlayingClose)
                             //add text to say "click anywhere to silence voice"
                     } else if (ExperiencesData[i].songPlaying == false) {
                         // console.log('song is OFF and I am inside')
                         onOffCubes[i].children[0].material.color.set(colorNotPlayingClose)
+                        allLines[i].material.color.set(colorNotPlayingFar)
 
                     }
 
@@ -976,15 +1069,15 @@ function Scene4() {
                     ExperiencesData[i].userClose = false
                     if (ExperiencesData[i].songPlaying == true) {
                         // console.log('I am Far from'+ i + 'and song is playing')
-                        //if song is playing, set color
                         onOffCubes[i].children[0].material.color.set(colorPlayingFar)
+                        allLines[i].material.color.set(colorPlayingClose)
                     } else if (ExperiencesData[i].songPlaying == false) {
                         // console.log('I am Far from'+ i + 'and song is not playing')
-                        //if song is not playing set color
                         onOffCubes[i].children[0].material.color.set(colorNotPlayingFar)
+                        allLines[i].material.color.set(colorNotPlayingFar)
                     }
                 }
-                //change color to red
+               
             }
 
 
@@ -999,6 +1092,9 @@ function Scene4() {
         requestAnimationFrame(animate); //http://creativejs.com/resources/requestanimationframe/
         ///CONTROLS
         if (controlsEnabled) {
+            console.log('controls enabled')
+
+            updateMatrixWorld(controls.getObject());
 
             //copies the value of what is inside
             raycaster.ray.origin.copy(controls.getObject().position);
@@ -1048,11 +1144,6 @@ function Scene4() {
         }
 
 
-
-
-
-        update();
-
         render();
 
 
@@ -1060,10 +1151,7 @@ function Scene4() {
 
     }
 
-    function update() {
 
-
-    }
 
     function checkIfFinished() {
 
@@ -1221,5 +1309,30 @@ function calculateDistances() {
         //distances[i] = point1.distanceTo(point2);
         //console.log(Scene4.cameraThree.position);
     }
+
+}
+
+
+
+function updateMatrixWorld() {
+
+    var position = new THREE.Vector3();
+    var quaternion = new THREE.Quaternion();
+    var scale = new THREE.Vector3();
+
+    var orientation = new THREE.Vector3();
+
+    return function updateMatrixWorld(camera) {
+
+        var up = camera.up;
+
+        camera.matrixWorld.decompose(position, quaternion, scale);
+
+        orientation.set(0, 0, -1).applyQuaternion(quaternion);
+
+        listener.context.listener.setPosition(position.x, position.y, position.z);
+        listener.context.listener.setOrientation(orientation.x, orientation.y, orientation.z, up.x, up.y, up.z);
+
+    };
 
 }
