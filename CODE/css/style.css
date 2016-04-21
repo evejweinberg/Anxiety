@@ -5,7 +5,11 @@
 	overflow: hidden;
 	font-family: arial;
 }*/
-
+#title{
+    position: relative;
+    padding: 37px 0px 24px 0px;
+    /*left:128px;*/
+}
 #scene2 {
     position: absolute;
     width: 100%;
@@ -32,12 +36,21 @@
     z-index: 100;
 }
 
+#title-bottom{
+    position: relative;
+    top:90%;
+
+}
+
 #intro {
+
+    text-align: center;
+    height:450px;
     /*background-color: black;*/
     background: rgba(0, 0, 0, .5);
     position: absolute;
     width: 700px;
-    left: 30%;
+    left: 33%;
     top: 30%;
     padding: 50px 50px 50px 50px;
     /*margin: 20px 20px 20px 20px;*/
@@ -50,8 +63,9 @@
     border-style: solid;
     border-width: 2px;
     border-color: white;
-    padding: 20px;
+  /*  padding: 20px;*/
     font-size: 24px;
+    color: #938c7f;
 }
 
 #next-button {
@@ -60,7 +74,7 @@
     color: red;
     position: relative;
     left: 50%;
-    top: 5%;
+    top: 3%;
     background-repeat: none;
     background-image: url("../assets/brain.svg");
 }
@@ -74,7 +88,7 @@
         transform: translateY(0px);
     }
     50% {
-        transform: translateY(5px);
+        transform: translateY(7px);
     }
     100% {
         transform: translateY(0px);
@@ -82,7 +96,7 @@
 }
 
 p {
-    color: white;
+    /*color: white;*/
     position: relative;
 }
 
