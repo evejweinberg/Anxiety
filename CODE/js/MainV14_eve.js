@@ -116,7 +116,7 @@ var mouseX = 0;
 var mouseY = 0;
 var bufferLoadingCounter = 0;
 var spacing = 360 / 6;
-var HowManyPlaying = 1;
+var HowManyPlaying = 6;
 var colorPlayingFar = 0xd84343
 var colorPlayingClose = 0xe82727
 var colorNotPlayingFar = 0x777474
@@ -711,7 +711,9 @@ function Scene4() {
             sfx2.push(newsfx2)
 
             var newVoice = new THREE.PositionalAudio(listener);
-            var panner = newVoice.getOutput();
+            // var panner = newVoice.getOutput();
+            newVoice.panner.coneOuterAngle = 30
+            newVoice.panner.coneInnerAngle = 20
             // newVoice.volume.
             // panner.coneInnerAngle = 5;
             // panner.coneOuterAngle = 30;
@@ -1105,7 +1107,7 @@ function Scene4() {
         if (controlsEnabled) {
             // console.log('controls enabled')
 
-            updateMatrixWorld(controls.getObject());
+            //updateMatrixWorld(controls.getObject());
 
             //copies the value of what is inside
             raycaster.ray.origin.copy(controls.getObject().position);
@@ -1195,7 +1197,7 @@ function Scene4() {
 
     function render() {
 
-console.log(listener.position)
+// console.log(listener.position)
         // console.log('campos' +cameraThree.position.x)
 
         if (allLipVideosReady == true) {
