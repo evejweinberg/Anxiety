@@ -81,8 +81,10 @@ function switchScenes(newscene) {
         }
     } else if (newscene == 5) {
         scene5 = true;
-         $("#scene5").show();
-         scene4 = false
+        $("#scene5").show();
+        $('#scene4').hide();
+        $('body').css("background-color", "white")
+        scene4 = false
     }
 }
 
@@ -116,7 +118,7 @@ var mouseX = 0;
 var mouseY = 0;
 var bufferLoadingCounter = 0;
 var spacing = 360 / 6;
-var HowManyPlaying = 6;
+var HowManyPlaying = 1;
 var colorPlayingFar = 0xd84343
 var colorPlayingClose = 0xe82727
 var colorNotPlayingFar = 0x777474
@@ -153,6 +155,9 @@ var allType = []
     ////////SCENE 5//////////////
 var scene5Clock = 0
 var Scene5 = false
+var sfx1readyAmt = 0
+var sfx2readyAmt = 0
+var audioLoader
 
 
 
@@ -289,6 +294,8 @@ function Scene4() {
     ///////////////////////////////////////////////////////////
     ////// FUNCTIONS BEGIN ////////////////////////////////////
     ///////////////////////////////////////////////////////////
+
+
 
 
 
@@ -596,25 +603,23 @@ function Scene4() {
 
     function buildGeo() {
 
-        addAllSounds()
 
-
+        audioLoader = new THREE.AudioLoader();
 
 
         var onoffcube = new THREE.BoxGeometry(100, 50, 50);
 
         //make all video textures
         for (var i = 0; i < experiences.length; i++) {
+
             videoEl = document.createElement('video');
             videoEl.setAttribute('crossorigin', 'anonymous');
-
             videoEl.autoplay = true;
             videoEl.loop = true;
             videoEl.preload = "auto";
             //PULL FROM PRELOAD
             videoEl.src = "../assets/lipTxt.mp4";
             AlllipVideos.push(videoEl);
-
             videoCanvas = document.createElement('canvas');
             videoCanvas.width = 128;
             videoCanvas.height = 128;
@@ -625,8 +630,6 @@ function Scene4() {
 
             lipVideoTexture = new THREE.Texture(videoCanvas);
             allLipvideoTextures.push(lipVideoTexture);
-
-
             lipsMaterial = new THREE.MeshBasicMaterial({
                 color: 0x808080,
                 map: lipVideoTexture,
@@ -638,12 +641,7 @@ function Scene4() {
 
             allLipMaterials.push(lipsMaterial);
 
-
-
-
-
-
-
+            //CUBE VIDEOS
             video = document.createElement('video');
             video.setAttribute('crossorigin', 'anonymous');
 
@@ -665,86 +663,122 @@ function Scene4() {
             videoTexture = new THREE.Texture(videoImage);
             allvideoTextures.push(videoTexture);
 
+            //make a buffer for all voices
             var buffer = new THREE.AudioBuffer(listener.context);
             buffer.load(ExperiencesData[i].voice);
             buffer.onReady(function() {
                 bufferLoadingCounter++;
                 if (bufferLoadingCounter === experiences.length) {
                     console.log('done loading voices')
-                        //close loading screen
+                    LoadSfxManually();
+                    //close loading screen
                 }
                 // console.log("here");
             });
 
-            var buffersfx1 = new THREE.AudioBuffer(listener.context);
-            buffersfx1.load(ExperiencesData[i].firstSfx);
-            buffersfx1.onReady(function() {
 
-                // if (bufferLoadingCounter === experiences.length) {
-                //     console.log('done loading sfx1')
-                //         //close loading screen
-                // }
-                // console.log("here");
-            });
 
-            var buffersfx2 = new THREE.AudioBuffer(listener.context);
-            buffersfx2.load(ExperiencesData[i].secondSfx);
-            buffersfx2.onReady(function() {
+            // //new way tried with Luara
+            // var buffersfx1 = new THREE.AudioBuffer(listener.context);
+            // buffersfx1.load(ExperiencesData[i].firstSfx);
+            // // buffersfx1.onReady(function() {
+            // //     console.log(buffersfx1)
+            // //     var newsfx1 = new THREE.PositionalAudio(listener);
+            // //     newsfx1.setBuffer(buffersfx1)
+            // //     newsfx1.autoplay = true;
+            // //     newsfx1.setLoop(true);
+            // //     newsfx1.gain = 2
+            // //     newsfx1.panner.rolloffFactor = 5
+            // //     newsfx1.panner.maxDistance = 200
+            // //         // newsfx1.setRefDistance(1)
+            // //     sfx1.push(newsfx1)
+            // //     sfx1readyAmt++
 
-                // if (bufferLoadingCounter === experiences.length) {
-                //     console.log('done loading sfx2')
-                //         //close loading screen
-                // }
-                // console.log("here");
-            });
+            // // });
 
-            var newsfx1 = new THREE.PositionalAudio(listener);
-            newsfx1.setBuffer(buffersfx1)
-            newsfx1.autoplay = true;
-            newsfx1.setLoop(true);
-            sfx1.push(newsfx1)
+            // //old way
+            // var newsfx1 = new THREE.PositionalAudio(listener);
+            // newsfx1.setBuffer(buffersfx1)
+            // newsfx1.autoplay = true;
+            // newsfx1.setLoop(true);
+            // newsfx1.gain = 2
+            // newsfx1.panner.rolloffFactor = 5
+            // newsfx1.panner.maxDistance = 200
+            //     // newsfx1.setRefDistance(1)
+            // sfx1.push(newsfx1)
+            // sfx1readyAmt++
 
-            var newsfx2 = new THREE.PositionalAudio(listener);
-            newsfx2.setBuffer(buffersfx2)
-            newsfx2.autoplay = true;
-            newsfx2.setLoop(true);
-            sfx2.push(newsfx2)
 
+            // //2nd way I tried with Luara
+            // // var newsfx1 = new THREE.PositionalAudio(listener);
+            // // audioLoader.load(ExperiencesData[i].firstSfx, function(buffer) {
+            // //     newsfx1.setBuffer(buffer)
+            // //     newsfx1.autoplay = true;
+            // //     newsfx1.setLoop(true);
+            // //     newsfx1.gain = 2
+            // //     newsfx1.panner.rolloffFactor = 5
+            // //     newsfx1.panner.maxDistance = 200
+            // //     sfx1.push(newsfx1)
+            // //     sfx1readyAmt++
+            // // })
+
+            // //new way
+            // var buffersfx2 = new THREE.AudioBuffer(listener.context);
+            // buffersfx2.load(ExperiencesData[i].secondSfx);
+            // buffersfx2.onReady(function() {
+
+            //     var newsfx2 = new THREE.PositionalAudio(listener);
+            //     newsfx2.setBuffer(buffersfx2)
+            //     newsfx2.autoplay = true;
+            //     newsfx2.panner.rolloffFactor = 5
+            //     newsfx2.setLoop(true);
+            //     newsfx2.gain = 2
+            //     newsfx2.panner.maxDistance = 200
+            //         // newsfx2.setRefDistance(1)
+            //     sfx2.push(newsfx2)
+            //     sfx2readyAmt++
+            // });
+
+
+            //old way
             var newVoice = new THREE.PositionalAudio(listener);
-            // var panner = newVoice.getOutput();
-            newVoice.panner.coneOuterAngle = 30
-            newVoice.panner.coneInnerAngle = 20
-            // newVoice.volume.
-            // panner.coneInnerAngle = 5;
-            // panner.coneOuterAngle = 30;
-            // panner.coneOuterGain = outerGainFactor;
+            var panner = newVoice.getOutput();
+            newVoice.panner.gain = 26
             newVoice.setBuffer(buffer);
             newVoice.setRefDistance(2);
             newVoice.autoplay = true;
             newVoice.setLoop(true);
             voices.push(newVoice);
+            // newVoice.panner.coneOuterAngle = 90
+            // newVoice.panner.coneInnerAngle = 40
+            // newVoice.panner.orientation = 
+            // newVoice.volume
+            // panner.coneInnerAngle = 5;
+            // panner.coneOuterAngle = 30;
+            // panner.coneOuterGain = outerGainFactor;
 
             var newVoiceCenter = new THREE.PositionalAudio(listener);
             var panner = newVoiceCenter.getOutput();
-            // panner.coneInnerAngle = 5;
-            // panner.coneOuterAngle = 30;
             newVoiceCenter.setBuffer(buffer);
-            newVoiceCenter.setRefDistance(2);
             newVoiceCenter.autoplay = true;
             newVoiceCenter.setLoop(true);
             voicesCenter.push(newVoiceCenter);
+            // panner.coneInnerAngle = 5;
+            // panner.coneOuterAngle = 30;
+            // newVoiceCenter.setRefDistance(2);
             // newVoice.setMaxDistance(2)
             // try units
             // newVoice.setMaxDistance(.1)
             // newVoice.setRolloffFactor(.5);
 
-            var newFilter = listener.context.createBiquadFilter();
-            newFilter.type = 'lowpass';
-            newFilter.Q.value = 10;
-            newFilter.frequency.value = 440;
-            filters.push(newFilter);
+            // // var newFilter = listener.context.createBiquadFilter();
+            // // newFilter.type = 'lowpass';
+            // // newFilter.Q.value = 10;
+            // // newFilter.frequency.value = 440;
+            // // filters.push(newFilter);
 
-            // for (i in experiences) {
+
+
             onoffbutton = audIcon.clone();
             AudioIcontxt = new THREE.MeshBasicMaterial({
                 color: colorPlayingFar,
@@ -775,6 +809,8 @@ function Scene4() {
 
 
         } //FOR LOOP OVER
+
+
 
     } //BUILD GEO OVER
 
@@ -824,7 +860,7 @@ function Scene4() {
                 // scene.add(mesh);
 
             }
-            group.position.set(videoRadius * xCenter, 90, videoRadius * zCenter);
+            group.position.set(videoRadius * xCenter, 70, videoRadius * zCenter);
 
 
 
@@ -975,27 +1011,35 @@ function Scene4() {
             //make a cube
             var sfxCube1 = new THREE.BoxGeometry(100, 50, 50);
             var sfxCube2 = new THREE.BoxGeometry(100, 50, 50);
+            var material = new THREE.MeshBasicMaterial({ color: 0x0000FF, opacity: 0, visible: false })
 
             var xCenter = Math.cos(toRadians(k * spacing))
 
             var zCenter = Math.sin(toRadians(k * spacing))
 
 
+            var meshsfx1 = new THREE.Mesh(sfxCube1, material)
+            
+            
+            // sfx1[i].play()
+
+            var meshsfx2 = new THREE.Mesh(sfxCube2, material)
+                // meshsfx2.add(sfx2[i])
+                // scene.add(meshsfx2)
+
             //the volume buttons and attach voices to them
-            // sfxCube1.position.set(videoRadius * xCenter * .5, 15, videoRadius * .5 * zCenter)
+            // meshsfx2.position.set(videoRadius * xCenter * .5, 15, videoRadius * .5 * zCenter)
+            meshsfx1.position.set(videoRadius * xCenter * .5, 15, videoRadius * .5 * zCenter)
+
 
             // sfxCube1.add(sfx1[i])
             // sfxCube2.position.set(videoRadius * xCenter * .7, 15, videoRadius * .7 * zCenter)
 
             // sfxCube2[i].add(sfx2[i])
+            // meshsfx1.add(sfx1[i])
+            scene.add(meshsfx1)
 
         }
-
-
-
-
-
-
 
 
 
@@ -1021,11 +1065,37 @@ function Scene4() {
     // (__)  (__)(_")  (_/ \_)-' '-(_/  (./  \.) (__)  (__)(__) (__)(__) (__) 
     ////////////////////////////////////////////////////////////////////////////////////
 
+    var newspherecreated = false;
+
+    function recreateSphere() {
+        console.log('recreate sphere')
+
+        scene.remove(worldSphere)
+
+        worldgeo = new THREE.SphereGeometry(worldRadius, 20, 20, 0, Math.PI * 2, 1, Math.PI)
+            // worldgeo.thetaStart = 0;
+        worldSphere = new THREE.Mesh(worldgeo, walls)
+        scene.add(worldSphere)
+    }
+
+
     function animate() {
+
+
+        if ((sfx1readyAmt + sfx2readyAmt) > 5) {
+            console.log('more than 6 sfx')
+            addAllSounds()
+            sfx1readyAmt = 0;
+        }
 
 
 
         if (gameOver) {
+            if (newspherecreated == false) {
+                recreateSphere();
+                newspherecreated = true
+            }
+
             if (cameraThree.position.y == 150) {
                 switchScenes(5)
             }
@@ -1034,9 +1104,6 @@ function Scene4() {
                 // scene.fog.color.setHSL( 0.51, 0.6, 0.6 );
             }
 
-            worldgeo = new THREE.SphereGeometry(worldRadius, 20, 20, 0, Math.PI * 2, thetaStart)
-            worldgeo.thetaStart = 0;
-            worldSphere = new THREE.Mesh(worldgeo, walls)
 
 
             cameraThree.position.y += .5
@@ -1167,7 +1234,8 @@ function Scene4() {
 
     function Scene5() {
         console.log('scene 5 was called')
-        // $("#scene5").show();
+            // $('#scene4').hide()
+            // $("#scene5").show();
         scene5Clock++
         // scene.fog = new THREE.Fog(0xffffff, 10, 60);
         // scene.fog.color.setHSL( 0.51, 0.6, 0.6 );
@@ -1179,6 +1247,9 @@ function Scene4() {
     function checkIfFinished() {
 
         if (HowManyPlaying == 0) {
+            for (i in experiences) {
+                voices[i].pause()
+            }
             gameOver = true;
             Scene5();
             console.log('Done')
@@ -1197,7 +1268,7 @@ function Scene4() {
 
     function render() {
 
-// console.log(listener.position)
+        // console.log(listener.position)
         // console.log('campos' +cameraThree.position.x)
 
         if (allLipVideosReady == true) {
@@ -1235,16 +1306,14 @@ function Scene4() {
             }
         }
 
-        if (scene4)
-{
-        renderer.render(scene, cameraThree);}
+        if (scene4) {
+            renderer.render(scene, cameraThree);
+        }
 
-        //console.log(cameraThree.position);
+
         var vec1 = new THREE.Vector3(100, 100, 100)
-            // console.log(cameraThree.position)
         var distance = vec1.distanceTo(cameraThree.position)
-            // console.log(distance)
-            // 
+
         if (Scene5 == true) {
             console.log('scene5')
             renderer.setClearColor(0xffffff, 1); //set background color and alpha
@@ -1333,16 +1402,7 @@ function Scene4() {
 
 } ////ALL OF SCENE 2 IS OVER
 
-function calculateDistances() {
 
-    // for (var i = 0; i < experiences.length; i++) {
-    //     //var point1 = Scene4.cameraThree.matrixWorld.getPosition().clone();
-    //     //var point2 = Scene4.cameraThree.matrixWorld.getPosition().clone();
-    //     //distances[i] = point1.distanceTo(point2);
-    //     //console.log(Scene4.cameraThree.position);
-    // }
-
-}
 
 
 
