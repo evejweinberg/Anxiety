@@ -113,6 +113,10 @@
 
 }
 
+#credits{
+    color: black;
+}
+
 .hovering {
     animation: hover 2s ease-in-out 0s infinite;
 }
