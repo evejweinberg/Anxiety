@@ -14,16 +14,16 @@
 	</head>
 	<body>
 
-		<script src="../build/three.js"></script>
+		<script src="../libs/three74.js"></script>
 
-		<script src="js/shaders/CopyShader.js"></script>
-		<script src="js/shaders/DotScreenShader.js"></script>
-		<script src="js/shaders/RGBShiftShader.js"></script>
+		<script src="../js/shaders/CopyShader.js"></script>
+		<script src="../js/shaders/DotScreenShader.js"></script>
+		<script src="../js/shaders/RGBShiftShader.js"></script>
 
-		<script src="js/postprocessing/EffectComposer.js"></script>
-		<script src="js/postprocessing/RenderPass.js"></script>
-		<script src="js/postprocessing/MaskPass.js"></script>
-		<script src="js/postprocessing/ShaderPass.js"></script>
+		<script src="../js/postprocessing/EffectComposer.js"></script>
+		<script src="../js/postprocessing/RenderPass.js"></script>
+		<script src="../js/postprocessing/MaskPass.js"></script>
+		<script src="../js/postprocessing/ShaderPass.js"></script>
 
 
 		<script>
@@ -47,7 +47,7 @@
 				camera.position.z = 400;
 
 				scene = new THREE.Scene();
-				scene.fog = new THREE.Fog( 0x000000, 1, 1000 );
+				// scene.fog = new THREE.Fog( 0x000000, 1, 1000 );
 
 				object = new THREE.Object3D();
 				scene.add( object );
@@ -103,13 +103,14 @@
 			}
 
 			function animate() {
+				composer.render();
 
 				requestAnimationFrame( animate );
 
 				object.rotation.x += 0.005;
 				object.rotation.y += 0.01;
 
-				composer.render();
+				
 
 			}
 

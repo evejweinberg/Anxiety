@@ -25,8 +25,13 @@
             <div id="intro-inside">
             <img src="../assets/title2.png" id="title">
                 <div id="next-button" class="hovering"></div>
-                    <div>
+                    
                     <br>
+                    <div id ="head">
+                     <div id="headphones"></div>
+                     <p id="headphones-recommended">Headphones Recommended</p>
+                     </div>
+
                 <!-- <p id="title-bottom">Hear my inner thoughts and, please, turn them off. </p> -->
                    
                     <!-- <br> Sharing these personal, often self-attacking thoughts, allows me to see that they are worth laughing at, they are universal, and most importantly they can be silenced.
@@ -61,6 +66,17 @@
         } catch (e) {}
         </script>
         <script src="../libs/three.min.js"></script>
+            <script src="../js/shaders/CopyShader.js"></script>
+                    <script src="../js/shaders/DigitalGlitch.js"></script>
+
+        <script src="../js/shaders/DotScreenShader.js"></script>
+        <script src="../js/shaders/RGBShiftShader.js"></script>
+            <script src="../js/postprocessing/GlitchPass.js"></script>
+
+        <script src="../js/postprocessing/EffectComposer.js"></script>
+        <script src="../js/postprocessing/RenderPass.js"></script>
+        <script src="../js/postprocessing/MaskPass.js"></script>
+        <script src="../js/postprocessing/ShaderPass.js"></script>
 
         <script src="../js/controls/PointerLockControls.js"></script>
         <script src="../libs/stats.min.js"></script>

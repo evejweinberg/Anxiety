@@ -153,6 +153,7 @@ var allType = []
     ////////SCENE 5//////////////
 var scene5Clock = 0
 var Scene5 = false
+var composer;
 
 
 
@@ -330,6 +331,21 @@ function Scene4() {
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
         renderer.setClearColor(0x000000, 1); //set background color and alpha
+
+             // // postprocessing
+
+             //    composer = new THREE.EffectComposer( renderer );
+             //    composer.addPass( new THREE.RenderPass( scene, cameraThree ) );
+
+             //    var effect = new THREE.ShaderPass( THREE.DotScreenShader );
+             //    effect.uniforms[ 'scale' ].value = 4;
+             //    composer.addPass( effect );
+
+             //    var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
+             //    effect.uniforms[ 'amount' ].value = 0.0015;
+             //    effect.renderToScreen = true;
+             //    composer.addPass( effect );
+             //    console.log(composer)
 
 
         //////////CONNECT TONE TO THREE.JS LISTENERS
@@ -541,6 +557,12 @@ function Scene4() {
             }
 
         };
+
+
+
+
+
+
 
         document.addEventListener('keydown', onKeyDown, false);
         document.addEventListener('keyup', onKeyUp, false);
@@ -1021,6 +1043,8 @@ function Scene4() {
 
     function animate() {
 
+        composer.render();
+
 
 
         if (gameOver) {
@@ -1167,6 +1191,7 @@ function Scene4() {
         console.log('scene 5 was called')
         // $("#scene5").show();
         scene5Clock++
+        console.log('scene5 clock' + scene5Clock)
         // scene.fog = new THREE.Fog(0xffffff, 10, 60);
         // scene.fog.color.setHSL( 0.51, 0.6, 0.6 );
         //do stuff?
@@ -1233,9 +1258,10 @@ console.log(listener.position)
             }
         }
 
-        if (scene4)
-{
-        renderer.render(scene, cameraThree);}
+        // if (scene4)
+// {
+        renderer.render(scene, cameraThree);
+    // }
 
         //console.log(cameraThree.position);
         var vec1 = new THREE.Vector3(100, 100, 100)
@@ -1294,6 +1320,7 @@ console.log(listener.position)
         cameraThree.aspect = window.innerWidth / window.innerHeight;
         cameraThree.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize( window.innerWidth, window.innerHeight );
 
     }
 

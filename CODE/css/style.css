@@ -84,6 +84,35 @@
     background-image: url("../assets/brain.svg");
 }
 
+#head{
+    width: 400px;
+    height: 100px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#headphones-recommended{
+    display: block;
+    position: relative;
+    left: 14%;
+    top: -44px;
+    /*box-shadow: 10px 10px 5px #888888;*/
+}
+
+#headphones {
+    width: 36px;
+    height: 45px;
+    left:20%;
+    top: 20%;
+    margin-top: 50px;
+    display: block;
+    position: relative;
+    background-image: url("../assets/headphones.svg");
+    background-repeat: none;
+    /*box-shadow: 10px 10px 5px #888888;*/
+
+}
+
 .hovering {
     animation: hover 2s ease-in-out 0s infinite;
 }
@@ -151,7 +180,7 @@ body {
     height: 100%;
     position: absolute;
     animation-name: backgroundFade;
-    animation-duration: 4s;
+    animation-duration: 7s;
     animation-iteration-count:1;
     z-index: 100;
     background: white;

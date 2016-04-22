@@ -158,6 +158,8 @@ var Scene5 = false
 var sfx1readyAmt = 0
 var sfx2readyAmt = 0
 var audioLoader
+var composer;
+var glitchPass;
 
 
 
@@ -549,6 +551,27 @@ function Scene4() {
 
         };
 
+        // postprocessing
+        composer = new THREE.EffectComposer(renderer);
+        composer.addPass(new THREE.RenderPass(scene, cameraThree));
+
+        glitchPass = new THREE.GlitchPass();
+        glitchPass.renderToScreen = true;
+        composer.addPass(glitchPass);
+
+        // composer = new THREE.EffectComposer( renderer );
+        // composer.addPass( new THREE.RenderPass( scene, cameraThree ) );
+
+        // var effect = new THREE.ShaderPass( THREE.DotScreenShader );
+        // effect.uniforms[ 'scale' ].value = 4;
+        // composer.addPass( effect );
+
+        // var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
+        // effect.uniforms[ 'amount' ].value = 0.0015;
+        // effect.renderToScreen = true;
+        // composer.addPass( effect );
+        // console.log(composer)
+
         document.addEventListener('keydown', onKeyDown, false);
         document.addEventListener('keyup', onKeyUp, false);
         document.addEventListener('click', onClick, false);
@@ -567,6 +590,7 @@ function Scene4() {
             if (ExperiencesData[i].userClose == true && ExperiencesData[i].songPlaying == false) {
                 scene.remove(allType[i]);
                 voices[i].play()
+
                 voicesCenter[i].play()
                 ExperiencesData[i].songPlaying = true
                 HowManyPlaying++
@@ -581,6 +605,9 @@ function Scene4() {
                 onOffCubes[i].children[0].material.color.set(colorNotPlayingClose)
                 voices[i].pause()
                 voicesCenter[i].pause()
+                // console.log(voices[i])
+                // console.log(voices[i].gain.gain)
+                // console.log(voices[i].gain)
                 HowManyPlaying--
                 // console.log(HowManyPlaying)
 
@@ -630,6 +657,8 @@ function Scene4() {
 
             lipVideoTexture = new THREE.Texture(videoCanvas);
             allLipvideoTextures.push(lipVideoTexture);
+            // lipsMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.FlatShading } );
+
             lipsMaterial = new THREE.MeshBasicMaterial({
                 color: 0x808080,
                 map: lipVideoTexture,
@@ -743,7 +772,8 @@ function Scene4() {
             //old way
             var newVoice = new THREE.PositionalAudio(listener);
             var panner = newVoice.getOutput();
-            newVoice.panner.gain = 26
+            // newVoice.panner.gain = 26
+            // newVoice.gain.gain = 12
             newVoice.setBuffer(buffer);
             newVoice.setRefDistance(2);
             newVoice.autoplay = true;
@@ -780,7 +810,7 @@ function Scene4() {
 
 
             onoffbutton = audIcon.clone();
-            AudioIcontxt = new THREE.MeshBasicMaterial({
+            AudioIcontxt = new THREE.MeshPhongMaterial({
                 color: colorPlayingFar,
                 opacity: 1,
                 side: THREE.DoubleSide
@@ -835,6 +865,7 @@ function Scene4() {
             onOffCubes[k].position.set(videoRadius * xCenter, 15, videoRadius * zCenter)
             onOffCubes[k].lookAt(new THREE.Vector3(0, 0, 0))
             onOffCubes[k].add(voices[k])
+            // voices[k].gain.gain = 3
 
 
             var group = new THREE.Object3D();
@@ -1019,8 +1050,8 @@ function Scene4() {
 
 
             var meshsfx1 = new THREE.Mesh(sfxCube1, material)
-            
-            
+
+
             // sfx1[i].play()
 
             var meshsfx2 = new THREE.Mesh(sfxCube2, material)
@@ -1080,6 +1111,8 @@ function Scene4() {
 
 
     function animate() {
+
+        composer.render();
 
 
         if ((sfx1readyAmt + sfx2readyAmt) > 5) {
@@ -1306,9 +1339,9 @@ function Scene4() {
             }
         }
 
-        if (scene4) {
+        // if (scene4) {
             renderer.render(scene, cameraThree);
-        }
+        // }
 
 
         var vec1 = new THREE.Vector3(100, 100, 100)
@@ -1316,7 +1349,7 @@ function Scene4() {
 
         if (Scene5 == true) {
             console.log('scene5')
-            renderer.setClearColor(0xffffff, 1); //set background color and alpha
+            renderer.setClearColor(0xffffff, .5); //set background color and alpha
 
         }
     }
@@ -1364,6 +1397,7 @@ function Scene4() {
         windowHalfY = window.innerHeight / 2
         cameraThree.aspect = window.innerWidth / window.innerHeight;
         cameraThree.updateProjectionMatrix();
+        composer.setSize(window.innerWidth, window.innerHeight);
         renderer.setSize(window.innerWidth, window.innerHeight);
 
     }

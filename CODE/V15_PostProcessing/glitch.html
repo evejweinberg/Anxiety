@@ -28,16 +28,16 @@
 	</head>
 	<body>
 
-		<script src="../build/three.js"></script>
+		<script src="../libs/three74.js"></script>
 
-		<script src="js/shaders/CopyShader.js"></script>
-		<script src="js/shaders/DigitalGlitch.js"></script>
+		<script src="../js/shaders/CopyShader.js"></script>
+		<script src="../js/shaders/DigitalGlitch.js"></script>
 
-		<script src="js/postprocessing/EffectComposer.js"></script>
-		<script src="js/postprocessing/RenderPass.js"></script>
-		<script src="js/postprocessing/MaskPass.js"></script>
-		<script src="js/postprocessing/ShaderPass.js"></script>
-		<script src="js/postprocessing/GlitchPass.js"></script>
+		<script src="../js/postprocessing/EffectComposer.js"></script>
+		<script src="../js/postprocessing/RenderPass.js"></script>
+		<script src="../js/postprocessing/MaskPass.js"></script>
+		<script src="../js/postprocessing/ShaderPass.js"></script>
+		<script src="../js/postprocessing/GlitchPass.js"></script>
 
 		<div>
 			<label for="dotScreen">Glitch me wild:</label><input id="wildGlitch" type="checkbox" onchange="updateOptions()"/><br />
@@ -77,10 +77,10 @@
 				scene.add( object );
 
 				var geometry = new THREE.SphereGeometry( 1, 4, 4 );
-				var material = new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.FlatShading } );
+				var material = new THREE.MeshBasicMaterial( { color: 0xffffff, shading: THREE.FlatShading } );
 
 				for ( var i = 0; i < 100; i ++ ) {
-					material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random(), shading: THREE.FlatShading } );
+					material = new THREE.MeshBasicMaterial( { color: 0xffffff * Math.random(), shading: THREE.FlatShading } );
 
 					var mesh = new THREE.Mesh( geometry, material );
 					mesh.position.set( Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 ).normalize();
@@ -91,7 +91,7 @@
 
 				}
 
-				scene.add( new THREE.AmbientLight( 0x222222 ) );
+				// scene.add( new THREE.AmbientLight( 0x222222 ) );
 
 				light = new THREE.DirectionalLight( 0xffffff );
 				light.position.set( 1, 1, 1 );
