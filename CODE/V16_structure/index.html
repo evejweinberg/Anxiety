@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>anxiety</title>
+</head>
+
+<body>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <div id="scene4" class="allscenes">
+        <div id="blocker">
+            <div id="instructions">
+                <span style="font-size:40px">WELCOME<br> Find the voices and turn them off</span>
+                <br> Click Anywhere to Begin
+                <br /> (W, A, S, D = Move, MOUSE = Look around)
+            </div>
+        </div>
+    </div>
+    <div id='scene1' class="allscenes">
+        <video id="tunnel-vid" autostart="false" width='100%' height='100%' style="display:none">
+            <source src="../assets/rip1.mp4" /> Your browser does not support the video tag.
+        </video>
+        <!--   scene1 -->
+        <div id="intro">
+            <div id="intro-inside">
+                <img src="../assets/title2.png" id="title">
+                <div id="next-button" class="hovering"></div>
+
+                <br>
+                <div id="head">
+                    <div id="headphones"></div>
+                    <p id="headphones-recommended">Headphones Recommended</p>
+                </div>
+
+                <!-- <p id="title-bottom">Hear my inner thoughts and, please, turn them off. </p> -->
+                <!-- <br> Sharing these personal, often self-attacking thoughts, allows me to see that they are worth laughing at, they are universal, and most importantly they can be silenced.
+                    <br> -->
+                <!-- <br> Silence my anxious brain. -->
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="scene5">
+        <div id="credits">
+            <!-- <p>Directed by Eve Weinberg<br>Audio Engineering by Aaron Montoya<br>
+            Vocal Composition by Emily Chiu<br>
+            Coded and Designed by Eve Weinberg<br>
+            Endless code help provided by Yotam Mann and Laura Chen <br>Z-brush Modeling by Taylor<br>
+
+            </p> -->
+        </div>
+    </div>
+    <script type="text/javascript">
+        var whichMobile = "";
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            console.log("I'm iOS!");
+            whichMobile = "iOS_mobile";
+        }
+    </script>
+    <script src="https://use.typekit.net/adj0nca.js"></script>
+    <script>
+        try {
+            Typekit.load({
+                async: true
+            });
+        } catch (e) {}
+    </script>
+    <script src="../libs/three.min.js"></script>
+    <script src="../js/shaders/CopyShader.js"></script>
+    <script src="../js/shaders/DigitalGlitch.js"></script>
+
+    <script src="../js/shaders/DotScreenShader.js"></script>
+    <script src="../js/shaders/RGBShiftShader.js"></script>
+    <script src="../js/postprocessing/GlitchPass.js"></script>
+
+    <script src="../js/postprocessing/EffectComposer.js"></script>
+    <script src="../js/postprocessing/RenderPass.js"></script>
+    <script src="../js/postprocessing/MaskPass.js"></script>
+    <script src="../js/postprocessing/ShaderPass.js"></script>
+
+    <script src="../js/controls/PointerLockControls.js"></script>
+    <script src="../libs/stats.min.js"></script>
+    <script src="../libs/jquery-1.12.0.min.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <script src="../js/Detector.js"></script>
+    <script src="../js/renderers/CanvasRenderer.js"></script>
+    <script src="../js/renderers/Projector.js"></script>
+    <script src="../libs/AudioLoader.js"></script>
+    <script src="../libs/AudioContext.js"></script>
+
+    <script src="../js/loaders/OBJLoader.js"></script>
+    <script src="../libs/Tone.min.js"></script>
+    <script src="../js/GeometryUtils.js"></script>
+    <script src="../js/ExperiencesData.js"></script>
+
+    <script src="../js/intro.js"></script>
+    <script src="../js/MainV15_aaron.js"></script>
+    <script src="../js/load_sounds.js"></script>
+
+    <!-- <script src="../js/helvetiker_regular.typeface.js"></script> -->
+</body>
+
+</html>
