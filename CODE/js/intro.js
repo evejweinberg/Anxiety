@@ -205,10 +205,5 @@ if (scene1) {
                     // switchscenes(4)
             }
         }
-
-
-
-
     }
-
 }

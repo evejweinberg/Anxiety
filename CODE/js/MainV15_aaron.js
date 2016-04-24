@@ -443,7 +443,7 @@ function Scene4() {
                     curveSegments: 7
                 });
 
-                // 
+                //
                 geometry.computeBoundingBox();
                 var centerOffset = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
 
@@ -781,7 +781,7 @@ function Scene4() {
             voices.push(newVoice);
             // newVoice.panner.coneOuterAngle = 90
             // newVoice.panner.coneInnerAngle = 40
-            // newVoice.panner.orientation = 
+            // newVoice.panner.orientation =
             // newVoice.volume
             // panner.coneInnerAngle = 5;
             // panner.coneOuterAngle = 30;
@@ -870,7 +870,7 @@ function Scene4() {
 
             var group = new THREE.Object3D();
 
-            // the 10 videos per experience cubes 
+            // the 10 videos per experience cubes
             for (var j = 0; j < 22; j++) {
 
                 var randOffset = Math.floor((Math.random() * 120) + -35);
@@ -1087,13 +1087,13 @@ function Scene4() {
 
 
     ////////////////////////////////////////////////////////////////////////////////////
-    //     _      _   _                  __  __      _       _____  U _____ u 
-    // U  /"\  u | \ |"|       ___     U|' \/ '|uU  /"\  u  |_ " _| \| ___"|/ 
-    //  \/ _ \/ <|  \| |>     |_"_|    \| |\/| |/ \/ _ \/     | |    |  _|"   
-    //  / ___ \ U| |\  |u      | |      | |  | |  / ___ \    /| |\   | |___   
-    // /_/   \_\ |_| \_|     U/| |\u    |_|  |_| /_/   \_\  u |_|U   |_____|  
-    //  \\    >> ||   \\,-.-,_|___|_,-.<<,-,,-.   \\    >>  _// \\_  <<   >>  
-    // (__)  (__)(_")  (_/ \_)-' '-(_/  (./  \.) (__)  (__)(__) (__)(__) (__) 
+    //     _      _   _                  __  __      _       _____  U _____ u
+    // U  /"\  u | \ |"|       ___     U|' \/ '|uU  /"\  u  |_ " _| \| ___"|/
+    //  \/ _ \/ <|  \| |>     |_"_|    \| |\/| |/ \/ _ \/     | |    |  _|"
+    //  / ___ \ U| |\  |u      | |      | |  | |  / ___ \    /| |\   | |___
+    // /_/   \_\ |_| \_|     U/| |\u    |_|  |_| /_/   \_\  u |_|U   |_____|
+    //  \\    >> ||   \\,-.-,_|___|_,-.<<,-,,-.   \\    >>  _// \\_  <<   >>
+    // (__)  (__)(_")  (_/ \_)-' '-(_/  (./  \.) (__)  (__)(__) (__)(__) (__)
     ////////////////////////////////////////////////////////////////////////////////////
 
     var newspherecreated = false;
