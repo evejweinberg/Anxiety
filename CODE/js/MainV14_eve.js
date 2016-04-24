@@ -118,6 +118,7 @@ var mouseX = 0;
 var mouseY = 0;
 var bufferLoadingCounter = 0;
 var sfx2BufferLoadingCounter = 0
+var sfx1BufferLoadingCounter = 0
 var spacing = 360 / 6;
 var HowManyPlaying = 1;
 var colorPlayingFar = 0xd84343
@@ -163,6 +164,7 @@ var composer;
 var glitchPass;
 //////SFX//////
 var allSfx2 = []
+var allSfx1 = []
 var buffersfx1_1
 var buffersfx1_2
 var buffersfx1_3
@@ -723,9 +725,19 @@ function Scene4() {
                     console.log('done loading sfx2')
                     var sfxCube2 = new THREE.BoxGeometry(100, 50, 50);
                     var material2 = new THREE.MeshBasicMaterial({ color: 0x0000FF, opacity: 0, visible: false })
+                }
+
+            });
 
 
-
+             var sfx1Buffer = new THREE.AudioBuffer(listener.context);
+            sfx1Buffer.load(ExperiencesData[i].firstSfx);
+            sfx1Buffer.onReady(function() {
+                sfx1BufferLoadingCounter++;
+                if (sfx1BufferLoadingCounter === experiences.length) {
+                    console.log('done loading sfx2')
+                    var sfxCube1b = new THREE.BoxGeometry(100, 50, 50);
+                    var material1b = new THREE.MeshBasicMaterial({ color: 0x0000FF, opacity: 0, visible: false })
                 }
 
             });
@@ -789,6 +801,15 @@ function Scene4() {
             sfx2.setLoop(true);
             sfx2.setVolume(1)
             allSfx2.push(sfx2)
+
+             var sfx1 = new THREE.PositionalAudio(listener)
+            var panner1 = sfx1.getOutput();
+            sfx1.setBuffer(sfx1Buffer);
+            sfx1.setRefDistance(13);
+            sfx1.autoplay = true;
+            sfx1.setLoop(true);
+            sfx1.setVolume(1)
+            allSfx1.push(sfx1)
 
 
 
@@ -871,6 +892,7 @@ function Scene4() {
             onOffCubes[k].lookAt(new THREE.Vector3(0, 0, 0))
             onOffCubes[k].add(voices[k])
             onOffCubes[k].add(allSfx2[k])
+              onOffCubes[k].add(allSfx1[k])
                 // voices[k].gain.gain = 3
 
 
@@ -1123,7 +1145,7 @@ function Scene4() {
 
         if ((sfx1readyAmt + sfx2readyAmt) > 5) {
             console.log('more than 6 sfx')
-            addAllSounds()
+            // addAllSounds()
             sfx1readyAmt = 0;
         }
 
@@ -1272,10 +1294,15 @@ function Scene4() {
 
 
     function Scene5() {
-        for (i in allSfx2){
-        //         // allSfx2[i].gain.gain.linearRampToValueAtTime(0,listener.context.currentTime+20)
-                allSfx2[i].gain.gain.setTargetAtTime(0, listener.context.currentTime+12, 2);
-            }
+        for (i in allSfx2) {
+            //         // allSfx2[i].gain.gain.linearRampToValueAtTime(0,listener.context.currentTime+20)
+            allSfx2[i].gain.gain.setTargetAtTime(0, listener.context.currentTime + 6, 2);
+        }
+
+         for (i in allSfx1) {
+            //         // allSfx2[i].gain.gain.linearRampToValueAtTime(0,listener.context.currentTime+20)
+            allSfx1[i].gain.gain.setTargetAtTime(0, listener.context.currentTime + 6, 2);
+        }
 
         //       for (i in allSfx1){
         // //         // allSfx2[i].gain.gain.linearRampToValueAtTime(0,listener.context.currentTime+20)
@@ -1358,10 +1385,10 @@ function Scene4() {
         // if (scene4) {
         renderer.render(scene, cameraThree);
         // }
-// if (scene5){
+        // if (scene5){
 
 
-// }
+        // }
 
         var vec1 = new THREE.Vector3(100, 100, 100)
         var distance = vec1.distanceTo(cameraThree.position)
