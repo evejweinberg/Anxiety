@@ -117,6 +117,7 @@ var allMats = [];
 var mouseX = 0;
 var mouseY = 0;
 var bufferLoadingCounter = 0;
+var sfx2BufferLoadingCounter = 0
 var spacing = 360 / 6;
 var HowManyPlaying = 1;
 var colorPlayingFar = 0xd84343
@@ -160,6 +161,16 @@ var sfx2readyAmt = 0
 var audioLoader
 var composer;
 var glitchPass;
+//////SFX//////
+var allSfx2 = []
+var buffersfx1_1
+var buffersfx1_2
+var buffersfx1_3
+var buffersfx1_4
+var buffersfx1_5
+var buffersfx1_6
+var setrefdist = .5
+var sfx1Meshes = []
 
 
 
@@ -605,9 +616,9 @@ function Scene4() {
                 onOffCubes[i].children[0].material.color.set(colorNotPlayingClose)
                 voices[i].pause()
                 voicesCenter[i].pause()
-                // console.log(voices[i])
-                // console.log(voices[i].gain.gain)
-                // console.log(voices[i].gain)
+                    // console.log(voices[i])
+                    // console.log(voices[i].gain.gain)
+                    // console.log(voices[i].gain)
                 HowManyPlaying--
                 // console.log(HowManyPlaying)
 
@@ -699,10 +710,24 @@ function Scene4() {
                 bufferLoadingCounter++;
                 if (bufferLoadingCounter === experiences.length) {
                     console.log('done loading voices')
-                    LoadSfxManually();
-                    //close loading screen
+                    var sfxCube1 = new THREE.BoxGeometry(100, 50, 50);
+                    var material = new THREE.MeshBasicMaterial({ color: 0x0000FF, opacity: 0, visible: false })
                 }
-                // console.log("here");
+            });
+
+            var sfx2Buffer = new THREE.AudioBuffer(listener.context);
+            sfx2Buffer.load(ExperiencesData[i].secondSfx);
+            sfx2Buffer.onReady(function() {
+                sfx2BufferLoadingCounter++;
+                if (sfx2BufferLoadingCounter === experiences.length) {
+                    console.log('done loading sfx2')
+                    var sfxCube2 = new THREE.BoxGeometry(100, 50, 50);
+                    var material2 = new THREE.MeshBasicMaterial({ color: 0x0000FF, opacity: 0, visible: false })
+
+
+
+                }
+
             });
 
 
@@ -725,17 +750,7 @@ function Scene4() {
 
             // // });
 
-            // //old way
-            // var newsfx1 = new THREE.PositionalAudio(listener);
-            // newsfx1.setBuffer(buffersfx1)
-            // newsfx1.autoplay = true;
-            // newsfx1.setLoop(true);
-            // newsfx1.gain = 2
-            // newsfx1.panner.rolloffFactor = 5
-            // newsfx1.panner.maxDistance = 200
-            //     // newsfx1.setRefDistance(1)
-            // sfx1.push(newsfx1)
-            // sfx1readyAmt++
+
 
 
             // //2nd way I tried with Luara
@@ -751,22 +766,7 @@ function Scene4() {
             // //     sfx1readyAmt++
             // // })
 
-            // //new way
-            // var buffersfx2 = new THREE.AudioBuffer(listener.context);
-            // buffersfx2.load(ExperiencesData[i].secondSfx);
-            // buffersfx2.onReady(function() {
 
-            //     var newsfx2 = new THREE.PositionalAudio(listener);
-            //     newsfx2.setBuffer(buffersfx2)
-            //     newsfx2.autoplay = true;
-            //     newsfx2.panner.rolloffFactor = 5
-            //     newsfx2.setLoop(true);
-            //     newsfx2.gain = 2
-            //     newsfx2.panner.maxDistance = 200
-            //         // newsfx2.setRefDistance(1)
-            //     sfx2.push(newsfx2)
-            //     sfx2readyAmt++
-            // });
 
 
             //old way
@@ -775,17 +775,22 @@ function Scene4() {
             // newVoice.panner.gain = 26
             // newVoice.gain.gain = 12
             newVoice.setBuffer(buffer);
-            newVoice.setRefDistance(2);
+            newVoice.setRefDistance(13);
             newVoice.autoplay = true;
             newVoice.setLoop(true);
+            newVoice.setVolume(1)
             voices.push(newVoice);
-            // newVoice.panner.coneOuterAngle = 90
-            // newVoice.panner.coneInnerAngle = 40
-            // newVoice.panner.orientation = 
-            // newVoice.volume
-            // panner.coneInnerAngle = 5;
-            // panner.coneOuterAngle = 30;
-            // panner.coneOuterGain = outerGainFactor;
+
+            var sfx2 = new THREE.PositionalAudio(listener)
+            var panner2 = sfx2.getOutput();
+            sfx2.setBuffer(sfx2Buffer);
+            sfx2.setRefDistance(13);
+            sfx2.autoplay = true;
+            sfx2.setLoop(true);
+            sfx2.setVolume(1)
+            allSfx2.push(sfx2)
+
+
 
             var newVoiceCenter = new THREE.PositionalAudio(listener);
             var panner = newVoiceCenter.getOutput();
@@ -865,7 +870,8 @@ function Scene4() {
             onOffCubes[k].position.set(videoRadius * xCenter, 15, videoRadius * zCenter)
             onOffCubes[k].lookAt(new THREE.Vector3(0, 0, 0))
             onOffCubes[k].add(voices[k])
-            // voices[k].gain.gain = 3
+            onOffCubes[k].add(allSfx2[k])
+                // voices[k].gain.gain = 3
 
 
             var group = new THREE.Object3D();
@@ -1266,6 +1272,15 @@ function Scene4() {
 
 
     function Scene5() {
+        for (i in allSfx2){
+        //         // allSfx2[i].gain.gain.linearRampToValueAtTime(0,listener.context.currentTime+20)
+                allSfx2[i].gain.gain.setTargetAtTime(0, listener.context.currentTime+12, 2);
+            }
+
+        //       for (i in allSfx1){
+        // //         // allSfx2[i].gain.gain.linearRampToValueAtTime(0,listener.context.currentTime+20)
+        //         allSfx2[i].gain.gain.setTargetAtTime(0, listener.context.currentTime+12, 2);
+        //     }
         console.log('scene 5 was called')
             // $('#scene4').hide()
             // $("#scene5").show();
@@ -1282,6 +1297,7 @@ function Scene4() {
         if (HowManyPlaying == 0) {
             for (i in experiences) {
                 voices[i].pause()
+                    // voices[4].gain.gain.exponentialRampToValueAtTime(0, listener.context.currentTime+1);
             }
             gameOver = true;
             Scene5();
@@ -1340,14 +1356,21 @@ function Scene4() {
         }
 
         // if (scene4) {
-            renderer.render(scene, cameraThree);
+        renderer.render(scene, cameraThree);
         // }
+// if (scene5){
 
+
+// }
 
         var vec1 = new THREE.Vector3(100, 100, 100)
         var distance = vec1.distanceTo(cameraThree.position)
 
         if (Scene5 == true) {
+            //  for (i in allSfx2){
+            //     // allSfx2[i].gain.gain.linearRampToValueAtTime(0,listener.context.currentTime+20)
+            //     allSfx2[i].gain.gain.setTargetAtTime(0, listener.context.currentTime+5, 2);
+            // }
             console.log('scene5')
             renderer.setClearColor(0xffffff, .5); //set background color and alpha
 
