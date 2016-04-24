@@ -33,8 +33,8 @@
 
     })
 
-//var colorPlayingFar = 0xd84343;
-var colorPlayingFar = '#d84343';
+    //var colorPlayingFar = 0xd84343;
+    var colorPlayingFar = '#d84343';
 
 
     //the waveform data
@@ -51,7 +51,7 @@ var colorPlayingFar = '#d84343';
         var values = waveform.analyse();
         waveContext.beginPath();
         waveContext.lineJoin = "round";
-         waveContext.strokeStyle = colorPlayingFar;
+        waveContext.strokeStyle = colorPlayingFar;
         waveContext.lineWidth = 6;
         // waveContext.strokeStyle = waveformGradient;
         waveContext.moveTo(0, (values[0] / 255) * canvasHeight);
@@ -87,7 +87,7 @@ var colorPlayingFar = '#d84343';
 
     function loop() {
         requestAnimationFrame(loop);
-   
+
         var waveformValues = waveform.analyse();
         drawWaveform(waveformValues);
     }
