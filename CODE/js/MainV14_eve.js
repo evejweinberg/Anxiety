@@ -10,6 +10,7 @@ var loadingOvervid;
 var videoSources;
 var ExperiencesData;
 var gameOver = false;
+var windbuffer, windplayer
 // var experiences = [];
 var distances = [];
 
@@ -43,6 +44,7 @@ function renderIntro() {
 
         $('#next-button').click(function() {
             scene2 = true
+             windplayer.start()
             headspin = true;
 
             $("#intro").hide();
@@ -51,6 +53,15 @@ function renderIntro() {
 }
 
 function preloadMedia() {
+  windbuffer = new Tone.Buffer("../assets/wind.m4a", function() {
+        windplayer = new Tone.Player(windbuffer)
+        windplayer.connect(Tone.Master)
+        console.log('loadedwind')
+        // player0.connect(waveformsRaw[0])
+        // windplayer.start()
+
+    })
+
     lipVideoURL = "../assets/lipTxt.mp4";
 
 
@@ -120,7 +131,7 @@ var bufferLoadingCounter = 0;
 var sfx2BufferLoadingCounter = 0
 var sfx1BufferLoadingCounter = 0
 var spacing = 360 / 6;
-var HowManyPlaying = 1;
+var HowManyPlaying = 6;
 var colorPlayingFar = 0xd84343
 var colorPlayingClose = 0xe82727
 var colorNotPlayingFar = 0x777474
@@ -173,6 +184,12 @@ var buffersfx1_5
 var buffersfx1_6
 var setrefdist = .5
 var sfx1Meshes = []
+    ///////WAVEFORMS////////
+var waveformsRaw = []
+var waveHeight = 128
+var waveContexts = []
+var waveFormMeshes = []
+var allWaveTextures = []
 
 
 
@@ -318,6 +335,24 @@ function Scene4() {
 
 
     function init() {
+
+        //create canvases for waveforms
+        for (i in experiences) {
+
+            //make 6 analysers
+            var waveform = new Tone.Analyser(256, "waveform");
+            waveformsRaw.push(waveform)
+                //make 6 canvases
+            var waveContext = $("<canvas>", {
+                "id": "waveform" + i
+            }).appendTo("#Content").get(0).getContext("2d");
+            waveContext.canvas.width = 512;
+            waveContext.canvas.height = waveHeight;
+            waveContexts.push(waveContext)
+        }
+
+
+
         clock = new THREE.Clock();
         // SCENE
         // construct environment first
@@ -730,7 +765,7 @@ function Scene4() {
             });
 
 
-             var sfx1Buffer = new THREE.AudioBuffer(listener.context);
+            var sfx1Buffer = new THREE.AudioBuffer(listener.context);
             sfx1Buffer.load(ExperiencesData[i].firstSfx);
             sfx1Buffer.onReady(function() {
                 sfx1BufferLoadingCounter++;
@@ -744,43 +779,6 @@ function Scene4() {
 
 
 
-            // //new way tried with Luara
-            // var buffersfx1 = new THREE.AudioBuffer(listener.context);
-            // buffersfx1.load(ExperiencesData[i].firstSfx);
-            // // buffersfx1.onReady(function() {
-            // //     console.log(buffersfx1)
-            // //     var newsfx1 = new THREE.PositionalAudio(listener);
-            // //     newsfx1.setBuffer(buffersfx1)
-            // //     newsfx1.autoplay = true;
-            // //     newsfx1.setLoop(true);
-            // //     newsfx1.gain = 2
-            // //     newsfx1.panner.rolloffFactor = 5
-            // //     newsfx1.panner.maxDistance = 200
-            // //         // newsfx1.setRefDistance(1)
-            // //     sfx1.push(newsfx1)
-            // //     sfx1readyAmt++
-
-            // // });
-
-
-
-
-            // //2nd way I tried with Luara
-            // // var newsfx1 = new THREE.PositionalAudio(listener);
-            // // audioLoader.load(ExperiencesData[i].firstSfx, function(buffer) {
-            // //     newsfx1.setBuffer(buffer)
-            // //     newsfx1.autoplay = true;
-            // //     newsfx1.setLoop(true);
-            // //     newsfx1.gain = 2
-            // //     newsfx1.panner.rolloffFactor = 5
-            // //     newsfx1.panner.maxDistance = 200
-            // //     sfx1.push(newsfx1)
-            // //     sfx1readyAmt++
-            // // })
-
-
-
-
             //old way
             var newVoice = new THREE.PositionalAudio(listener);
             var panner = newVoice.getOutput();
@@ -791,6 +789,7 @@ function Scene4() {
             newVoice.autoplay = true;
             newVoice.setLoop(true);
             newVoice.setVolume(1)
+                //newVoice.connect(waveformsRaw[i])
             voices.push(newVoice);
 
             var sfx2 = new THREE.PositionalAudio(listener)
@@ -802,7 +801,7 @@ function Scene4() {
             sfx2.setVolume(1)
             allSfx2.push(sfx2)
 
-             var sfx1 = new THREE.PositionalAudio(listener)
+            var sfx1 = new THREE.PositionalAudio(listener)
             var panner1 = sfx1.getOutput();
             sfx1.setBuffer(sfx1Buffer);
             sfx1.setRefDistance(13);
@@ -892,7 +891,7 @@ function Scene4() {
             onOffCubes[k].lookAt(new THREE.Vector3(0, 0, 0))
             onOffCubes[k].add(voices[k])
             onOffCubes[k].add(allSfx2[k])
-              onOffCubes[k].add(allSfx1[k])
+            onOffCubes[k].add(allSfx1[k])
                 // voices[k].gain.gain = 3
 
 
@@ -942,6 +941,32 @@ function Scene4() {
         centerpiece = new THREE.Mesh(new THREE.CylinderGeometry(centerRadius * 1.5, centerRadius * 1.5, worldRadius, 22, 1), centerpiecemat);
         centerpiece.position.set(0, 0, 0);
         scene.add(centerpiece);
+
+
+        ///////DRAW WAVEFORM PLANE GEOMETRY ///////////
+        var groundplane = new THREE.PlaneGeometry(videoRadius, waveHeight, 2)
+        for (i in experiences) {
+            textureWave = new THREE.Texture(document.getElementById('waveform' + i))
+            textureWave.needsUpdate = true;
+            // console.log(textureWave)
+            allWaveTextures.push(textureWave)
+
+            var materialWave = new THREE.MeshBasicMaterial({
+                map: allWaveTextures[i],
+                color: 0xff0000,
+                opacity: .1,
+                side: THREE.DoubleSide
+            })
+            var mesh = new THREE.Mesh(groundplane, materialWave)
+            scene.add(mesh)
+                // mesh.rotation.x = 45*i
+            mesh.rotation.z = 90
+            mesh.rotation.y = i * 60
+            mesh.rotation.x = 90
+            mesh.position.set(250 * i, 30 * i, -50);
+            waveFormMeshes.push(mesh)
+        }
+
 
 
         ////////DRAW LINES/////////
@@ -1145,7 +1170,7 @@ function Scene4() {
 
         if ((sfx1readyAmt + sfx2readyAmt) > 5) {
             console.log('more than 6 sfx')
-            // addAllSounds()
+                // addAllSounds()
             sfx1readyAmt = 0;
         }
 
@@ -1221,7 +1246,11 @@ function Scene4() {
 
             }
 
-
+            for (i in experiences) {
+                allWaveTextures[i].needsUpdate = true;
+                var waveformValues = waveformsRaw[i].analyse();
+                drawWaveform(waveformValues);
+            }
             var intersects = raycaster.intersectObjects(scene.children, true);
 
 
@@ -1299,7 +1328,7 @@ function Scene4() {
             allSfx2[i].gain.gain.setTargetAtTime(0, listener.context.currentTime + 6, 2);
         }
 
-         for (i in allSfx1) {
+        for (i in allSfx1) {
             //         // allSfx2[i].gain.gain.linearRampToValueAtTime(0,listener.context.currentTime+20)
             allSfx1[i].gain.gain.setTargetAtTime(0, listener.context.currentTime + 6, 2);
         }
@@ -1510,5 +1539,29 @@ function updateMatrixWorld() {
         listener.context.listener.setOrientation(orientation.x, orientation.y, orientation.z, up.x, up.y, up.z);
 
     };
+
+}
+
+
+
+function drawWaveform(values) {
+    //draw the waveform
+    for (i in experiences) {
+        waveContexts[i].clearRect(0, 0, 512, waveHeight);
+        var values = waveformsRaw[i].analyse();
+        waveContexts[i].beginPath();
+        waveContexts[i].lineJoin = "round";
+        waveContexts[i].strokeStyle = colorPlayingFar;
+        waveContexts[i].lineWidth = 6;
+        // waveContext.strokeStyle = waveformGradient;
+        waveContexts[i].moveTo(0, (values[0] / 255) * waveHeight);
+        for (var j = 1, len = values.length; j < len; j++) {
+            var val = values[j] / 255;
+            var x = 512 * (j / len);
+            var y = val * waveHeight;
+            waveContexts[i].lineTo(x, y);
+        }
+        waveContexts[i].stroke();
+    }
 
 }

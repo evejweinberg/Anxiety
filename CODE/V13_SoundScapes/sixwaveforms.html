@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Six waveforms</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+    <script src="../libs/Tone.min.js"></script>
+    <script src="../libs/jquery-1.12.0.min.js"></script>
+    <style type="text/css">
+    canvas {
+        margin-top: 2px;
+        width: 100%;
+        height: 255px;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="Content" class="FullScreen"></div>
+    <script type="text/javascript">
+    var experiences = [1, 2, 3, 4, 5, 6]
+    var waveformsRaw = []
+    var waveHeight = 128
+    var waveContexts = []
+
+
+    for (i in experiences) {
+
+        //make 6 analysers
+        var waveform = new Tone.Analyser(256, "waveform");
+        waveformsRaw.push(waveform)
+            //make 6 canvases
+        var waveContext = $("<canvas>", {
+            "id": "waveform" + i
+        }).appendTo("#Content").get(0).getContext("2d");
+        waveContext.canvas.width = 512;
+        waveContext.canvas.height = waveHeight;
+        waveContexts.push(waveContext)
+    }
+
+    //
+    // for (i in experiences) {
+    var buffer = new Tone.Buffer("https://evejweinberg.github.io/anxiety/03_01.wav", function() {
+        var player0 = new Tone.Player(buffer)
+        player0.connect(Tone.Master)
+        player0.connect(waveformsRaw[0])
+        player0.start()
+
+    })
+
+    var buffer = new Tone.Buffer("https://evejweinberg.github.io/anxiety/03_01.wav", function() {
+        var player1 = new Tone.Player(buffer)
+        player1.connect(Tone.Master)
+        player1.connect(waveformsRaw[1])
+        player1.start()
+
+    })
+
+    var buffer = new Tone.Buffer("https://evejweinberg.github.io/anxiety/03_01.wav", function() {
+        var player2 = new Tone.Player(buffer)
+        player2.connect(Tone.Master)
+        player2.connect(waveformsRaw[2])
+        player2.start()
+
+    })
+
+    var buffer = new Tone.Buffer("https://evejweinberg.github.io/anxiety/03_01.wav", function() {
+        var player3 = new Tone.Player(buffer)
+        player3.connect(Tone.Master)
+        player3.connect(waveformsRaw[3])
+        player3.start()
+
+    })
+
+    var buffer = new Tone.Buffer("https://evejweinberg.github.io/anxiety/03_01.wav", function() {
+        var player4 = new Tone.Player(buffer)
+        player4.connect(Tone.Master)
+        player4.connect(waveformsRaw[4])
+        player4.start()
+
+    })
+
+       var buffer = new Tone.Buffer("https://evejweinberg.github.io/anxiety/03_01.wav", function() {
+        var player5 = new Tone.Player(buffer)
+        player5.connect(Tone.Master)
+        player5.connect(waveformsRaw[5])
+        player5.start()
+
+    })
+
+    // }
+
+    var colorPlayingFar = '#d84343';
+
+
+
+
+    function drawWaveform(values) {
+        //draw the waveform
+        for (i in experiences) {
+            waveContexts[i].clearRect(0, 0, 512, waveHeight);
+            var values = waveformsRaw[i].analyse();
+            waveContexts[i].beginPath();
+            waveContexts[i].lineJoin = "round";
+            waveContexts[i].strokeStyle = colorPlayingFar;
+            waveContexts[i].lineWidth = 6;
+            // waveContext.strokeStyle = waveformGradient;
+            waveContexts[i].moveTo(0, (values[0] / 255) * waveHeight);
+            for (var j = 1, len = values.length; j < len; j++) {
+                var val = values[j] / 255;
+                var x = 512 * (j / len);
+                var y = val * waveHeight;
+                waveContexts[i].lineTo(x, y);
+            }
+            waveContexts[i].stroke();
+        }
+
+    }
+
+
+
+
+
+    function loop() {
+        requestAnimationFrame(loop);
+        for (i in experiences) {
+            var waveformValues = waveformsRaw[i].analyse();
+            drawWaveform(waveformValues);
+        }
+    }
+    loop();
+    </script>
+</body>

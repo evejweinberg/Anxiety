@@ -53,7 +53,7 @@
     <script src="../js/Detector.js"></script>
     <script>
     var waveform = new Tone.Analyser(256, "waveform");
-    var buffer = new Tone.Buffer("https://evejweinberg.github.io/anxiety/01_01.wav", function() {
+    var buffer = new Tone.Buffer("https://evejweinberg.github.io/anxiety/02_01.wav", function() {
         var player = new Tone.Player(buffer)
         player.connect(Tone.Master)
         player.connect(waveform)
@@ -68,7 +68,9 @@
 
     //the waveform data
     var waveContext = $("<canvas>", {
-        "id": "waveform"
+        "id": "waveform",
+        "width": "512px",
+        "height": "128px"
     }).appendTo("#Content").get(0).getContext("2d");
     // var waveformGradient;
 

@@ -38,9 +38,9 @@
 
 
     //the waveform data
-    var waveContext = $("<canvas>", {
-        "id": "waveform"
-    }).appendTo("#Content").get(0).getContext("2d");
+    var waveContext =  document.createElement('canvas');
+    
+    waveContext.appendTo("#Content").get(0).getContext("2d");
     var waveformGradient;
 
 
