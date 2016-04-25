@@ -11,7 +11,7 @@ var videoSources;
 var ExperiencesData;
 var gameOver = false;
 var windbuffer, windplayer
-// var experiences = [];
+    // var experiences = [];
 var distances = [];
 
 //setup global variables
@@ -44,7 +44,7 @@ function renderIntro() {
 
         $('#next-button').click(function() {
             scene2 = true
-             windplayer.start()
+            windplayer.start()
             headspin = true;
 
             $("#intro").hide();
@@ -53,12 +53,11 @@ function renderIntro() {
 }
 
 function preloadMedia() {
-  windbuffer = new Tone.Buffer("../assets/wind.m4a", function() {
+    windbuffer = new Tone.Buffer("../assets/wind.m4a", function() {
         windplayer = new Tone.Player(windbuffer)
         windplayer.connect(Tone.Master)
-        console.log('loadedwind')
-        // player0.connect(waveformsRaw[0])
-        // windplayer.start()
+        console.log('loaded wind')
+
 
     })
 
@@ -336,20 +335,8 @@ function Scene4() {
 
     function init() {
 
-        //create canvases for waveforms
-        for (i in experiences) {
 
-            //make 6 analysers
-            var waveform = new Tone.Analyser(256, "waveform");
-            waveformsRaw.push(waveform)
-                //make 6 canvases
-            var waveContext = $("<canvas>", {
-                "id": "waveform" + i
-            }).appendTo("#Content").get(0).getContext("2d");
-            waveContext.canvas.width = 512;
-            waveContext.canvas.height = waveHeight;
-            waveContexts.push(waveContext)
-        }
+
 
 
 
@@ -397,11 +384,30 @@ function Scene4() {
         //  `--'
         listener = new THREE.AudioListener();
         //if we're using tone, include this line
-        // Tone.setContext(listener.context);
+        Tone.setContext(listener.context);
         cameraThree.add(listener);
         // controls.getObject().add(listener);
 
         ////////////////////////////////
+        
+        //create canvases for waveforms ground
+        for (i in experiences) {
+
+            //make 6 analysers
+            var waveform = new Tone.Analyser(256, "waveform");
+            waveformsRaw.push(waveform)
+
+            //make 6 canvases
+            var waveContext = $("<canvas>", {
+                "id": "waveform" + i
+            }).appendTo("#Content").get(0).getContext("2d");
+            waveContext.canvas.width = 512;
+            waveContext.canvas.height = waveHeight;
+            waveContexts.push(waveContext)
+            //attach to voices[k]
+            //line 790, created voices
+        }
+
 
 
         raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
@@ -653,11 +659,9 @@ function Scene4() {
                 onOffCubes[i].children[0].material.color.set(colorNotPlayingClose)
                 voices[i].pause()
                 voicesCenter[i].pause()
-                    // console.log(voices[i])
-                    // console.log(voices[i].gain.gain)
-                    // console.log(voices[i].gain)
+                   
                 HowManyPlaying--
-                // console.log(HowManyPlaying)
+            
 
                 checkIfFinished();
             }
@@ -770,7 +774,7 @@ function Scene4() {
             sfx1Buffer.onReady(function() {
                 sfx1BufferLoadingCounter++;
                 if (sfx1BufferLoadingCounter === experiences.length) {
-                    console.log('done loading sfx2')
+                    console.log('done loading sfx1')
                     var sfxCube1b = new THREE.BoxGeometry(100, 50, 50);
                     var material1b = new THREE.MeshBasicMaterial({ color: 0x0000FF, opacity: 0, visible: false })
                 }
@@ -789,7 +793,8 @@ function Scene4() {
             newVoice.autoplay = true;
             newVoice.setLoop(true);
             newVoice.setVolume(1)
-                //newVoice.connect(waveformsRaw[i])
+            newVoice.gain.connect(waveformsRaw[i])
+         //newVoice.connect(waveformsRaw[i])
             voices.push(newVoice);
 
             var sfx2 = new THREE.PositionalAudio(listener)
@@ -943,27 +948,28 @@ function Scene4() {
         scene.add(centerpiece);
 
 
-        ///////DRAW WAVEFORM PLANE GEOMETRY ///////////
-        var groundplane = new THREE.PlaneGeometry(videoRadius, waveHeight, 2)
+        ///////DRAW WAVEFORM PLANE GEOMETRY GROUND ///////////
+        var groundplane = new THREE.PlaneGeometry(videoRadius * .2, waveHeight, 2)
         for (i in experiences) {
             textureWave = new THREE.Texture(document.getElementById('waveform' + i))
             textureWave.needsUpdate = true;
             // console.log(textureWave)
             allWaveTextures.push(textureWave)
 
+
             var materialWave = new THREE.MeshBasicMaterial({
                 map: allWaveTextures[i],
-                color: 0xff0000,
-                opacity: .1,
-                side: THREE.DoubleSide
+                color: 0xffffff,
+                side: THREE.DoubleSide,
+                transparent: false
             })
             var mesh = new THREE.Mesh(groundplane, materialWave)
             scene.add(mesh)
                 // mesh.rotation.x = 45*i
-            mesh.rotation.z = 90
-            mesh.rotation.y = i * 60
             mesh.rotation.x = 90
-            mesh.position.set(250 * i, 30 * i, -50);
+            mesh.rotation.y = 60 * i
+                // mesh.rotation.z = 90
+            mesh.position.set(0, 0, 0);
             waveFormMeshes.push(mesh)
         }
 
@@ -1013,7 +1019,6 @@ function Scene4() {
                 side: THREE.DoubleSide
             });
             //top rad, bottom rad, height, radseg, heightseg
-            //CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded, thetaStart, thetaLength)
             object = new THREE.Mesh(new THREE.CylinderGeometry(circleRad, circleRad, 10, 22, 1), material);
             object.position.set(x, 0, z);
 
@@ -1037,7 +1042,6 @@ function Scene4() {
         floorMat = new THREE.MeshStandardMaterial({
             roughness: 0.8,
             color: 0xffffff,
-            metalness: 0.2,
             bumpScale: 0.0005,
         });
         var textureLoader = new THREE.TextureLoader();
@@ -1061,7 +1065,7 @@ function Scene4() {
 
     function OuterSphere() {
         walls = new THREE.MeshBasicMaterial({
-            roughness: 0.8,
+
             color: 0xaf8585,
             metalness: 0.2,
             side: THREE.DoubleSide,
@@ -1077,11 +1081,10 @@ function Scene4() {
             walls.needsUpdate = true;
         });
 
-        // new THREE.SphereGeometry(controls.radius, controls.widthSegments, controls.heightSegments, controls.phiStart, controls.phiLength, controls.thetaStart, controls.thetaLength));
-
         worldgeo = new THREE.SphereGeometry(worldRadius, 20, 20, 0, Math.PI * 2, thetaStart)
         worldgeo.thetaStart = 0;
         worldSphere = new THREE.Mesh(worldgeo, walls)
+            // new THREE.MeshBasicMaterial()
 
         scene.add(worldSphere);
 
@@ -1103,9 +1106,6 @@ function Scene4() {
 
 
             var meshsfx1 = new THREE.Mesh(sfxCube1, material)
-
-
-            // sfx1[i].play()
 
             var meshsfx2 = new THREE.Mesh(sfxCube2, material)
                 // meshsfx2.add(sfx2[i])
@@ -1246,12 +1246,17 @@ function Scene4() {
 
             }
 
+
+            //GROUND WAVE FORMS
             for (i in experiences) {
-                allWaveTextures[i].needsUpdate = true;
+                // allWaveTextures[i].needsUpdate = true;
+                waveFormMeshes[i].material.map.needsUpdate = true
                 var waveformValues = waveformsRaw[i].analyse();
                 drawWaveform(waveformValues);
             }
-            var intersects = raycaster.intersectObjects(scene.children, true);
+
+
+
 
 
         }
@@ -1411,22 +1416,14 @@ function Scene4() {
             }
         }
 
-        // if (scene4) {
+
         renderer.render(scene, cameraThree);
-        // }
-        // if (scene5){
 
-
-        // }
 
         var vec1 = new THREE.Vector3(100, 100, 100)
         var distance = vec1.distanceTo(cameraThree.position)
 
         if (Scene5 == true) {
-            //  for (i in allSfx2){
-            //     // allSfx2[i].gain.gain.linearRampToValueAtTime(0,listener.context.currentTime+20)
-            //     allSfx2[i].gain.gain.setTargetAtTime(0, listener.context.currentTime+5, 2);
-            // }
             console.log('scene5')
             renderer.setClearColor(0xffffff, .5); //set background color and alpha
 
