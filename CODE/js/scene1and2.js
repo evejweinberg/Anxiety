@@ -1,3 +1,5 @@
+var HeartPlayer;
+
 if (scene1) {
 
     function Scene1() {
@@ -127,12 +129,12 @@ if (scene1) {
 
 
         function soundBed() {
-            var player = new Tone.Player("../assets/heartbeat.wav");
-            player.toMaster();
-            player.volume.value = -15
+            HeartPlayer = new Tone.Player("../assets/heartbeat.wav");
+            HeartPlayer.toMaster();
+            HeartPlayer.volume.value = -15
             Tone.Buffer.on("load", function() {
-                player.start();
-                player.loop = true;
+                HeartPlayer.start();
+                HeartPlayer.loop = true;
             });
 
             //create a tone player and connect to master and loop

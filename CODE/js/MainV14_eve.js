@@ -90,6 +90,7 @@ function switchScenes(newscene) {
             scene4ready = false
         }
     } else if (newscene == 5) {
+        HeartPlayer.volume.value = 1
         scene5 = true;
         $("#scene5").show();
         $('#scene4').hide();
@@ -130,7 +131,7 @@ var bufferLoadingCounter = 0;
 var sfx2BufferLoadingCounter = 0
 var sfx1BufferLoadingCounter = 0
 var spacing = 360 / 6;
-var HowManyPlaying = 6;
+var HowManyPlaying = 1;
 var colorPlayingFar = 0xd84343
 var colorPlayingClose = 0xe82727
 var colorNotPlayingFar = 0x777474
@@ -186,6 +187,7 @@ var sfx1Meshes = []
     ///////WAVEFORMS////////
 var waveformsRaw = []
 var waveHeight = 128
+var waveWidth = 512
 var waveContexts = []
 var waveFormMeshes = []
 var allWaveTextures = []
@@ -337,9 +339,6 @@ function Scene4() {
 
 
 
-
-
-
         clock = new THREE.Clock();
         // SCENE
         // construct environment first
@@ -388,8 +387,9 @@ function Scene4() {
         cameraThree.add(listener);
         // controls.getObject().add(listener);
 
+
         ////////////////////////////////
-        
+
         //create canvases for waveforms ground
         for (i in experiences) {
 
@@ -404,8 +404,7 @@ function Scene4() {
             waveContext.canvas.width = 512;
             waveContext.canvas.height = waveHeight;
             waveContexts.push(waveContext)
-            //attach to voices[k]
-            //line 790, created voices
+
         }
 
 
@@ -418,6 +417,10 @@ function Scene4() {
             side: THREE.DoubleSide
         })
 
+        DrawCenterArea();
+        Floor();
+        OuterSphere();
+
         ////LOAD ASSETS/////////
         ///////////////////////////////////
         var manager = new THREE.LoadingManager();
@@ -425,6 +428,9 @@ function Scene4() {
             // console.log( item, loaded, total );
 
         };
+
+
+
 
         var onProgress = function(xhr) {
             if (xhr.lengthComputable) {
@@ -526,10 +532,10 @@ function Scene4() {
 
 
 
-        DrawCenterArea();
-        Floor()
-        OuterSphere()
-            // AddGui()
+        // DrawCenterArea();
+        // Floor()
+        // OuterSphere()
+
 
 
 
@@ -613,18 +619,7 @@ function Scene4() {
         glitchPass.renderToScreen = true;
         composer.addPass(glitchPass);
 
-        // composer = new THREE.EffectComposer( renderer );
-        // composer.addPass( new THREE.RenderPass( scene, cameraThree ) );
 
-        // var effect = new THREE.ShaderPass( THREE.DotScreenShader );
-        // effect.uniforms[ 'scale' ].value = 4;
-        // composer.addPass( effect );
-
-        // var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
-        // effect.uniforms[ 'amount' ].value = 0.0015;
-        // effect.renderToScreen = true;
-        // composer.addPass( effect );
-        // console.log(composer)
 
         document.addEventListener('keydown', onKeyDown, false);
         document.addEventListener('keyup', onKeyUp, false);
@@ -659,9 +654,9 @@ function Scene4() {
                 onOffCubes[i].children[0].material.color.set(colorNotPlayingClose)
                 voices[i].pause()
                 voicesCenter[i].pause()
-                   
+
                 HowManyPlaying--
-            
+
 
                 checkIfFinished();
             }
@@ -786,15 +781,13 @@ function Scene4() {
             //old way
             var newVoice = new THREE.PositionalAudio(listener);
             var panner = newVoice.getOutput();
-            // newVoice.panner.gain = 26
-            // newVoice.gain.gain = 12
             newVoice.setBuffer(buffer);
             newVoice.setRefDistance(13);
             newVoice.autoplay = true;
             newVoice.setLoop(true);
             newVoice.setVolume(1)
             newVoice.gain.connect(waveformsRaw[i])
-         //newVoice.connect(waveformsRaw[i])
+                //newVoice.connect(waveformsRaw[i])
             voices.push(newVoice);
 
             var sfx2 = new THREE.PositionalAudio(listener)
@@ -937,6 +930,11 @@ function Scene4() {
 
     } //BUILD CUBES ENDS
 
+    function transX(geo, n) {
+        for (var i = 0; i < geo.vertices.length; i++) {
+            geo.vertices[i].x += n;
+        }
+    }
 
     function DrawCenterArea() {
 
@@ -949,7 +947,10 @@ function Scene4() {
 
 
         ///////DRAW WAVEFORM PLANE GEOMETRY GROUND ///////////
-        var groundplane = new THREE.PlaneGeometry(videoRadius * .2, waveHeight, 2)
+        var groundplane = new THREE.PlaneGeometry(videoRadius, waveHeight * 2, 2)
+
+        transX(groundplane, 190);
+
         for (i in experiences) {
             textureWave = new THREE.Texture(document.getElementById('waveform' + i))
             textureWave.needsUpdate = true;
@@ -961,15 +962,20 @@ function Scene4() {
                 map: allWaveTextures[i],
                 color: 0xffffff,
                 side: THREE.DoubleSide,
-                transparent: false
+                transparent: true,
+                opacity: .5
             })
             var mesh = new THREE.Mesh(groundplane, materialWave)
             scene.add(mesh)
-                // mesh.rotation.x = 45*i
-            mesh.rotation.x = 90
-            mesh.rotation.y = 60 * i
+
+
+
+
+            // mesh.rotation.x = 45*i
+            mesh.rotation.x = Math.PI / 2
+            mesh.rotation.z = Math.PI / 3 * i
                 // mesh.rotation.z = 90
-            mesh.position.set(0, 0, 0);
+            mesh.position.set(0, 2, 0);
             waveFormMeshes.push(mesh)
         }
 
@@ -1046,6 +1052,7 @@ function Scene4() {
         });
         var textureLoader = new THREE.TextureLoader();
         textureLoader.load("../textures/wallpaper1.png", function(map) {
+            console.log('loaded floor txt')
             map.wrapS = THREE.RepeatWrapping;
             map.wrapT = THREE.RepeatWrapping;
             map.anisotropy = 4;
@@ -1073,6 +1080,7 @@ function Scene4() {
         });
         var textureLoader = new THREE.TextureLoader();
         textureLoader.load("../textures/wallpaper1.png", function(map) {
+            console.log('loaded sphere txt')
             map.wrapS = THREE.RepeatWrapping;
             map.wrapT = THREE.RepeatWrapping;
             map.anisotropy = 4;
@@ -1165,6 +1173,8 @@ function Scene4() {
 
     function animate() {
 
+        // floorMat.needsUpdate = true;
+
         composer.render();
 
 
@@ -1249,15 +1259,17 @@ function Scene4() {
 
             //GROUND WAVE FORMS
             for (i in experiences) {
-                // allWaveTextures[i].needsUpdate = true;
-                waveFormMeshes[i].material.map.needsUpdate = true
-                var waveformValues = waveformsRaw[i].analyse();
-                drawWaveform(waveformValues);
+                if (ExperiencesData[i].songPlaying == true) {
+                    drawWaveform(i);
+                    waveFormMeshes[i].material.map.needsUpdate = true
+                } 
+                else {
+                    if (waveFormMeshes[i]){
+                    console.log('removed one')
+                    scene.remove(waveFormMeshes[i]);
+                    }
+                }
             }
-
-
-
-
 
         }
 
@@ -1342,9 +1354,9 @@ function Scene4() {
         // //         // allSfx2[i].gain.gain.linearRampToValueAtTime(0,listener.context.currentTime+20)
         //         allSfx2[i].gain.gain.setTargetAtTime(0, listener.context.currentTime+12, 2);
         //     }
-        console.log('scene 5 was called')
-            // $('#scene4').hide()
-            // $("#scene5").show();
+        // console.log('scene 5 was called')
+        // $('#scene4').hide()
+        // $("#scene5").show();
         scene5Clock++
         // scene.fog = new THREE.Fog(0xffffff, 10, 60);
         // scene.fog.color.setHSL( 0.51, 0.6, 0.6 );
@@ -1424,7 +1436,7 @@ function Scene4() {
         var distance = vec1.distanceTo(cameraThree.position)
 
         if (Scene5 == true) {
-            console.log('scene5')
+            // console.log('scene5')
             renderer.setClearColor(0xffffff, .5); //set background color and alpha
 
         }
@@ -1541,24 +1553,32 @@ function updateMatrixWorld() {
 
 
 
-function drawWaveform(values) {
-    //draw the waveform
-    for (i in experiences) {
-        waveContexts[i].clearRect(0, 0, 512, waveHeight);
-        var values = waveformsRaw[i].analyse();
-        waveContexts[i].beginPath();
-        waveContexts[i].lineJoin = "round";
-        waveContexts[i].strokeStyle = colorPlayingFar;
-        waveContexts[i].lineWidth = 6;
-        // waveContext.strokeStyle = waveformGradient;
-        waveContexts[i].moveTo(0, (values[0] / 255) * waveHeight);
-        for (var j = 1, len = values.length; j < len; j++) {
-            var val = values[j] / 255;
-            var x = 512 * (j / len);
-            var y = val * waveHeight;
-            waveContexts[i].lineTo(x, y);
-        }
-        waveContexts[i].stroke();
+function drawWaveform(i) {
+    // if (ExperiencesData[i].songPlaying == true) {
+    // console.log('voice' + i + 'is playing')
+    var waveformValues = waveformsRaw[i].analyse();
+
+    waveContexts[i].clearRect(0, 0, 512, waveHeight);
+    //for debugging turn this on
+    // waveContexts[i].fillStyle = "#00ff00";
+    // waveContexts[i].fillRect(0, 0, 512, waveHeight);
+    var values = waveformsRaw[i].analyse();
+    waveContexts[i].beginPath();
+    waveContexts[i].lineJoin = "round";
+
+    waveContexts[i].strokeStyle = '#d84343';
+
+    waveContexts[i].lineWidth = 3;
+
+    waveContexts[i].moveTo(0, (values[0] / 255) * waveHeight);
+    for (var j = 1, len = values.length; j < len; j++) {
+        var val = values[j] / 255;
+        var x = 512 * (j / len);
+        var y = val * waveHeight;
+        waveContexts[i].lineTo(x, y);
     }
+    waveContexts[i].stroke();
+
+    // } //is playing over
 
 }
