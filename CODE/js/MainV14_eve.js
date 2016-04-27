@@ -90,11 +90,14 @@ function switchScenes(newscene) {
             scene4ready = false
         }
     } else if (newscene == 5) {
-        HeartPlayer.volume.value = 1
+        HeartPlayer.volume.value = 0
+        HeartPlayer.volume.linearRampToValueAtTime(0,HeartPlayer.context.currentTime + 10)
         scene5 = true;
         $("#scene5").show();
+        // TweenLite('#thank-you', 5, {y:200} ) ;
         $('#scene4').hide();
         $('body').css("background-color", "white")
+        $('#thank-you').addClass(".animate-focus")
         scene4 = false
     }
 }
@@ -191,6 +194,8 @@ var waveWidth = 512
 var waveContexts = []
 var waveFormMeshes = []
 var allWaveTextures = []
+    ///////////////////////
+var floorTxtReady = false;
 
 
 
@@ -1059,14 +1064,15 @@ function Scene4() {
             map.repeat.set(10, 10);
             floorMat.map = map;
             floorMat.needsUpdate = true;
+            floorTxtReady = true
+            var floorGeometry = new THREE.PlaneBufferGeometry(worldRadius * 2, worldRadius * 2);
+            var floorMesh = new THREE.Mesh(floorGeometry, floorMat);
+            floorMesh.receiveShadow = true;
+            floorMesh.rotation.x = -Math.PI / 2.0;
+            scene.add(floorMesh);
+
         });
 
-
-        var floorGeometry = new THREE.PlaneBufferGeometry(worldRadius * 2, worldRadius * 2);
-        var floorMesh = new THREE.Mesh(floorGeometry, floorMat);
-        floorMesh.receiveShadow = true;
-        floorMesh.rotation.x = -Math.PI / 2.0;
-        scene.add(floorMesh);
     }
 
 
@@ -1087,14 +1093,15 @@ function Scene4() {
             map.repeat.set(10, 10);
             walls.map = map;
             walls.needsUpdate = true;
+            worldgeo = new THREE.SphereGeometry(worldRadius, 20, 20, 0, Math.PI * 2, thetaStart)
+            worldgeo.thetaStart = 0;
+            worldSphere = new THREE.Mesh(worldgeo, walls)
+                // new THREE.MeshBasicMaterial()
+
+            scene.add(worldSphere);
+
         });
 
-        worldgeo = new THREE.SphereGeometry(worldRadius, 20, 20, 0, Math.PI * 2, thetaStart)
-        worldgeo.thetaStart = 0;
-        worldSphere = new THREE.Mesh(worldgeo, walls)
-            // new THREE.MeshBasicMaterial()
-
-        scene.add(worldSphere);
 
     }
 
@@ -1262,11 +1269,10 @@ function Scene4() {
                 if (ExperiencesData[i].songPlaying == true) {
                     drawWaveform(i);
                     waveFormMeshes[i].material.map.needsUpdate = true
-                } 
-                else {
-                    if (waveFormMeshes[i]){
-                    console.log('removed one')
-                    scene.remove(waveFormMeshes[i]);
+                } else {
+                    if (waveFormMeshes[i]) {
+                        console.log('removed one')
+                        scene.remove(waveFormMeshes[i]);
                     }
                 }
             }
