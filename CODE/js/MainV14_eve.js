@@ -90,8 +90,8 @@ function switchScenes(newscene) {
             scene4ready = false
         }
     } else if (newscene == 5) {
-        HeartPlayer.volume.value = 0
-        HeartPlayer.volume.linearRampToValueAtTime(0,HeartPlayer.context.currentTime + 10)
+        HeartPlayer.volume.value = -5
+        HeartPlayer.volume.linearRampToValueAtTime(0, HeartPlayer.context.currentTime + 5)
         scene5 = true;
         $("#scene5").show();
         // TweenLite('#thank-you', 5, {y:200} ) ;
@@ -134,7 +134,7 @@ var bufferLoadingCounter = 0;
 var sfx2BufferLoadingCounter = 0
 var sfx1BufferLoadingCounter = 0
 var spacing = 360 / 6;
-var HowManyPlaying = 1;
+var HowManyPlaying = 6;
 var colorPlayingFar = 0xd84343
 var colorPlayingClose = 0xe82727
 var colorNotPlayingFar = 0x777474
@@ -211,6 +211,7 @@ function Scene4() {
     var worldSphere
     var windowHalfX = window.innerWidth / 2;
     var windowHalfY = window.innerHeight / 2;
+    var pointLight;
 
     // custom global variables
     var imgScreen, screens;
@@ -358,10 +359,13 @@ function Scene4() {
         light.position.set(-1, 1, 4000);
         scene.add(light);
         hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
-        hemiLight.color.setHSL(0.1, 1, 0.6);
-        hemiLight.groundColor.setHSL(0.005, 1, 0.75);
+        hemiLight.color.setHSL(0.1, 1, 0.4);
+        hemiLight.groundColor.setHSL(0.005, 1, 0.5);
         hemiLight.position.set(0, 500, 0);
         scene.add(hemiLight);
+        pointLight = new THREE.PointLight(0xff0000, 1, 100)
+        scene.add(pointLight)
+
 
         // CAMERA
         // PerspectiveCamera( field of view, aspect, near, far )
@@ -390,7 +394,7 @@ function Scene4() {
         //if we're using tone, include this line
         Tone.setContext(listener.context);
         cameraThree.add(listener);
-        // controls.getObject().add(listener);
+
 
 
         ////////////////////////////////
@@ -551,6 +555,15 @@ function Scene4() {
         controls = new THREE.PointerLockControls(cameraThree);
         controls.getObject().add(listener);
         scene.add(controls.getObject());
+
+        var spt1 = new THREE.SpotLight(0xFF7F00);
+        spt1.position.set(15, 40, 45);
+        // spt1.target = new THREE.Vector3(controls.position.x, controls.position.y, controls.position.z)
+        // scene.add(spt1);
+        // var flashlight = new THREE.SpotLight(0xffffff, 4, 40);
+        // scene.add(flashlight);
+        // flashlight.position.set(0, 0, 1);
+        // flashlight.target = controls;
 
         var onKeyDown = function(event) {
 
@@ -821,19 +834,7 @@ function Scene4() {
             newVoiceCenter.autoplay = true;
             newVoiceCenter.setLoop(true);
             voicesCenter.push(newVoiceCenter);
-            // panner.coneInnerAngle = 5;
-            // panner.coneOuterAngle = 30;
-            // newVoiceCenter.setRefDistance(2);
-            // newVoice.setMaxDistance(2)
-            // try units
-            // newVoice.setMaxDistance(.1)
-            // newVoice.setRolloffFactor(.5);
-
-            // // var newFilter = listener.context.createBiquadFilter();
-            // // newFilter.type = 'lowpass';
-            // // newFilter.Q.value = 10;
-            // // newFilter.frequency.value = 440;
-            // // filters.push(newFilter);
+        
 
 
 
@@ -912,13 +913,9 @@ function Scene4() {
                 mesh.rotateZ(randOffset)
                 mesh.rotateX(randOffset)
 
-                //ATTACH THE AUDIO TO ONE OF THE CUBES IN EACH ARRAY
-                // if (j == 0) {
-
-                //     // mesh.add(voices[k])
-                // }
+             
                 group.add(mesh);
-                // scene.add(mesh);
+              
 
             }
             group.position.set(videoRadius * xCenter, 70, videoRadius * zCenter);
@@ -952,7 +949,7 @@ function Scene4() {
 
 
         ///////DRAW WAVEFORM PLANE GEOMETRY GROUND ///////////
-        var groundplane = new THREE.PlaneGeometry(videoRadius, waveHeight * 2, 2)
+        var groundplane = new THREE.PlaneGeometry(videoRadius, waveHeight * 2, 15)
 
         transX(groundplane, 190);
 
@@ -980,7 +977,7 @@ function Scene4() {
             mesh.rotation.x = Math.PI / 2
             mesh.rotation.z = Math.PI / 3 * i
                 // mesh.rotation.z = 90
-            mesh.position.set(0, 2, 0);
+            mesh.position.set(0, 7, 0);
             waveFormMeshes.push(mesh)
         }
 
@@ -1003,7 +1000,7 @@ function Scene4() {
 
             var line = new THREE.Line(Linegeometry, Linematerial);
             allLines.push(line)
-            scene.add(line);
+                // scene.add(line);
         }
         /////////////////FINISH LINES
 
@@ -1082,7 +1079,7 @@ function Scene4() {
             color: 0xaf8585,
             metalness: 0.2,
             side: THREE.DoubleSide,
-            // bumpScale: 0.0005,
+        
         });
         var textureLoader = new THREE.TextureLoader();
         textureLoader.load("../textures/wallpaper1.png", function(map) {
@@ -1123,19 +1120,10 @@ function Scene4() {
             var meshsfx1 = new THREE.Mesh(sfxCube1, material)
 
             var meshsfx2 = new THREE.Mesh(sfxCube2, material)
-                // meshsfx2.add(sfx2[i])
-                // scene.add(meshsfx2)
-
-            //the volume buttons and attach voices to them
-            // meshsfx2.position.set(videoRadius * xCenter * .5, 15, videoRadius * .5 * zCenter)
+               
             meshsfx1.position.set(videoRadius * xCenter * .5, 15, videoRadius * .5 * zCenter)
 
 
-            // sfxCube1.add(sfx1[i])
-            // sfxCube2.position.set(videoRadius * xCenter * .7, 15, videoRadius * .7 * zCenter)
-
-            // sfxCube2[i].add(sfx2[i])
-            // meshsfx1.add(sfx1[i])
             scene.add(meshsfx1)
 
         }
@@ -1180,7 +1168,9 @@ function Scene4() {
 
     function animate() {
 
-        // floorMat.needsUpdate = true;
+        pointLight.position.set(controls.getObject().position)
+
+
 
         composer.render();
 
@@ -1203,7 +1193,7 @@ function Scene4() {
                 switchScenes(5)
             }
             if (cameraThree.position.y == 70) {
-                scene.fog = new THREE.Fog(0xffffff, 10, 60);
+                // scene.fog = new THREE.Fog(0xffffff, 10, 60);
                 // scene.fog.color.setHSL( 0.51, 0.6, 0.6 );
             }
 
@@ -1219,6 +1209,9 @@ function Scene4() {
             var lighten = 0.6;
 
         }
+
+
+        // spt1.target = controls.getObject().position
 
 
         if (readyAllVideos == true) {
@@ -1316,6 +1309,8 @@ function Scene4() {
                 canJump = true;
             }
 
+
+
             if (controls.getObject().position.distanceTo(worldCenter) < videoRadius) {
                 controls.getObject().translateX(velocity.x * delta);
                 controls.getObject().translateY(velocity.y * delta);
@@ -1396,8 +1391,10 @@ function Scene4() {
 
     function render() {
 
-        // console.log(listener.position)
-        // console.log('campos' +cameraThree.position.x)
+        if (floorMat) {
+            floorMat.needsUpdate = true;
+        }
+
 
         if (allLipVideosReady == true) {
             // if (allLipMaterials.length > 0) {
