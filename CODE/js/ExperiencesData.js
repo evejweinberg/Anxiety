@@ -69,6 +69,6 @@ ExperiencesData = [
 		userClose : false,
 		video : "https://evejweinberg.github.io/videos/6.mp4",
 		voice : "https://evejweinberg.github.io/anxiety/v2/06_01.wav",
-		firstSfx : "https://evejweinberg.github.io/anxiety/06_02.wav",
-		secondSfx : "https://evejweinberg.github.io/anxiety/06_03.wav",
+		firstSfx : "https://evejweinberg.github.io/anxiety/v2/06_02.wav",
+		secondSfx : "https://evejweinberg.github.io/anxiety/v2/06_03.wav",
 	}]
