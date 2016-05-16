@@ -6,7 +6,7 @@
 </head>
 
 <body>
-    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
     <div id="scene4" class="allscenes">
         <div id="blocker">
             <div id="instructions">
@@ -19,12 +19,13 @@
      <div id="Content" class="FullScreen" style="display:none"></div>
     <div id='scene1' class="allscenes">
         <video id="tunnel-vid" autostart="false" width='100%' height='100%' style="display:none">
-            <source src="../assets/rip1.mp4" /> Your browser does not support the video tag.
+            <source src="assets/rip1.mp4" /> Your browser does not support the video tag.
         </video>
         <!--   scene1 -->
+        <div id="full-intro">
         <div id="intro">
             <div id="intro-inside">
-            <img src="../assets/title2.png" id="title">
+            <img src="assets/title2.png" id="title">
                 <div id="next-button" class="hovering"></div>
                     
                     <br>
@@ -46,14 +47,15 @@
 
         <div id="scene5">
             <div id="credits">
-            <p id='thank-you'>Thank You<br><br>
-            Directed by Eve Weinberg<br>Audio Engineering by Aaron Montoya-Moraga<br>
-            Vocal Composition by Emily Chiu<br>
-            Coded by Eve Weinberg and Aaron Montoya-Moraga<br>
-            Designed by Eve Weinberg<br>
+            <p id='thank-you'><strong>Thank You</strong><br><br>
+            <strong>Directed and Designed by</strong> Eve Weinberg<br>
+            <strong>Audio Engineering by</strong> Aaron Montoya-Moraga<br>
+            <strong>Vocal Composition by</strong> Emily Chiu<br>
+            <strong>Coded by </strong>Eve Weinberg and Aaron Montoya-Moraga<br>
+            <strong>Animations by </strong>Eve Weinberg and Min Liu<br>
+           
+            <strong>Z-brush Assistance by </strong> Taylor at AMS<br>
             Endless code help provided by Yotam Mann and Laura Chen <br>
-            Z-brush Modeling by Taylor at AMS<br>
-            Animations by Eve Weinberg and Min Liu
 
             </p>
 
@@ -92,6 +94,7 @@
         <script src="libs/jquery-1.12.0.min.js"></script>
         <script src="libs/dat.gui.min.js"></script>
         <script src="js/Detector.js"></script>
+        <script src="js/StereoEffect.js"></script>
         <script src="js/renderers/CanvasRenderer.js"></script>
         <script src="js/renderers/Projector.js"></script>
         <script src="libs/AudioLoader.js"></script>

@@ -53,7 +53,7 @@ function renderIntro() {
 }
 
 function preloadMedia() {
-    windbuffer = new Tone.Buffer("../assets/wind.m4a", function() {
+    windbuffer = new Tone.Buffer("assets/wind.m4a", function() {
         windplayer = new Tone.Player(windbuffer)
         windplayer.connect(Tone.Master)
         console.log('loaded wind')
@@ -61,7 +61,7 @@ function preloadMedia() {
 
     })
 
-    lipVideoURL = "../assets/lipTxt.mp4";
+    lipVideoURL = "assets/lipTxt.mp4";
 
 
     for (var i = 0; i < experiences.length; i++) {
@@ -457,7 +457,7 @@ function Scene4() {
         ////draw type
 
         var loader = new THREE.OBJLoader(manager);
-        loader.load('../models/AudioIcon2.obj', function(object) {
+        loader.load('models/AudioIcon2.obj', function(object) {
 
 
             object.traverse(function(child) {
@@ -478,7 +478,7 @@ function Scene4() {
 
 
         var loader = new THREE.FontLoader();
-        loader.load('../js/helvetiker_regular.typeface.js', function(font) {
+        loader.load('js/helvetiker_regular.typeface.js', function(font) {
 
             DrawType(font);
 
@@ -710,7 +710,7 @@ function Scene4() {
             videoEl.loop = true;
             videoEl.preload = "auto";
             //PULL FROM PRELOAD
-            videoEl.src = "../assets/lipTxt.mp4";
+            videoEl.src = "assets/lipTxt.mp4";
             AlllipVideos.push(videoEl);
             videoCanvas = document.createElement('canvas');
             videoCanvas.width = 128;
@@ -1019,7 +1019,7 @@ function Scene4() {
             var z = centerRadius * Math.sin(toRadians(i * spacing))
             var cubeMaterial3 = new THREE.MeshLambertMaterial({ color: 0xFF0000, reflectivity: 0.3 });
 
-            var map = new THREE.TextureLoader().load('../assets/lipTxt.png');
+            var map = new THREE.TextureLoader().load('assets/lipTxt.png');
             map.wrapS = map.wrapT = THREE.RepeatWrapping;
             map.anisotropy = 10;
             var material = new THREE.MeshLambertMaterial({
@@ -1053,7 +1053,7 @@ function Scene4() {
             bumpScale: 0.0005,
         });
         var textureLoader = new THREE.TextureLoader();
-        textureLoader.load("../textures/wallpaper1.png", function(map) {
+        textureLoader.load("textures/wallpaper1.png", function(map) {
             console.log('loaded floor txt')
             map.wrapS = THREE.RepeatWrapping;
             map.wrapT = THREE.RepeatWrapping;
@@ -1082,7 +1082,7 @@ function Scene4() {
         
         });
         var textureLoader = new THREE.TextureLoader();
-        textureLoader.load("../textures/wallpaper1.png", function(map) {
+        textureLoader.load("textures/wallpaper1.png", function(map) {
             console.log('loaded sphere txt')
             map.wrapS = THREE.RepeatWrapping;
             map.wrapT = THREE.RepeatWrapping;

@@ -87,14 +87,14 @@ if (scene1) {
 
             var loader = new THREE.JSONLoader();
 
-            loader.load('../models/ESP_v3.js', function(geometry) {
+            loader.load('models/ESP_v3.js', function(geometry) {
                 // loader.load('../models/Suzanne.js', function(geometry) {
 
                 var material = new THREE.MeshPhongMaterial({
                     specular: 0x111111,
                     // map: headtextureLoader.load( '../models/leeperrysmith/Map-COL.jpg' ),
 
-                    map: textureLoader.load('../models/ESP_v2Tex1.jpg'),
+                    map: textureLoader.load('models/ESP_v2Tex1.jpg'),
                     // specularMap: headtextureLoader.load( '../models/evehead1/ESP.jpg' ),
                     // normalMap: headtextureLoader.load( '../models/evehead1/ESP.jpg'),
                     // normalScale: new THREE.Vector2( 0.75, 0.75 ),
@@ -129,7 +129,7 @@ if (scene1) {
 
 
         function soundBed() {
-            HeartPlayer = new Tone.Player("../assets/heartbeat.wav");
+            HeartPlayer = new Tone.Player("assets/heartbeat.wav");
             HeartPlayer.toMaster();
             HeartPlayer.volume.value = -15
             Tone.Buffer.on("load", function() {
