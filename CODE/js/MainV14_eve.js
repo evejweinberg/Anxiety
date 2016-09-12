@@ -512,7 +512,7 @@ function Scene4() {
                     curveSegments: 7
                 });
 
-                // 
+                //
                 geometry.computeBoundingBox();
                 var centerOffset = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
 
@@ -538,16 +538,6 @@ function Scene4() {
 
 
 
-
-
-
-        // DrawCenterArea();
-        // Floor()
-        // OuterSphere()
-
-
-
-
         window.addEventListener('resize', onWindowResize, false);
 
 
@@ -558,12 +548,7 @@ function Scene4() {
 
         var spt1 = new THREE.SpotLight(0xFF7F00);
         spt1.position.set(15, 40, 45);
-        // spt1.target = new THREE.Vector3(controls.position.x, controls.position.y, controls.position.z)
-        // scene.add(spt1);
-        // var flashlight = new THREE.SpotLight(0xffffff, 4, 40);
-        // scene.add(flashlight);
-        // flashlight.position.set(0, 0, 1);
-        // flashlight.target = controls;
+
 
         var onKeyDown = function(event) {
 
@@ -629,7 +614,7 @@ function Scene4() {
 
         };
 
-        // postprocessing
+        // postprocessing, why doesn't this work
         composer = new THREE.EffectComposer(renderer);
         composer.addPass(new THREE.RenderPass(scene, cameraThree));
 
@@ -661,9 +646,8 @@ function Scene4() {
                 voicesCenter[i].play()
                 ExperiencesData[i].songPlaying = true
                 HowManyPlaying++
-                // console.log(HowManyPlaying)
                 onOffCubes[i].children[0].material.color.set(colorPlayingClose)
-
+                //every time you click, run this function
                 checkIfFinished();
 
             } else if (ExperiencesData[i].userClose == true && ExperiencesData[i].songPlaying == true) {
@@ -834,7 +818,7 @@ function Scene4() {
             newVoiceCenter.autoplay = true;
             newVoiceCenter.setLoop(true);
             voicesCenter.push(newVoiceCenter);
-        
+
 
 
 
@@ -901,7 +885,7 @@ function Scene4() {
 
             var group = new THREE.Object3D();
 
-            // the 10 videos per experience cubes 
+            // the 10 videos per experience cubes
             for (var j = 0; j < 22; j++) {
 
                 var randOffset = Math.floor((Math.random() * 120) + -35);
@@ -913,9 +897,9 @@ function Scene4() {
                 mesh.rotateZ(randOffset)
                 mesh.rotateX(randOffset)
 
-             
+
                 group.add(mesh);
-              
+
 
             }
             group.position.set(videoRadius * xCenter, 70, videoRadius * zCenter);
@@ -1079,7 +1063,7 @@ function Scene4() {
             color: 0xaf8585,
             metalness: 0.2,
             side: THREE.DoubleSide,
-        
+
         });
         var textureLoader = new THREE.TextureLoader();
         textureLoader.load("textures/wallpaper1.png", function(map) {
@@ -1120,7 +1104,7 @@ function Scene4() {
             var meshsfx1 = new THREE.Mesh(sfxCube1, material)
 
             var meshsfx2 = new THREE.Mesh(sfxCube2, material)
-               
+
             meshsfx1.position.set(videoRadius * xCenter * .5, 15, videoRadius * .5 * zCenter)
 
 
@@ -1143,13 +1127,13 @@ function Scene4() {
 
 
     ////////////////////////////////////////////////////////////////////////////////////
-    //     _      _   _                  __  __      _       _____  U _____ u 
-    // U  /"\  u | \ |"|       ___     U|' \/ '|uU  /"\  u  |_ " _| \| ___"|/ 
-    //  \/ _ \/ <|  \| |>     |_"_|    \| |\/| |/ \/ _ \/     | |    |  _|"   
-    //  / ___ \ U| |\  |u      | |      | |  | |  / ___ \    /| |\   | |___   
-    // /_/   \_\ |_| \_|     U/| |\u    |_|  |_| /_/   \_\  u |_|U   |_____|  
-    //  \\    >> ||   \\,-.-,_|___|_,-.<<,-,,-.   \\    >>  _// \\_  <<   >>  
-    // (__)  (__)(_")  (_/ \_)-' '-(_/  (./  \.) (__)  (__)(__) (__)(__) (__) 
+    //     _      _   _                  __  __      _       _____  U _____ u
+    // U  /"\  u | \ |"|       ___     U|' \/ '|uU  /"\  u  |_ " _| \| ___"|/
+    //  \/ _ \/ <|  \| |>     |_"_|    \| |\/| |/ \/ _ \/     | |    |  _|"
+    //  / ___ \ U| |\  |u      | |      | |  | |  / ___ \    /| |\   | |___
+    // /_/   \_\ |_| \_|     U/| |\u    |_|  |_| /_/   \_\  u |_|U   |_____|
+    //  \\    >> ||   \\,-.-,_|___|_,-.<<,-,,-.   \\    >>  _// \\_  <<   >>
+    // (__)  (__)(_")  (_/ \_)-' '-(_/  (./  \.) (__)  (__)(__) (__)(__) (__)
     ////////////////////////////////////////////////////////////////////////////////////
 
     var newspherecreated = false;
@@ -1375,7 +1359,7 @@ function Scene4() {
             }
             gameOver = true;
             Scene5();
-            console.log('Done')
+            //console.log('Done')
         }
 
     }
@@ -1397,9 +1381,6 @@ function Scene4() {
 
 
         if (allLipVideosReady == true) {
-            // if (allLipMaterials.length > 0) {
-            // console.log(allLipMaterials.length + 'is length of lipMaterials')
-
 
             for (var i = 0; i < experiences.length; i++) {
                 if (ExperiencesData[i].songPlaying) {
@@ -1448,12 +1429,6 @@ function Scene4() {
 
     ////////////////////////////////////////////////////////
 
-
-
-
-    // function onMouseDown() {
-
-    // }
 
 
     function toDegrees(angle) {
@@ -1530,7 +1505,7 @@ function Scene4() {
 
 
 
-
+//what is this?
 function updateMatrixWorld() {
 
     var position = new THREE.Vector3();

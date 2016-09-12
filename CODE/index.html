@@ -10,84 +10,81 @@
     <div id="scene4" class="allscenes">
         <div id="blocker">
             <div id="instructions">
-                
-                <br>
-                WALK around with arrows   /   LOOK around with mouse
+
+                <br> WALK around with arrows / LOOK around with mouse
                 <br />
-                <img src = "assets/nav.gif">
-                <br>
-                Mouse click to begin 
-                
+                <img src="assets/nav.gif">
+                <br> Mouse click to begin
+
             </div>
         </div>
     </div>
-     <div id="Content" class="FullScreen" style="display:none"></div>
+    <div id="Content" class="FullScreen" style="display:none"></div>
     <div id='scene1' class="allscenes">
         <video id="tunnel-vid" autostart="false" width='100%' height='100%' style="display:none">
             <source src="assets/rip1.mp4" /> Your browser does not support the video tag.
         </video>
         <!--   scene1 -->
         <div id="full-intro">
-        <div id="intro">
-            <div id="intro-inside">
-            <img src="assets/title2.png" id="title">
-                <div id="next-button" class="hovering"></div>
-                    
-                    <br>
-                    <div id ="head">
-                     <div id="headphones" class="dropshadow"></div>
-                     <p id="headphones-recommended" class="dropshadow">Headphones Recommended</p>
-                     </div>
+            <div id="intro">
+                <div id="intro-inside">
+                    <img src="assets/title2.png" id="title">
+                    <div id="next-button" class="hovering"></div>
 
-                <!-- <p id="title-bottom">Hear my inner thoughts and, please, turn them off. </p> -->
-                   
+                    <br>
+                    <div id="head">
+                        <div id="headphones" class="dropshadow"></div>
+                        <p id="headphones-recommended" class="dropshadow">Headphones Recommended</p>
+                    </div>
+
+                    <!-- <p id="title-bottom">Hear my inner thoughts and, please, turn them off. </p> -->
+
                     <!-- <br> Sharing these personal, often self-attacking thoughts, allows me to see that they are worth laughing at, they are universal, and most importantly they can be silenced.
                     <br> -->
                     <!-- <br> Silence my anxious brain. -->
-               
-                    </div>
-                
+
+                </div>
+
             </div>
         </div>
 
         <div id="scene5">
             <div id="credits">
-            <p id='thank-you'><strong>Thank You</strong><br><br>
-            <strong>Directed and Designed by</strong> Eve Weinberg<br>
-            <strong>Audio Engineering by</strong> Aaron Montoya-Moraga<br>
-            <strong>Vocal Composition by</strong> Emily Chiu<br>
-            <strong>Coded by </strong>Eve Weinberg and Aaron Montoya-Moraga<br>
-            <strong>Animations by </strong>Eve Weinberg and Min Liu<br>
-           
-            <strong>Z-brush Assistance by </strong> Taylor at AMS<br>
-            Endless code help provided by Yotam Mann and Laura Chen <br>
+                <p id='thank-you'><strong>Thank You</strong><br><br>
+                    <strong>Directed and Designed by</strong> Eve Weinberg<br>
+                    <strong>Audio Engineering by</strong> Aaron Montoya-Moraga<br>
+                    <strong>Vocal Composition by</strong> Emily Chiu<br>
+                    <strong>Coded by </strong>Eve Weinberg and Aaron Montoya-Moraga<br>
+                    <strong>Animations by </strong>Eve Weinberg and Min Liu<br>
 
-            </p>
+                    <strong>Z-brush Assistance by </strong> Taylor at AMS<br> Endless code help provided by Yotam Mann and Laura Chen <br>
+
+                </p>
 
             </div>
         </div>
         <script type="text/javascript">
-        var whichMobile = "";
-        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            console.log("I'm iOS!");
-            whichMobile = "iOS_mobile";
-        }
+            var whichMobile = "";
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                console.log("I'm iOS!");
+                whichMobile = "iOS_mobile";
+            }
         </script>
         <script src="https://use.typekit.net/adj0nca.js"></script>
         <script>
-        try {
-            Typekit.load({
-                async: true
-            });
-        } catch (e) {}
+            try {
+                Typekit.load({
+                    async: true
+                });
+            } catch (e) {}
         </script>
         <script src="libs/three.min.js"></script>
-            <script src="js/shaders/CopyShader.js"></script>
-                    <script src="js/shaders/DigitalGlitch.js"></script>
+        <script src="js/shaders/CopyShader.js"></script>
+        <script src="js/shaders/DigitalGlitch.js"></script>
 
         <script src="js/shaders/DotScreenShader.js"></script>
         <script src="js/shaders/RGBShiftShader.js"></script>
-            <script src="js/postprocessing/GlitchPass.js"></script>
+        <script src="js/postprocessing/GlitchPass.js"></script>
 
         <script src="js/postprocessing/EffectComposer.js"></script>
         <script src="js/postprocessing/RenderPass.js"></script>
@@ -103,7 +100,7 @@
         <script src="js/renderers/CanvasRenderer.js"></script>
         <script src="js/renderers/Projector.js"></script>
         <script src="libs/AudioLoader.js"></script>
-         <script src="libs/AudioContext.js"></script>
+        <script src="libs/AudioContext.js"></script>
 
         <script src="js/loaders/OBJLoader.js"></script>
         <script src="libs/Tone.min.js"></script>
@@ -111,7 +108,7 @@
         <script src="js/ExperiencesData.js"></script>
         <script src="js/scene1and2.js"></script>
         <script src="js/MainV14_eve.js"></script>
-         <script src="libs/TweenLite.js"></script>
+        <script src="libs/TweenLite.js"></script>
         <!-- <script src="../js/LoadSFX.js"></script> -->
         <!-- <script src="../js/helvetiker_regular.typeface.js"></script> -->
 </body>
